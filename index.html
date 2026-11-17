@@ -1,0 +1,2750 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Bipolar Log" />
+  <title>Bipolar 1 Clinical Tracker</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    /* ==========================================================================
+       SWISS EDITORIAL & APPLE HEALTH DESIGN TOKENS
+       ========================================================================== */
+    :root {
+      --bg-canvas: #F7F7F5;
+      --bg-card: #FFFFFF;
+      --bg-subtle: #F2F2F0;
+      --bg-well: #ECECE8;
+      --text-primary: #141413;
+      --text-secondary: #575652;
+      --text-muted: #8E8E93;
+      --border-hairline: rgba(0, 0, 0, 0.07);
+      --border-strong: rgba(0, 0, 0, 0.16);
+      --grid-line: rgba(0, 0, 0, 0.055);
+      --sleep-bar: rgba(142, 142, 147, 0.22);
+      --sleep-bar-active: rgba(142, 142, 147, 0.48);
+      --cursor-line: rgba(20, 20, 19, 0.35);
+      --card-shadow: 0 1px 2px rgba(0, 0, 0, 0.03), 0 4px 12px rgba(0, 0, 0, 0.015);
+      --sheet-shadow: 0 -10px 36px rgba(0, 0, 0, 0.14);
+
+      /* Exact Clinical State Semantic Palette */
+      --state-surviving: #8E8E93;
+      --state-surviving-tint: #F2F2F7;
+      --state-surviving-border: rgba(142, 142, 147, 0.32);
+
+      --state-depressed: #3B82F6;
+      --state-depressed-tint: rgba(59, 130, 246, 0.14);
+      --state-depressed-border: rgba(59, 130, 246, 0.36);
+
+      --state-very-depressed: #1D4ED8;
+      --state-very-depressed-tint: rgba(29, 78, 216, 0.16);
+      --state-very-depressed-border: rgba(29, 78, 216, 0.42);
+
+      --state-mixed: #8B5CF6;
+      --state-mixed-tint: rgba(139, 92, 246, 0.15);
+      --state-mixed-border: rgba(139, 92, 246, 0.38);
+
+      --state-mania: #EA580C;
+      --state-mania-tint: rgba(234, 88, 12, 0.15);
+      --state-mania-border: rgba(234, 88, 12, 0.40);
+
+      --psychotic-crimson: #DC2626;
+      --psychotic-crimson-tint: rgba(220, 38, 38, 0.12);
+    }
+
+    html.dark {
+      --bg-canvas: #0C0C0E;
+      --bg-card: #161619;
+      --bg-subtle: #1E1E24;
+      --bg-well: #26262E;
+      --text-primary: #F5F5F7;
+      --text-secondary: #A1A1AA;
+      --text-muted: #71717A;
+      --border-hairline: rgba(255, 255, 255, 0.08);
+      --border-strong: rgba(255, 255, 255, 0.18);
+      --grid-line: rgba(255, 255, 255, 0.06);
+      --sleep-bar: rgba(161, 161, 170, 0.18);
+      --sleep-bar-active: rgba(161, 161, 170, 0.42);
+      --cursor-line: rgba(255, 255, 255, 0.38);
+      --card-shadow: 0 1px 3px rgba(0, 0, 0, 0.45);
+      --sheet-shadow: 0 -12px 44px rgba(0, 0, 0, 0.65);
+
+      --state-surviving: #8E8E93;
+      --state-surviving-tint: rgba(142, 142, 147, 0.16);
+      --state-surviving-border: rgba(142, 142, 147, 0.30);
+
+      --state-depressed: #3B82F6;
+      --state-depressed-tint: rgba(59, 130, 246, 0.22);
+      --state-depressed-border: rgba(59, 130, 246, 0.45);
+
+      --state-very-depressed: #3B6EF6;
+      --state-very-depressed-tint: rgba(29, 78, 216, 0.28);
+      --state-very-depressed-border: rgba(59, 110, 246, 0.50);
+
+      --state-mixed: #9D74F7;
+      --state-mixed-tint: rgba(139, 92, 246, 0.24);
+      --state-mixed-border: rgba(157, 116, 247, 0.48);
+
+      --state-mania: #F97316;
+      --state-mania-tint: rgba(234, 88, 12, 0.24);
+      --state-mania-border: rgba(249, 115, 22, 0.48);
+
+      --psychotic-crimson: #EF4444;
+      --psychotic-crimson-tint: rgba(220, 38, 38, 0.22);
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", sans-serif;
+      background-color: var(--bg-canvas);
+      color: var(--text-primary);
+      margin: 0;
+      padding: 0;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      transition: background-color 0.22s ease, color 0.22s ease;
+      overflow-x: hidden;
+    }
+
+    /* iOS-Native Animated Segmented Control Thumb */
+    .ios-seg-track {
+      position: relative;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      padding: 2px;
+      border-radius: 12px;
+      background-color: var(--bg-subtle);
+      border: 1px solid var(--border-hairline);
+    }
+    .ios-seg-thumb {
+      position: absolute;
+      top: 2px;
+      bottom: 2px;
+      left: 2px;
+      width: calc(50% - 2px);
+      border-radius: 10px;
+      background-color: var(--bg-card);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 1px rgba(0, 0, 0, 0.04);
+      transition: transform 0.26s cubic-bezier(0.25, 1, 0.5, 1);
+      pointer-events: none;
+    }
+    html.dark .ios-seg-thumb {
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.45);
+    }
+    .ios-seg-track[data-mode="monthly"] .ios-seg-thumb {
+      transform: translateX(100%);
+    }
+    .ios-seg-btn {
+      position: relative;
+      z-index: 1;
+      padding: 6px 10px;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      text-align: center;
+      transition: color 0.2s ease;
+    }
+
+    .tabular {
+      font-variant-numeric: tabular-nums;
+    }
+
+    .hairline {
+      border: 1px solid var(--border-hairline);
+    }
+
+    .hairline-b {
+      border-bottom: 1px solid var(--border-hairline);
+    }
+
+    .hairline-t {
+      border-top: 1px solid var(--border-hairline);
+    }
+
+    .editorial-card {
+      background-color: var(--bg-card);
+      border: 1px solid var(--border-hairline);
+      box-shadow: var(--card-shadow);
+      border-radius: 18px;
+      transition: background-color 0.22s ease, border-color 0.22s ease;
+    }
+
+    /* Slide-Up Bottom Sheet Animation */
+    .modal-backdrop {
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.22s ease;
+    }
+    .modal-backdrop.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .sheet-surface {
+      transform: translateY(100%);
+      transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+      box-shadow: var(--sheet-shadow);
+    }
+    .modal-backdrop.open .sheet-surface {
+      transform: translateY(0);
+    }
+
+    /* Subtle Pulse Feedback when 1-Tap Baseline is pressed */
+    @keyframes briefFlash {
+      0% { transform: scale(1); }
+      40% { transform: scale(1.012); }
+      100% { transform: scale(1); }
+    }
+    .pulse-update {
+      animation: briefFlash 0.32s ease;
+    }
+
+    .safe-top {
+      padding-top: max(12px, env(safe-area-inset-top));
+    }
+    .safe-bottom {
+      padding-bottom: max(16px, env(safe-area-inset-bottom));
+    }
+
+    ::-webkit-scrollbar {
+      width: 4px;
+      height: 4px;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: var(--border-strong);
+      border-radius: 999px;
+    }
+
+    /* Clean Print / PDF Handout Layout */
+    @media print {
+      body {
+        background: #FFFFFF !important;
+        color: #141413 !important;
+        padding: 0 !important;
+      }
+      .no-print {
+        display: none !important;
+      }
+      .editorial-card {
+        box-shadow: none !important;
+        border: 1px solid #D4D4D8 !important;
+        break-inside: avoid;
+      }
+      main {
+        max-width: 100% !important;
+        padding: 0 !important;
+      }
+    }
+  </style>
+</head>
+<body class="min-h-screen pb-14">
+
+  <!-- ========================================================================
+       STICKY TRANSLUCENT HEADER
+       ======================================================================== -->
+  <header class="sticky top-0 z-30 safe-top backdrop-blur-xl hairline-b no-print"
+    style="background-color: color-mix(in srgb, var(--bg-canvas) 84%, transparent);">
+    <div class="max-w-[480px] mx-auto px-4 py-3 flex items-center justify-between gap-2">
+      <div class="min-w-0">
+        <div class="flex items-center gap-2">
+          <h1 class="text-[17px] font-semibold tracking-tight leading-none truncate">Bipolar 1 Log</h1>
+          <span id="headerSpanBadge" class="text-[11px] font-medium tabular px-2 py-0.5 rounded-full hairline shrink-0"
+            style="background-color: var(--bg-card); color: var(--text-secondary);">
+            17 Nov 2026
+          </span>
+        </div>
+        <p class="text-[11px] mt-1 tracking-wide" style="color: var(--text-muted);">
+          Automated Clinical Chart &amp; Brief
+        </p>
+      </div>
+
+      <div class="relative flex items-center gap-1.5 shrink-0">
+        <!-- Dark / Light Mode Toggle (☀︎ / ☾) -->
+        <button id="themeToggleBtn" type="button" aria-label="Toggle Dark or Light Mode"
+          class="w-9 h-9 rounded-xl hairline flex items-center justify-center text-[15px] transition active:scale-95"
+          style="background-color: var(--bg-card); color: var(--text-secondary);">
+          <span id="themeGlyph">☾</span>
+        </button>
+
+        <!-- Compact Header Menu (Demo Data / Clear & Export JSON) -->
+        <button id="headerMenuBtn" type="button" aria-label="Open Tracker Options" aria-expanded="false"
+          class="w-9 h-9 rounded-xl hairline flex items-center justify-center text-[16px] font-bold transition active:scale-95"
+          style="background-color: var(--bg-card); color: var(--text-secondary);">
+          ⋯
+        </button>
+
+        <!-- Popover Menu -->
+        <div id="headerMenuPopover"
+          class="hidden absolute right-0 top-11 w-52 rounded-2xl hairline p-1.5 z-40 space-y-0.5"
+          style="background-color: var(--bg-card); box-shadow: 0 10px 30px rgba(0,0,0,0.16);">
+          <button id="toggleDemoDataBtn" type="button"
+            class="w-full px-3 py-2 rounded-xl text-left text-[12px] font-medium flex items-center justify-between transition hover:opacity-80"
+            style="color: var(--text-primary);">
+            <span id="toggleDemoDataLabel">Clear Demo Data</span>
+            <span id="demoStatusDot" class="w-2 h-2 rounded-full" style="background-color: var(--state-mania);"></span>
+          </button>
+
+          <button id="exportJsonBtn" type="button"
+            class="w-full px-3 py-2 rounded-xl text-left text-[12px] font-medium flex items-center justify-between transition hover:opacity-80"
+            style="color: var(--text-primary);">
+            <span>Export JSON</span>
+            <span class="text-[11px]" style="color: var(--text-muted);">↓</span>
+          </button>
+
+          <label class="w-full px-3 py-2 rounded-xl text-left text-[12px] font-medium flex items-center justify-between transition hover:opacity-80 cursor-pointer"
+            style="color: var(--text-primary);">
+            <span>Import JSON</span>
+            <span class="text-[11px]" style="color: var(--text-muted);">↑</span>
+            <input id="importJsonInput" type="file" accept=".json,application/json" class="hidden" />
+          </label>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ========================================================================
+       MAIN CONTENT STREAM (MAX-WIDTH 480PX SWISS MOBILE COLUMN)
+       ======================================================================== -->
+  <main class="max-w-[480px] mx-auto px-4 pt-3.5 space-y-3.5">
+
+    <!-- ======================================================================
+         TOP QUICK-ACTION STRIP (ZERO-FRICTION LOGGING)
+         ====================================================================== -->
+    <section class="grid grid-cols-2 gap-2 no-print" aria-label="Quick Check-In Actions">
+      <button id="quickBaselineBtn" type="button"
+        class="editorial-card px-3.5 py-2.5 text-left flex items-center justify-between gap-2 transition active:scale-[0.98]"
+        style="background-color: var(--bg-card);">
+        <div class="min-w-0">
+          <div class="text-[12.5px] font-semibold tracking-tight truncate">
+            Log Baseline Today
+          </div>
+          <div class="text-[10.5px] tabular mt-0.5 truncate" style="color: var(--text-secondary);">
+            17 Nov 2026 · 7.5h · =
+          </div>
+        </div>
+        <span class="w-7 h-7 rounded-full flex items-center justify-center shrink-0 text-[13px] font-semibold"
+          style="background-color: var(--state-surviving-tint); color: var(--text-primary);">
+          ✓
+        </span>
+      </button>
+
+      <button id="openSheetBtn" type="button"
+        class="px-3.5 py-2.5 rounded-[18px] text-left flex items-center justify-between gap-2 transition active:scale-[0.98]"
+        style="background-color: var(--text-primary); color: var(--bg-canvas); box-shadow: var(--card-shadow);">
+        <div class="min-w-0">
+          <div class="text-[12.5px] font-semibold tracking-tight truncate">
+            + Log Day
+          </div>
+          <div class="text-[10.5px] mt-0.5 truncate opacity-75">
+            Pills or 2-week paste
+          </div>
+        </div>
+        <span class="w-7 h-7 rounded-full flex items-center justify-center shrink-0 text-[16px] font-medium"
+          style="background-color: color-mix(in srgb, var(--bg-canvas) 16%, transparent);">
+          +
+        </span>
+      </button>
+    </section>
+
+    <!-- ======================================================================
+         CARD 1: AUTO-GENERATED CLINICAL BRIEF
+         ====================================================================== -->
+    <section id="clinicalBriefCard" class="editorial-card p-4 space-y-3.5" aria-label="Auto-Generated Clinical Brief">
+      <div class="flex flex-wrap items-start justify-between gap-2">
+        <div>
+          <div class="flex items-center gap-2">
+            <h2 class="text-[15px] font-semibold tracking-tight">Clinical Brief</h2>
+            <span id="briefRangePill" class="text-[11px] font-medium tabular px-2 py-0.5 rounded-full"
+              style="background-color: var(--bg-subtle); color: var(--text-secondary);">
+              14 days
+            </span>
+          </div>
+          <p id="briefDateRangeText" class="text-[11px] tabular mt-0.5" style="color: var(--text-muted);">
+            04 Nov 2026 – 17 Nov 2026
+          </p>
+        </div>
+
+        <!-- 1-Tap Copy Brief & Full-Screen Doctor View -->
+        <div class="flex items-center gap-1.5 no-print">
+          <button id="copyBriefBtn" type="button"
+            class="px-3 py-1.5 rounded-xl text-[12px] font-medium hairline transition active:scale-95 flex items-center gap-1.5"
+            style="background-color: var(--bg-subtle); color: var(--text-primary);">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+            </svg>
+            <span>Copy Brief</span>
+          </button>
+
+          <button id="doctorViewBtn" type="button"
+            class="px-3 py-1.5 rounded-xl text-[12px] font-semibold transition active:scale-95 flex items-center gap-1.5"
+            style="background-color: var(--text-primary); color: var(--bg-canvas);">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M15 3h6v6"></path><path d="M9 21H3v-6"></path>
+              <path d="M21 3l-7 7"></path><path d="M3 21l7-7"></path>
+            </svg>
+            <span>Doctor View</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Sleep & State Breakdown Grid -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+        <div class="p-3 rounded-2xl hairline space-y-1" style="background-color: var(--bg-subtle);">
+          <div class="text-[10px] font-semibold uppercase tracking-wider" style="color: var(--text-muted);">
+            Sleep Baseline &amp; Shifts
+          </div>
+          <div id="briefSleepAvg" class="text-[17px] font-semibold tabular leading-tight">—</div>
+          <div id="briefSleepFlags" class="text-[12px] leading-snug tabular" style="color: var(--text-secondary);">—</div>
+        </div>
+
+        <div class="p-3 rounded-2xl hairline space-y-1.5" style="background-color: var(--bg-subtle);">
+          <div class="text-[10px] font-semibold uppercase tracking-wider" style="color: var(--text-muted);">
+            State Composition
+          </div>
+          <div id="briefStateBar" class="w-full h-2 rounded-full overflow-hidden flex gap-[1.5px]" style="background-color: var(--bg-well);"></div>
+          <div id="briefStateText" class="text-[12px] leading-snug tabular" style="color: var(--text-secondary);">—</div>
+        </div>
+      </div>
+
+      <!-- Auto-Constructed Episode Arcs & Psychotic Dates -->
+      <div class="p-3 rounded-2xl hairline space-y-2" style="background-color: var(--bg-subtle);">
+        <div>
+          <div class="text-[10px] font-semibold uppercase tracking-wider mb-1" style="color: var(--text-muted);">
+            Episode Arcs (Start → Peak → End)
+          </div>
+          <div id="briefEpisodeArcs" class="space-y-1 text-[12px] leading-relaxed tabular"></div>
+        </div>
+
+        <div id="briefPsychoticWrap" class="hidden pt-2 hairline-t">
+          <div class="text-[10px] font-semibold uppercase tracking-wider mb-0.5" style="color: var(--psychotic-crimson);">
+            Psychotic Symptoms Logged
+          </div>
+          <div id="briefPsychoticDates" class="text-[12px] font-medium tabular" style="color: var(--psychotic-crimson);"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================================
+         WEEKLY VS. MONTHLY SEGMENTED TOGGLE & PERIOD NAVIGATOR
+         ====================================================================== -->
+    <section id="periodNavSection" class="editorial-card p-3 space-y-2.5 no-print" aria-label="View Mode and Period Navigator">
+      <!-- iOS Animated Sliding-Pill Segmented Control -->
+      <div id="viewModeTrack" class="ios-seg-track" data-mode="weekly" role="tablist" aria-label="Weekly or Monthly View">
+        <div class="ios-seg-thumb" aria-hidden="true"></div>
+        <button type="button" id="segWeeklyBtn" data-view-mode="weekly" role="tab" aria-selected="true" class="ios-seg-btn">
+          Weekly
+        </button>
+        <button type="button" id="segMonthlyBtn" data-view-mode="monthly" role="tab" aria-selected="false" class="ios-seg-btn">
+          Monthly
+        </button>
+      </div>
+
+      <!-- Period Stepper (‹ 16 Nov – 22 Nov 2026 › or ‹ November 2026 ›) + Today Pill -->
+      <div class="flex items-center justify-between gap-2">
+        <button id="periodPrevBtn" type="button" aria-label="Previous Period"
+          class="w-9 h-9 rounded-xl hairline flex items-center justify-center text-[16px] font-semibold transition active:scale-95 shrink-0"
+          style="background-color: var(--bg-subtle); color: var(--text-primary);">
+          ‹
+        </button>
+
+        <div class="flex items-center justify-center gap-2 min-w-0 flex-1">
+          <span id="periodLabelText" class="text-[13.5px] font-semibold tracking-tight tabular truncate">
+            16 Nov – 22 Nov 2026
+          </span>
+          <button id="periodTodayBtn" type="button"
+            class="hidden px-2.5 py-0.5 rounded-full text-[11px] font-semibold hairline transition active:scale-95 shrink-0"
+            style="background-color: var(--text-primary); color: var(--bg-canvas);">
+            Today
+          </button>
+        </div>
+
+        <button id="periodNextBtn" type="button" aria-label="Next Period"
+          class="w-9 h-9 rounded-xl hairline flex items-center justify-center text-[16px] font-semibold transition active:scale-95 shrink-0"
+          style="background-color: var(--bg-subtle); color: var(--text-primary);">
+          ›
+        </button>
+      </div>
+    </section>
+
+    <!-- ======================================================================
+         CARD 2: INTERACTIVE DUAL-TRACK SVG LIFE CHART
+         ====================================================================== -->
+    <section id="visualizationCard" class="editorial-card p-4 space-y-3" aria-label="Interactive Dual-Track Life Chart">
+      <div class="flex items-center justify-between gap-2">
+        <div>
+          <h2 id="chartCardTitle" class="text-[15px] font-semibold tracking-tight">Weekly Sleep &amp; Mood</h2>
+          <p id="chartCardSubtitle" class="text-[11px]" style="color: var(--text-muted);">Mon–Sun alignment · Tap any day to inspect</p>
+        </div>
+        <span id="chartLoggedBadge" class="text-[11px] font-medium tabular px-2 py-0.5 rounded-full hairline"
+          style="background-color: var(--bg-subtle); color: var(--text-secondary);">
+          2/7 logged
+        </span>
+      </div>
+
+      <!-- Inline Hand-Crafted SVG Chart -->
+      <div id="svgChartWrapper" class="relative w-full select-none touch-none pt-1">
+        <svg id="lifeChartSvg" class="w-full block overflow-visible" style="height: 222px;" role="img" aria-label="Sleep bars and Mood line chart"></svg>
+      </div>
+
+      <!-- Compact Chart Legend -->
+      <div class="flex flex-wrap items-center justify-between gap-2 text-[11px] pt-1 hairline-t" style="color: var(--text-muted);">
+        <div class="flex items-center gap-3">
+          <span class="inline-flex items-center gap-1.5">
+            <span class="w-2.5 h-2.5 rounded-[3px] inline-block" style="background-color: var(--sleep-bar-active);"></span>
+            Sleep (0–12h)
+          </span>
+          <span class="inline-flex items-center gap-1.5">
+            <span class="w-2 h-2 rounded-full inline-block" style="background-color: var(--state-mania);"></span>
+            Mood (-- to ++)
+          </span>
+        </div>
+        <div class="tabular">
+          <span class="font-semibold" style="color: var(--text-secondary);">S/P/E</span> Phase ·
+          <span class="font-semibold" style="color: var(--psychotic-crimson);">/D /DP /H</span> Psychotic ·
+          <span class="font-semibold" style="color: var(--text-secondary);">*</span> Note
+        </div>
+      </div>
+
+      <!-- Live Inspected Day Readout Bar directly beneath graph -->
+      <div id="inspectorBox" class="p-3 rounded-2xl hairline space-y-1.5" style="background-color: var(--bg-subtle);">
+        <div class="flex items-center justify-between gap-2">
+          <div id="inspectorHeader" class="flex items-center flex-wrap gap-1.5 text-[12px] tabular">
+            <span style="color: var(--text-muted);">Select a day on the chart</span>
+          </div>
+          <button id="inspectorEditBtn" type="button"
+            class="hidden px-2.5 py-1 rounded-lg text-[11px] font-medium hairline shrink-0 no-print"
+            style="background-color: var(--bg-card); color: var(--text-primary);">
+            Edit Day
+          </button>
+        </div>
+        <p id="inspectorNoteText" class="text-[12px] leading-relaxed" style="color: var(--text-secondary);"></p>
+      </div>
+    </section>
+
+    <!-- ======================================================================
+         CARD 3: WEEKLY STRIP OR MONTHLY TIMESHEET CALENDAR MATRIX
+         ====================================================================== -->
+    <section class="editorial-card p-4 space-y-3" aria-label="Visual Timesheet Grid">
+      <div class="flex flex-wrap items-center justify-between gap-2">
+        <div>
+          <h2 id="gridCardTitle" class="text-[15px] font-semibold tracking-tight">Weekly Timesheet Strip</h2>
+          <p id="gridCardSubtitle" class="text-[11px]" style="color: var(--text-muted);">Tap any cell to log or edit that day</p>
+        </div>
+        <span class="text-[11px] tabular" style="color: var(--text-muted);">Line 1: Sleep &amp; Mood · Line 2: Flags</span>
+      </div>
+
+      <!-- 7-Column Calendar Matrix -->
+      <div id="timesheetGridContainer"></div>
+
+      <!-- Semantic State Colour Key -->
+      <div class="pt-2 hairline-t flex flex-wrap items-center gap-x-3 gap-y-1.5 text-[11px]" style="color: var(--text-secondary);">
+        <span class="inline-flex items-center gap-1.5"><i class="w-2.5 h-2.5 rounded-[3px] inline-block" style="background: var(--state-surviving);"></i>Surviving</span>
+        <span class="inline-flex items-center gap-1.5"><i class="w-2.5 h-2.5 rounded-[3px] inline-block" style="background: var(--state-depressed);"></i>Depressed</span>
+        <span class="inline-flex items-center gap-1.5"><i class="w-2.5 h-2.5 rounded-[3px] inline-block" style="background: var(--state-very-depressed);"></i>Very Depressed</span>
+        <span class="inline-flex items-center gap-1.5"><i class="w-2.5 h-2.5 rounded-[3px] inline-block" style="background: var(--state-mixed);"></i>Mixed (d/h/m)</span>
+        <span class="inline-flex items-center gap-1.5"><i class="w-2.5 h-2.5 rounded-[3px] inline-block" style="background: var(--state-mania);"></i>Mania</span>
+      </div>
+    </section>
+
+    <!-- ======================================================================
+         CARD 4: FILTERED NOTES & FLAGGED EVENTS FEED
+         ====================================================================== -->
+    <section class="editorial-card p-4 space-y-3" aria-label="Filtered Notes and Flagged Events Feed">
+      <div class="flex items-center justify-between gap-2">
+        <div>
+          <h2 class="text-[15px] font-semibold tracking-tight">Notes &amp; Flagged Events</h2>
+          <p class="text-[11px]" style="color: var(--text-muted);">Reverse chronological British dates</p>
+        </div>
+
+        <div class="inline-flex p-0.5 rounded-xl hairline no-print" style="background-color: var(--bg-subtle);">
+          <button type="button" data-feed="flagged" class="feed-pill px-2.5 py-1 rounded-[10px] text-[11px] font-semibold transition">
+            Notes &amp; Flags
+          </button>
+          <button type="button" data-feed="all" class="feed-pill px-2.5 py-1 rounded-[10px] text-[11px] font-semibold transition">
+            All Days
+          </button>
+        </div>
+      </div>
+
+      <div id="notesFeedContainer" class="space-y-2"></div>
+    </section>
+
+    <!-- ======================================================================
+         SUBTLE FOOTER
+         ====================================================================== -->
+    <footer class="pt-1 pb-6 px-1 flex items-center justify-between gap-2 text-[11px] no-print" style="color: var(--text-muted);">
+      <div>Stored locally on this device · Zero cloud dependency</div>
+      <div class="tabular">British dates (DD Mon YYYY)</div>
+    </footer>
+  </main>
+
+  <!-- ========================================================================
+       SLIDE-UP CHECK-IN & BACKLOG BOTTOM SHEET ("TAP ENTRY" & "PASTE BACKLOG")
+       ======================================================================== -->
+  <div id="checkInBackdrop" class="modal-backdrop fixed inset-0 z-50 flex items-end sm:items-center justify-center no-print"
+    style="background-color: rgba(0, 0, 0, 0.45); backdrop-filter: blur(4px);">
+    <div class="sheet-surface w-full max-w-lg max-h-[92vh] flex flex-col rounded-t-3xl sm:rounded-3xl hairline overflow-hidden"
+      style="background-color: var(--bg-card);" role="dialog" aria-modal="true" aria-labelledby="sheetHeading">
+
+      <!-- Sheet Header + Mode Switcher Tabs -->
+      <div class="px-5 pt-4 pb-3 hairline-b space-y-3 shrink-0">
+        <div class="flex items-center justify-between">
+          <div>
+            <h3 id="sheetHeading" class="text-[16px] font-semibold tracking-tight">Log Symptoms</h3>
+            <p class="text-[11px]" style="color: var(--text-muted);">Button taps update chart, timesheet &amp; brief live</p>
+          </div>
+          <button id="closeSheetBtn" type="button" aria-label="Close Check-In Sheet"
+            class="w-8 h-8 rounded-full flex items-center justify-center hairline"
+            style="background-color: var(--bg-subtle); color: var(--text-secondary);">
+            ✕
+          </button>
+        </div>
+
+        <!-- Two Tabs: "Tap Entry" & "Paste Backlog" -->
+        <div class="grid grid-cols-2 p-1 rounded-xl hairline" style="background-color: var(--bg-subtle);" role="tablist">
+          <button id="tabTapEntryBtn" type="button" role="tab" aria-selected="true"
+            class="sheet-tab-btn py-1.5 rounded-lg text-[12px] font-semibold transition">
+            Tap Entry
+          </button>
+          <button id="tabPasteBacklogBtn" type="button" role="tab" aria-selected="false"
+            class="sheet-tab-btn py-1.5 rounded-lg text-[12px] font-semibold transition">
+            Paste Backlog
+          </button>
+        </div>
+      </div>
+
+      <!-- ====================================================================
+           TAB 1: TAP ENTRY (ZERO-TYPING SEGMENTED PILLS + RAPID NEXT-DAY)
+           ==================================================================== -->
+      <div id="tapEntryPanel" class="flex flex-col flex-1 min-h-0">
+        <div class="p-5 overflow-y-auto space-y-5 flex-1">
+
+          <!-- 1. Date (British Format + Jump to 14 Days Ago) -->
+          <div class="space-y-1.5">
+            <div class="flex items-center justify-between gap-2">
+              <label class="text-[11px] font-semibold uppercase tracking-wider" style="color: var(--text-muted);">
+                1. Date
+              </label>
+              <button id="jump14DaysBtn" type="button"
+                class="px-2.5 py-1 rounded-full text-[11px] font-medium hairline transition active:scale-95"
+                style="background-color: var(--bg-subtle); color: var(--text-primary);">
+                Jump to 14 Days Ago (03 Nov)
+              </button>
+            </div>
+
+            <div class="flex items-center gap-2">
+              <button id="datePrevBtn" type="button" aria-label="Previous day"
+                class="w-11 h-11 rounded-xl hairline text-[15px] font-semibold flex items-center justify-center active:scale-95"
+                style="background-color: var(--bg-subtle);">←</button>
+
+              <div class="relative flex-1">
+                <div id="britishDateLabel"
+                  class="w-full h-11 px-3 rounded-xl hairline text-[14px] font-semibold tabular flex items-center justify-center cursor-pointer"
+                  style="background-color: var(--bg-subtle);">
+                  17 Nov 2026
+                </div>
+                <input id="nativeDatePicker" type="date" aria-label="Choose date"
+                  class="absolute inset-0 opacity-0 w-full h-full cursor-pointer" />
+              </div>
+
+              <button id="dateNextBtn" type="button" aria-label="Next day"
+                class="w-11 h-11 rounded-xl hairline text-[15px] font-semibold flex items-center justify-center active:scale-95"
+                style="background-color: var(--bg-subtle);">→</button>
+            </div>
+            <div id="editingStatusNote" class="hidden text-[11px] font-medium" style="color: var(--state-mania);">
+              ● Editing existing entry for this date
+            </div>
+          </div>
+
+          <!-- 2. Sleep Hours (0–14h in 0.5h increments + Quick-Tap Pill Buttons) -->
+          <div class="space-y-2">
+            <div class="flex items-center justify-between">
+              <label class="text-[11px] font-semibold uppercase tracking-wider" style="color: var(--text-muted);">
+                2. Sleep (Hours)
+              </label>
+              <span class="text-[11px] tabular" style="color: var(--text-muted);">0h – 14h (0.5h step)</span>
+            </div>
+
+            <!-- Quick-Tap Sleep Pills: 3.5h, 5h, 6.5h, 7.5h, 8.5h, 10h -->
+            <div id="sleepQuickPills" class="grid grid-cols-6 gap-1"></div>
+
+            <!-- Stepper -->
+            <div class="flex items-center justify-between px-3 py-2 rounded-xl hairline" style="background-color: var(--bg-subtle);">
+              <button id="sleepMinusBtn" type="button" aria-label="Decrease sleep by 0.5 hours"
+                class="w-10 h-10 rounded-xl hairline text-[18px] font-medium flex items-center justify-center active:scale-95"
+                style="background-color: var(--bg-card);">−</button>
+              <div class="text-center tabular">
+                <span id="sleepReadoutNum" class="text-[22px] font-semibold">7.5</span>
+                <span class="text-[13px] ml-0.5" style="color: var(--text-secondary);">hrs</span>
+              </div>
+              <button id="sleepPlusBtn" type="button" aria-label="Increase sleep by 0.5 hours"
+                class="w-10 h-10 rounded-xl hairline text-[18px] font-medium flex items-center justify-center active:scale-95"
+                style="background-color: var(--bg-card);">+</button>
+            </div>
+          </div>
+
+          <!-- 3. Mood (5 levels) -->
+          <div class="space-y-1.5">
+            <label class="text-[11px] font-semibold uppercase tracking-wider block" style="color: var(--text-muted);">
+              3. Mood
+            </label>
+            <div id="moodPillsContainer" class="grid grid-cols-5 gap-1 p-1 rounded-xl hairline" style="background-color: var(--bg-subtle);"></div>
+          </div>
+
+          <!-- 4. State (7 states) -->
+          <div class="space-y-1.5">
+            <label class="text-[11px] font-semibold uppercase tracking-wider block" style="color: var(--text-muted);">
+              4. State
+            </label>
+            <div id="statePillsContainer" class="grid grid-cols-2 sm:grid-cols-4 gap-1.5"></div>
+          </div>
+
+          <!-- 5. Psychotic Symptoms (4 options) -->
+          <div class="space-y-1.5">
+            <label class="text-[11px] font-semibold uppercase tracking-wider block" style="color: var(--text-muted);">
+              5. Psychotic Symptoms
+            </label>
+            <div id="psychoticPillsContainer" class="grid grid-cols-2 gap-1.5"></div>
+          </div>
+
+          <!-- 6. Episode Marker (4 options) -->
+          <div class="space-y-1.5">
+            <label class="text-[11px] font-semibold uppercase tracking-wider block" style="color: var(--text-muted);">
+              6. Episode Marker
+            </label>
+            <div id="phasePillsContainer" class="grid grid-cols-4 gap-1 p-1 rounded-xl hairline" style="background-color: var(--bg-subtle);"></div>
+          </div>
+
+          <!-- 7. Notes (Optional Freeform) -->
+          <div class="space-y-1.5">
+            <div class="flex items-center justify-between">
+              <label for="notesTextarea" class="text-[11px] font-semibold uppercase tracking-wider" style="color: var(--text-muted);">
+                7. Notes (Optional — adds * flag)
+              </label>
+              <button id="deleteDayBtn" type="button" class="hidden text-[11px] font-medium underline" style="color: var(--psychotic-crimson);">
+                Delete Day
+              </button>
+            </div>
+            <textarea id="notesTextarea" rows="3"
+              placeholder="Situational triggers, comorbid context, or medication side effects..."
+              class="w-full px-3.5 py-2.5 rounded-xl hairline text-[13px] leading-relaxed focus:outline-none"
+              style="background-color: var(--bg-subtle); color: var(--text-primary);"></textarea>
+          </div>
+        </div>
+
+        <!-- Sticky Footer with "Save" and "Save & Next Day →" -->
+        <div class="px-5 py-3.5 hairline-t safe-bottom flex items-center justify-between gap-2 shrink-0"
+          style="background-color: var(--bg-card);">
+          <button id="saveCloseBtn" type="button"
+            class="flex-1 py-3 rounded-xl text-[13px] font-semibold hairline transition active:scale-[0.98]"
+            style="background-color: var(--bg-subtle); color: var(--text-primary);">
+            Save
+          </button>
+          <button id="saveNextDayBtn" type="button"
+            class="flex-[1.35] py-3 rounded-xl text-[13px] font-semibold transition active:scale-[0.98]"
+            style="background-color: var(--text-primary); color: var(--bg-canvas);">
+            Save &amp; Next Day →
+          </button>
+        </div>
+      </div>
+
+      <!-- ====================================================================
+           TAB 2: PASTE BACKLOG (SMART SHORTHAND PARSER)
+           ==================================================================== -->
+      <div id="pasteBacklogPanel" class="hidden flex-col flex-1 min-h-0">
+        <div class="p-5 overflow-y-auto space-y-3.5 flex-1">
+          <div class="space-y-1">
+            <div class="flex items-center justify-between">
+              <label for="backlogTextarea" class="text-[11px] font-semibold uppercase tracking-wider" style="color: var(--text-muted);">
+                Paste Multi-Line Shorthand
+              </label>
+              <div class="flex items-center gap-2 text-[11px]">
+                <button id="fillExampleBtn" type="button" class="underline" style="color: var(--text-secondary);">Load Example</button>
+                <button id="clearBacklogTextBtn" type="button" class="underline" style="color: var(--text-muted);">Clear</button>
+              </div>
+            </div>
+            <p class="text-[12px] leading-snug" style="color: var(--text-secondary);">
+              One day per line: <code class="px-1 py-0.5 rounded text-[11px]" style="background: var(--bg-subtle);">DD Mon · Hours · Mood · State · Psychotic · Start/Peak/End · * Note</code>
+            </p>
+          </div>
+
+          <textarea id="backlogTextarea" rows="7"
+            placeholder="04 Nov · 7.5h · = · surviving&#10;08 Nov · 5h · + · mania · Start · * Sleep dropped sharply&#10;10 Nov · 3.5h · ++ · mania · /D · Peak · * Paranoid ideas"
+            class="w-full p-3.5 rounded-2xl hairline text-[12px] font-mono leading-relaxed focus:outline-none"
+            style="background-color: var(--bg-subtle); color: var(--text-primary);"></textarea>
+
+          <!-- Live Parse Preview Box -->
+          <div class="p-3 rounded-2xl hairline space-y-1.5" style="background-color: var(--bg-subtle);">
+            <div class="flex items-center justify-between">
+              <span class="text-[10px] font-semibold uppercase tracking-wider" style="color: var(--text-muted);">
+                Live Parser Preview
+              </span>
+              <span id="parseCountBadge" class="text-[11px] font-semibold tabular" style="color: var(--text-primary);">
+                0 lines ready
+              </span>
+            </div>
+            <div id="parsePreviewList" class="space-y-1 max-h-28 overflow-y-auto text-[11px] tabular" style="color: var(--text-secondary);"></div>
+          </div>
+        </div>
+
+        <div class="px-5 py-3.5 hairline-t safe-bottom shrink-0" style="background-color: var(--bg-card);">
+          <button id="parsePopulateBtn" type="button"
+            class="w-full py-3 rounded-xl text-[13px] font-semibold transition active:scale-[0.98]"
+            style="background-color: var(--text-primary); color: var(--bg-canvas);">
+            Parse &amp; Populate Chart
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       FULL-SCREEN PSYCHIATRIST "DOCTOR VIEW" MODAL (10-MINUTE CONSULTATION)
+       ======================================================================== -->
+  <div id="doctorViewModal" class="hidden fixed inset-0 z-50 overflow-y-auto"
+    style="background-color: var(--bg-canvas);">
+    <div class="max-w-3xl mx-auto px-4 py-4 safe-top safe-bottom space-y-4">
+      <!-- Top Bar -->
+      <div class="flex items-center justify-between gap-2 pb-3 hairline-b no-print">
+        <div>
+          <span class="text-[10px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-full"
+            style="background-color: var(--state-surviving-tint); color: var(--text-secondary);">
+            Psychiatry Consultation Summary
+          </span>
+          <h2 id="docViewTitle" class="text-[18px] font-semibold tracking-tight mt-1">Bipolar 1 Clinical Overview</h2>
+        </div>
+        <div class="flex items-center gap-2">
+          <button id="docPrintBtn" type="button"
+            class="px-3 py-2 rounded-xl text-[12px] font-medium hairline"
+            style="background-color: var(--bg-card); color: var(--text-primary);">
+            Print / PDF
+          </button>
+          <button id="closeDoctorViewBtn" type="button"
+            class="px-3.5 py-2 rounded-xl text-[12px] font-semibold"
+            style="background-color: var(--text-primary); color: var(--bg-canvas);">
+            Done
+          </button>
+        </div>
+      </div>
+
+      <!-- Mirror of Clinical Brief + Chart + Timesheet + Flagged Notes -->
+      <div id="doctorViewContent" class="space-y-4"></div>
+    </div>
+  </div>
+
+  <!-- Subtle Floating Toast Notification -->
+  <div id="toastPill"
+    class="fixed top-16 left-1/2 -translate-x-1/2 z-[60] pointer-events-none opacity-0 transition-opacity duration-200 px-4 py-2 rounded-full text-[12px] font-semibold shadow-lg hairline no-print"
+    style="background-color: var(--text-primary); color: var(--bg-canvas);">
+    Saved
+  </div>
+
+  <!-- ========================================================================
+       COMPLETE APPLICATION SCRIPT
+       ======================================================================== -->
+  <script>
+    (function () {
+      'use strict';
+
+      /* ----------------------------------------------------------------------
+         1. CONSTANTS & EXACT CLINICAL SCHEMA
+         ---------------------------------------------------------------------- */
+      const STORAGE_KEY = 'bipolar1_editorial_tracker_v2';
+      const THEME_KEY = 'bipolar1_editorial_theme_v2';
+      const DEFAULT_TODAY_ISO = '2026-11-17'; // Tuesday, 17 Nov 2026
+
+      const MONTHS_SHORT = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+      const MONTHS_FULL = [
+        'January', 'February', 'March', 'April', 'May', 'June',
+        'July', 'August', 'September', 'October', 'November', 'December'
+      ];
+      const WEEKDAYS_SHORT = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+      const MON_TO_SUN_LABELS = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
+
+      const QUICK_SLEEP_PRESETS = [3.5, 5, 6.5, 7.5, 8.5, 10];
+
+      const MOOD_LEVELS = [
+        { id: 'very low',  label: 'Very Low',  glyph: '--', level: 1 },
+        { id: 'low',       label: 'Low',       glyph: '-',  level: 2 },
+        { id: 'neutral',   label: 'Neutral',   glyph: '=',  level: 3 },
+        { id: 'high',      label: 'High',      glyph: '+',  level: 4 },
+        { id: 'very high', label: 'Very High', glyph: '++', level: 5 }
+      ];
+
+      const CLINICAL_STATES = [
+        { id: 'surviving',      label: 'Surviving',      shortCode: '',   colorVar: '--state-surviving',      tintVar: '--state-surviving-tint',      borderVar: '--state-surviving-border' },
+        { id: 'depressed',      label: 'Depressed',      shortCode: '',   colorVar: '--state-depressed',      tintVar: '--state-depressed-tint',      borderVar: '--state-depressed-border' },
+        { id: 'very depressed', label: 'Very Depressed', shortCode: '',   colorVar: '--state-very-depressed', tintVar: '--state-very-depressed-tint', borderVar: '--state-very-depressed-border' },
+        { id: 'mixed (d)',      label: 'Mixed (d)',      shortCode: 'md', colorVar: '--state-mixed',          tintVar: '--state-mixed-tint',          borderVar: '--state-mixed-border' },
+        { id: 'mixed (h)',      label: 'Mixed (h)',      shortCode: 'mh', colorVar: '--state-mixed',          tintVar: '--state-mixed-tint',          borderVar: '--state-mixed-border' },
+        { id: 'mixed (m)',      label: 'Mixed (m)',      shortCode: 'mm', colorVar: '--state-mixed',          tintVar: '--state-mixed-tint',          borderVar: '--state-mixed-border' },
+        { id: 'mania',          label: 'Mania',          shortCode: '',   colorVar: '--state-mania',          tintVar: '--state-mania-tint',          borderVar: '--state-mania-border' }
+      ];
+
+      const PSYCHOTIC_OPTIONS = [
+        { id: 'none',              label: 'None',              shortCode: '' },
+        { id: 'delusions',         label: 'Delusions',         shortCode: '/D' },
+        { id: 'depersonalisation', label: 'Depersonalisation', shortCode: '/DP' },
+        { id: 'hallucinations',    label: 'Hallucinations',    shortCode: '/H' }
+      ];
+
+      const PHASE_OPTIONS = [
+        { id: 'none',  label: 'None',  code: '' },
+        { id: 'start', label: 'Start', code: 'S' },
+        { id: 'peak',  label: 'Peak',  code: 'P' },
+        { id: 'end',   label: 'End',   code: 'E' }
+      ];
+
+      function getMoodMeta(id) {
+        return MOOD_LEVELS.find(m => m.id === id) || MOOD_LEVELS[2];
+      }
+
+      function getStateMeta(id) {
+        return CLINICAL_STATES.find(s => s.id === id) || CLINICAL_STATES[0];
+      }
+
+      function getPsychMeta(id) {
+        return PSYCHOTIC_OPTIONS.find(p => p.id === id) || PSYCHOTIC_OPTIONS[0];
+      }
+
+      function getPhaseMeta(id) {
+        return PHASE_OPTIONS.find(ph => ph.id === id) || PHASE_OPTIONS[0];
+      }
+
+      function cssVar(varName) {
+        return getComputedStyle(document.documentElement).getPropertyValue(varName).trim();
+      }
+
+      function escapeHtml(str) {
+        return String(str || '')
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#39;');
+      }
+
+      /* ----------------------------------------------------------------------
+         2. BRITISH DATE & CALENDAR UTILITIES
+         ---------------------------------------------------------------------- */
+      function parseISO(iso) {
+        const [y, m, d] = iso.split('-').map(Number);
+        return new Date(y, m - 1, d, 12, 0, 0, 0);
+      }
+
+      function toISO(dt) {
+        const y = dt.getFullYear();
+        const m = String(dt.getMonth() + 1).padStart(2, '0');
+        const d = String(dt.getDate()).padStart(2, '0');
+        return `${y}-${m}-${d}`;
+      }
+
+      function addDays(iso, deltaDays) {
+        const dt = parseISO(iso);
+        dt.setDate(dt.getDate() + deltaDays);
+        return toISO(dt);
+      }
+
+      // British Full Date: "17 Nov 2026"
+      function formatBritishFull(iso) {
+        if (!iso) return '';
+        const [y, m, d] = iso.split('-').map(Number);
+        return `${String(d).padStart(2, '0')} ${MONTHS_SHORT[m - 1]} ${y}`;
+      }
+
+      // British Short Date: "17 Nov"
+      function formatBritishShort(iso) {
+        if (!iso) return '';
+        const [, m, d] = iso.split('-').map(Number);
+        return `${String(d).padStart(2, '0')} ${MONTHS_SHORT[m - 1]}`;
+      }
+
+      // British Date with Weekday: "Tue, 17 Nov 2026"
+      function formatBritishWeekday(iso) {
+        if (!iso) return '';
+        const dt = parseISO(iso);
+        return `${WEEKDAYS_SHORT[dt.getDay()]}, ${formatBritishFull(iso)}`;
+      }
+
+      // Full Month Heading: "November 2026"
+      function formatMonthYear(yearMonth) {
+        const [y, m] = yearMonth.split('-').map(Number);
+        return `${MONTHS_FULL[m - 1]} ${y}`;
+      }
+
+      // Find Monday of the week containing `iso`
+      function getMondayISO(iso) {
+        const dt = parseISO(iso);
+        const day = dt.getDay(); // 0=Sun, 1=Mon..6=Sat
+        const diffToMon = day === 0 ? -6 : 1 - day;
+        dt.setDate(dt.getDate() + diffToMon);
+        return toISO(dt);
+      }
+
+      function addMonthsYM(yearMonth, delta) {
+        const [y, m] = yearMonth.split('-').map(Number);
+        const dt = new Date(y, m - 1 + delta, 1);
+        return `${dt.getFullYear()}-${String(dt.getMonth() + 1).padStart(2, '0')}`;
+      }
+
+      function getDaysInMonth(yearMonth) {
+        const [y, m] = yearMonth.split('-').map(Number);
+        const total = new Date(y, m, 0).getDate();
+        const list = [];
+        for (let d = 1; d <= total; d++) {
+          list.push(`${yearMonth}-${String(d).padStart(2, '0')}`);
+        }
+        return list;
+      }
+
+      function formatSleepNum(val) {
+        return Number(val).toFixed(1).replace(/\.0$/, '');
+      }
+
+      /* ----------------------------------------------------------------------
+         3. APPLICATION STATE & SAMPLE DATA
+         ---------------------------------------------------------------------- */
+      let appState = {
+        entries: [],
+        isSample: false,
+        viewMode: 'weekly',                             // 'weekly' | 'monthly'
+        weekMondayIso: getMondayISO(DEFAULT_TODAY_ISO), // '2026-11-16'
+        monthIso: DEFAULT_TODAY_ISO.slice(0, 7),        // '2026-11'
+        feedFilter: 'flagged',                          // 'flagged' | 'all'
+        selectedDate: DEFAULT_TODAY_ISO,
+        chartGeometry: null
+      };
+
+      let sheetDraft = {
+        activeTab: 'tap',
+        date: DEFAULT_TODAY_ISO,
+        sleep: 7.5,
+        mood: 'neutral',
+        state: 'surviving',
+        psychotic: 'none',
+        phase: 'none',
+        notes: ''
+      };
+
+      function createRealisticSampleEntries() {
+        // 18 days ending 17 Nov 2026 (31 Oct 2026 – 17 Nov 2026) so Weekly & Monthly views both shine
+        const rows = [
+          { offset: -17, sleep: 7.5, mood: 'neutral',   state: 'surviving',      psychotic: 'none',              phase: 'none',  notes: '' },
+          { offset: -16, sleep: 8.0, mood: 'neutral',   state: 'surviving',      psychotic: 'none',              phase: 'none',  notes: '' },
+          { offset: -15, sleep: 7.0, mood: 'neutral',   state: 'surviving',      psychotic: 'none',              phase: 'none',  notes: '' },
+          { offset: -14, sleep: 7.5, mood: 'neutral',   state: 'surviving',      psychotic: 'none',              phase: 'none',  notes: '' },
+          { offset: -13, sleep: 7.5, mood: 'neutral',   state: 'surviving',      psychotic: 'none',              phase: 'none',  notes: '' },
+          { offset: -12, sleep: 7.0, mood: 'neutral',   state: 'surviving',      psychotic: 'none',              phase: 'none',  notes: '' },
+          { offset: -11, sleep: 6.5, mood: 'low',       state: 'surviving',      psychotic: 'none',              phase: 'none',  notes: 'Sharp emotional dip after interpersonal stress; settled by morning (situational reactivity).' },
+          { offset: -10, sleep: 7.5, mood: 'neutral',   state: 'surviving',      psychotic: 'none',              phase: 'none',  notes: '' },
+          { offset: -9,  sleep: 5.0, mood: 'high',      state: 'mania',          psychotic: 'none',              phase: 'start', notes: 'Sleep dropped sharply without fatigue; wired energy and racing thoughts overnight.' },
+          { offset: -8,  sleep: 4.0, mood: 'very high', state: 'mania',          psychotic: 'none',              phase: 'none',  notes: 'Pressured speech, started three projects at 3am.' },
+          { offset: -7,  sleep: 3.5, mood: 'very high', state: 'mania',          psychotic: 'delusions',         phase: 'peak',  notes: 'Peak elevation; strong paranoid ideas about coworkers monitoring messages.' },
+          { offset: -6,  sleep: 4.5, mood: 'high',      state: 'mixed (m)',      psychotic: 'delusions',         phase: 'none',  notes: 'Agitated, irritable restlessness alongside racing thoughts.' },
+          { offset: -5,  sleep: 5.5, mood: 'low',       state: 'mixed (d)',      psychotic: 'depersonalisation', phase: 'none',  notes: 'Heavy exhaustion with wired inner tension and brief depersonalisation.' },
+          { offset: -4,  sleep: 6.5, mood: 'neutral',   state: 'surviving',      psychotic: 'none',              phase: 'end',   notes: 'Sleep consolidating after evening dose adjustment; delusions resolved.' },
+          { offset: -3,  sleep: 8.5, mood: 'low',       state: 'depressed',      psychotic: 'none',              phase: 'none',  notes: 'Post-episode crash; low drive and morning grogginess.' },
+          { offset: -2,  sleep: 9.5, mood: 'very low',  state: 'very depressed', psychotic: 'none',              phase: 'none',  notes: 'Heavy fatigue and social withdrawal; stayed in bed most of morning.' },
+          { offset: -1,  sleep: 7.5, mood: 'neutral',   state: 'surviving',      psychotic: 'none',              phase: 'none',  notes: '' },
+          { offset: 0,   sleep: 7.5, mood: 'neutral',   state: 'surviving',      psychotic: 'none',              phase: 'none',  notes: 'Baseline steady; ready to review episode arc at clinic.' }
+        ];
+
+        return rows.map(r => ({
+          date: addDays(DEFAULT_TODAY_ISO, r.offset),
+          sleep: r.sleep,
+          mood: r.mood,
+          state: r.state,
+          psychotic: r.psychotic,
+          phase: r.phase,
+          notes: r.notes
+        }));
+      }
+
+      /* ----------------------------------------------------------------------
+         4. NORMALIZATION, STORAGE & THEME PERSISTENCE
+         ---------------------------------------------------------------------- */
+      function normalizeEntry(raw) {
+        const date = /^\d{4}-\d{2}-\d{2}$/.test(String(raw.date || ''))
+          ? String(raw.date)
+          : DEFAULT_TODAY_ISO;
+
+        let sleepNum = Number(raw.sleep);
+        if (Number.isNaN(sleepNum)) sleepNum = 7.5;
+        sleepNum = Math.max(0, Math.min(14, Math.round(sleepNum * 2) / 2));
+
+        const moodRaw = String(raw.mood || 'neutral').toLowerCase().trim();
+        const validMood = MOOD_LEVELS.some(m => m.id === moodRaw) ? moodRaw : 'neutral';
+
+        const stateRaw = String(raw.state || 'surviving').toLowerCase().trim();
+        const validState = CLINICAL_STATES.some(s => s.id === stateRaw) ? stateRaw : 'surviving';
+
+        let psychRaw = String(raw.psychotic || 'none').toLowerCase().trim();
+        if (psychRaw === 'depersonalization') psychRaw = 'depersonalisation';
+        const validPsych = PSYCHOTIC_OPTIONS.some(p => p.id === psychRaw) ? psychRaw : 'none';
+
+        const phaseRaw = String(raw.phase || 'none').toLowerCase().trim();
+        const validPhase = PHASE_OPTIONS.some(ph => ph.id === phaseRaw) ? phaseRaw : 'none';
+
+        const notes = typeof raw.notes === 'string' ? raw.notes.trim() : '';
+
+        return {
+          date,
+          sleep: sleepNum,
+          mood: validMood,
+          state: validState,
+          psychotic: validPsych,
+          phase: validPhase,
+          notes
+        };
+      }
+
+      function persistToStorage() {
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify({
+            isSample: appState.isSample,
+            entries: appState.entries
+          }));
+        } catch (err) {
+          // Ignore storage quota errors gracefully
+        }
+      }
+
+      function loadFromStorage() {
+        try {
+          const raw = localStorage.getItem(STORAGE_KEY);
+          if (!raw) {
+            appState.entries = createRealisticSampleEntries();
+            appState.isSample = true;
+            persistToStorage();
+            return;
+          }
+          const parsed = JSON.parse(raw);
+          const list = Array.isArray(parsed) ? parsed : parsed.entries;
+          if (Array.isArray(list)) {
+            appState.entries = list.map(normalizeEntry).sort((a, b) => a.date.localeCompare(b.date));
+            appState.isSample = Boolean(parsed && parsed.isSample);
+          } else {
+            appState.entries = createRealisticSampleEntries();
+            appState.isSample = true;
+          }
+        } catch (err) {
+          appState.entries = createRealisticSampleEntries();
+          appState.isSample = true;
+        }
+      }
+
+      function upsertEntry(entryObj) {
+        const clean = normalizeEntry(entryObj);
+        const idx = appState.entries.findIndex(e => e.date === clean.date);
+        if (idx >= 0) {
+          appState.entries[idx] = clean;
+        } else {
+          appState.entries.push(clean);
+          appState.entries.sort((a, b) => a.date.localeCompare(b.date));
+        }
+        appState.isSample = false;
+        appState.selectedDate = clean.date;
+        appState.weekMondayIso = getMondayISO(clean.date);
+        appState.monthIso = clean.date.slice(0, 7);
+        persistToStorage();
+      }
+
+      function deleteEntry(dateIso) {
+        appState.entries = appState.entries.filter(e => e.date !== dateIso);
+        appState.isSample = false;
+        persistToStorage();
+      }
+
+      function initTheme() {
+        const saved = localStorage.getItem(THEME_KEY);
+        const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const isDark = saved ? saved === 'dark' : prefersDark;
+        document.documentElement.classList.toggle('dark', isDark);
+        document.getElementById('themeGlyph').textContent = isDark ? '☀︎' : '☾';
+      }
+
+      function setTheme(isDark) {
+        document.documentElement.classList.toggle('dark', isDark);
+        document.getElementById('themeGlyph').textContent = isDark ? '☀︎' : '☾';
+        localStorage.setItem(THEME_KEY, isDark ? 'dark' : 'light');
+        renderAllViews();
+      }
+
+      /* ----------------------------------------------------------------------
+         5. HELPERS & PERIOD FILTERING (WEEKLY VS. MONTHLY)
+         ---------------------------------------------------------------------- */
+      function getPeriodWindow() {
+        if (appState.viewMode === 'weekly') {
+          const startIso = appState.weekMondayIso;
+          const endIso = addDays(startIso, 6);
+          const allDates = [];
+          for (let i = 0; i < 7; i++) {
+            allDates.push(addDays(startIso, i));
+          }
+          const isCurrent = DEFAULT_TODAY_ISO >= startIso && DEFAULT_TODAY_ISO <= endIso;
+          return {
+            mode: 'weekly',
+            startIso,
+            endIso,
+            allDates,
+            label: `${formatBritishShort(startIso)} – ${formatBritishFull(endIso)}`,
+            isCurrent
+          };
+        } else {
+          const ym = appState.monthIso;
+          const allDates = getDaysInMonth(ym);
+          const startIso = allDates[0];
+          const endIso = allDates[allDates.length - 1];
+          const isCurrent = DEFAULT_TODAY_ISO.slice(0, 7) === ym;
+          return {
+            mode: 'monthly',
+            startIso,
+            endIso,
+            allDates,
+            label: formatMonthYear(ym),
+            isCurrent
+          };
+        }
+      }
+
+      function getPeriodEntries() {
+        const win = getPeriodWindow();
+        return appState.entries.filter(e => e.date >= win.startIso && e.date <= win.endIso);
+      }
+
+      function showToast(message) {
+        const pill = document.getElementById('toastPill');
+        pill.textContent = message;
+        pill.style.opacity = '1';
+        clearTimeout(pill._hideTimer);
+        pill._hideTimer = setTimeout(() => {
+          pill.style.opacity = '0';
+        }, 2200);
+      }
+
+      function pulseBriefCard() {
+        const card = document.getElementById('clinicalBriefCard');
+        card.classList.remove('pulse-update');
+        void card.offsetWidth;
+        card.classList.add('pulse-update');
+      }
+
+      /* ----------------------------------------------------------------------
+         6. CARD 1: AUTO-GENERATED CLINICAL BRIEF & COPY HANDLER
+         ---------------------------------------------------------------------- */
+      function computeBriefData(entries) {
+        const count = entries.length;
+        if (count === 0) {
+          return {
+            count: 0,
+            sleepAvgText: 'No entries logged',
+            sleepFlagsText: 'Tap "+ Log Day" or "Log Baseline Today" to begin.',
+            stateSegments: [],
+            stateSummaryText: 'No clinical states recorded in this period.',
+            arcs: [],
+            psychoticList: []
+          };
+        }
+
+        // Sleep metrics
+        const totalSleep = entries.reduce((sum, e) => sum + e.sleep, 0);
+        const avgSleep = (totalSleep / count).toFixed(1);
+        const lowSleepDays = entries.filter(e => e.sleep <= 5);
+        const highSleepDays = entries.filter(e => e.sleep >= 9.5);
+
+        const shiftParts = [];
+        if (lowSleepDays.length > 0) {
+          const datesStr = lowSleepDays.map(e => `${formatBritishShort(e.date)} (${formatSleepNum(e.sleep)}h)`).join(', ');
+          shiftParts.push(`≤5h: ${datesStr}`);
+        }
+        if (highSleepDays.length > 0) {
+          const datesStr = highSleepDays.map(e => `${formatBritishShort(e.date)} (${formatSleepNum(e.sleep)}h)`).join(', ');
+          shiftParts.push(`≥9.5h: ${datesStr}`);
+        }
+        const sleepFlagsText = shiftParts.length > 0
+          ? shiftParts.join(' · ')
+          : 'No extreme sleep shifts (all 5.5h–9h)';
+
+        // State composition
+        const countsByState = {};
+        CLINICAL_STATES.forEach(s => { countsByState[s.id] = 0; });
+        entries.forEach(e => {
+          countsByState[e.state] = (countsByState[e.state] || 0) + 1;
+        });
+
+        const stateSegments = CLINICAL_STATES
+          .filter(s => countsByState[s.id] > 0)
+          .map(s => ({
+            id: s.id,
+            label: s.label,
+            count: countsByState[s.id],
+            pct: (countsByState[s.id] / count) * 100,
+            colorVar: s.colorVar
+          }));
+
+        const stateSummaryText = stateSegments
+          .map(seg => `${seg.count}d ${seg.label}`)
+          .join(' · ');
+
+        // Episode Arcs (Start -> Peak -> End)
+        const arcs = [];
+        let currentArc = null;
+
+        entries.forEach(e => {
+          if (e.phase === 'start') {
+            if (currentArc) arcs.push(currentArc);
+            currentArc = {
+              start: e.date,
+              peak: null,
+              end: null,
+              states: new Set()
+            };
+            if (e.state !== 'surviving') currentArc.states.add(e.state);
+          } else if (e.phase === 'peak') {
+            if (!currentArc) {
+              currentArc = { start: null, peak: e.date, end: null, states: new Set() };
+            } else {
+              currentArc.peak = e.date;
+            }
+            if (e.state !== 'surviving') currentArc.states.add(e.state);
+          } else if (e.phase === 'end') {
+            if (!currentArc) {
+              currentArc = { start: null, peak: null, end: e.date, states: new Set() };
+            } else {
+              currentArc.end = e.date;
+            }
+            if (e.state !== 'surviving') currentArc.states.add(e.state);
+            arcs.push(currentArc);
+            currentArc = null;
+          } else if (currentArc && e.state !== 'surviving') {
+            currentArc.states.add(e.state);
+          }
+        });
+        if (currentArc) arcs.push(currentArc);
+
+        arcs.forEach(a => {
+          if (a.states.size === 0) a.states.add('symptomatic');
+        });
+
+        // Psychotic symptoms grouped by type
+        const psychMap = new Map();
+        entries.forEach(e => {
+          if (e.psychotic && e.psychotic !== 'none') {
+            const meta = getPsychMeta(e.psychotic);
+            if (!psychMap.has(meta.label)) psychMap.set(meta.label, []);
+            psychMap.get(meta.label).push(formatBritishShort(e.date));
+          }
+        });
+
+        const psychoticList = Array.from(psychMap.entries()).map(([symptom, dates]) => ({
+          symptom,
+          datesText: dates.join(', ')
+        }));
+
+        return {
+          count,
+          sleepAvgText: `${avgSleep}h avg`,
+          sleepFlagsText,
+          stateSegments,
+          stateSummaryText,
+          arcs,
+          psychoticList
+        };
+      }
+
+      function renderClinicalBrief() {
+        const win = getPeriodWindow();
+        const visible = getPeriodEntries();
+        const data = computeBriefData(visible);
+
+        document.getElementById('briefRangePill').textContent = `${data.count}/${win.allDates.length}d`;
+        document.getElementById('briefDateRangeText').textContent = win.label;
+        document.getElementById('briefSleepAvg').textContent = data.sleepAvgText;
+        document.getElementById('briefSleepFlags').textContent = data.sleepFlagsText;
+        document.getElementById('headerSpanBadge').textContent = formatBritishFull(DEFAULT_TODAY_ISO);
+
+        // State bar & summary
+        const barEl = document.getElementById('briefStateBar');
+        barEl.innerHTML = data.stateSegments.map(seg => `
+          <div style="width: ${seg.pct.toFixed(2)}%; background-color: var(${seg.colorVar});"
+            title="${seg.label}: ${seg.count}d"></div>
+        `).join('');
+        document.getElementById('briefStateText').textContent = data.stateSummaryText;
+
+        // Episode Arcs
+        const arcsEl = document.getElementById('briefEpisodeArcs');
+        if (data.arcs.length === 0) {
+          arcsEl.innerHTML = `<span style="color: var(--text-muted);">No Start / Peak / End markers logged in this window.</span>`;
+        } else {
+          arcsEl.innerHTML = data.arcs.map((a, idx) => {
+            const startStr = a.start ? `Start ${formatBritishShort(a.start)}` : 'Start (prior)';
+            const peakStr = a.peak ? ` → Peak ${formatBritishShort(a.peak)}` : '';
+            const endStr = a.end ? ` → End ${formatBritishShort(a.end)}` : ' → Ongoing';
+            const statesStr = Array.from(a.states).join(' → ');
+            return `
+              <div>
+                <span class="font-semibold">Episode ${idx + 1}:</span>
+                ${startStr}${peakStr}${endStr} ·
+                <span class="capitalize font-semibold">${escapeHtml(statesStr)}</span>
+              </div>
+            `;
+          }).join('');
+        }
+
+        // Psychotic symptoms
+        const psychWrap = document.getElementById('briefPsychoticWrap');
+        const psychDatesEl = document.getElementById('briefPsychoticDates');
+        if (data.psychoticList.length === 0) {
+          psychWrap.classList.add('hidden');
+          psychDatesEl.textContent = '';
+        } else {
+          psychWrap.classList.remove('hidden');
+          psychDatesEl.textContent = data.psychoticList
+            .map(p => `${p.symptom}: ${p.datesText}`)
+            .join(' · ');
+        }
+      }
+
+      function buildPlainTextBrief() {
+        const win = getPeriodWindow();
+        const visible = getPeriodEntries();
+        const data = computeBriefData(visible);
+        if (visible.length === 0) return `Bipolar 1 Clinical Brief (${win.label}): No entries logged.`;
+
+        const lines = [
+          `BIPOLAR 1 CLINICAL BRIEF (${win.label} · ${data.count} days logged)`,
+          `• Sleep: ${data.sleepAvgText} (${data.sleepFlagsText})`,
+          `• States: ${data.stateSummaryText}`
+        ];
+
+        if (data.arcs.length > 0) {
+          data.arcs.forEach((a, idx) => {
+            const startStr = a.start ? `Start ${formatBritishShort(a.start)}` : 'Start (prior)';
+            const peakStr = a.peak ? ` -> Peak ${formatBritishShort(a.peak)}` : '';
+            const endStr = a.end ? ` -> End ${formatBritishShort(a.end)}` : ' -> Ongoing';
+            lines.push(`• Episode ${idx + 1}: ${startStr}${peakStr}${endStr} (${Array.from(a.states).join(' -> ')})`);
+          });
+        }
+
+        if (data.psychoticList.length > 0) {
+          lines.push(`• Psychotic Symptoms: ${data.psychoticList.map(p => `${p.symptom} (${p.datesText})`).join(' · ')}`);
+        }
+
+        const flaggedNotes = visible.filter(e => e.notes && e.notes.trim().length > 0);
+        if (flaggedNotes.length > 0) {
+          lines.push('• Key Notes:');
+          flaggedNotes.forEach(e => {
+            lines.push(`  - ${formatBritishShort(e.date)} [${e.state}, ${formatSleepNum(e.sleep)}h]: ${e.notes.trim()}`);
+          });
+        }
+
+        return lines.join('\n');
+      }
+
+      function copyBriefToClipboard() {
+        const text = buildPlainTextBrief();
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        ta.setAttribute('readonly', '');
+        ta.style.position = 'fixed';
+        ta.style.left = '-9999px';
+        document.body.appendChild(ta);
+        ta.select();
+        ta.setSelectionRange(0, ta.value.length);
+        try {
+          document.execCommand('copy');
+          showToast('Clinical brief copied to clipboard');
+        } catch (err) {
+          showToast('Unable to copy brief');
+        }
+        document.body.removeChild(ta);
+      }
+
+      /* ----------------------------------------------------------------------
+         7. CARD 2: INTERACTIVE DUAL-TRACK SVG LIFE CHART (WEEKLY & MONTHLY)
+         ---------------------------------------------------------------------- */
+      function renderSvgLifeChart(targetSvgEl, targetWrapperEl, interactive) {
+        const win = getPeriodWindow();
+        const entryMap = new Map(appState.entries.map(e => [e.date, e]));
+        const slots = win.allDates.map(iso => ({
+          iso,
+          entry: entryMap.get(iso) || null
+        }));
+
+        const width = Math.max(280, Math.floor((targetWrapperEl || document.getElementById('svgChartWrapper')).getBoundingClientRect().width) || 340);
+        const height = 222;
+        targetSvgEl.setAttribute('viewBox', `0 0 ${width} ${height}`);
+
+        // Ensure selectedDate stays inside the viewed period if possible
+        if (!appState.selectedDate || !win.allDates.includes(appState.selectedDate)) {
+          const loggedInPeriod = slots.filter(s => s.entry);
+          appState.selectedDate = loggedInPeriod.length > 0
+            ? loggedInPeriod[loggedInPeriod.length - 1].iso
+            : (win.isCurrent ? DEFAULT_TODAY_ISO : win.startIso);
+        }
+
+        const padLeft = 32;
+        const padRight = 26;
+        const padTop = 34;
+        const padBottom = 26;
+        const plotW = width - padLeft - padRight;
+        const plotH = height - padTop - padBottom;
+        const n = slots.length;
+        const stepX = plotW / n;
+        const isWeekly = win.mode === 'weekly';
+
+        if (interactive) {
+          appState.chartGeometry = { padLeft, plotW, stepX, slots };
+        }
+
+        const parts = [];
+
+        // Y-Axis Gridlines: Left = Sleep (0h–12h), Right = Mood (-- to ++)
+        const ticks = [
+          { frac: 0,    sleep: '12h', mood: '++' },
+          { frac: 0.25, sleep: '9h',  mood: '+' },
+          { frac: 0.5,  sleep: '6h',  mood: '=' },
+          { frac: 0.75, sleep: '3h',  mood: '-' },
+          { frac: 1,    sleep: '0h',  mood: '--' }
+        ];
+
+        ticks.forEach(t => {
+          const y = padTop + t.frac * plotH;
+          parts.push(`
+            <line x1="${padLeft}" y1="${y}" x2="${padLeft + plotW}" y2="${y}"
+              stroke="var(--grid-line)" stroke-width="1" />
+            <text x="${padLeft - 6}" y="${y + 3.5}" text-anchor="end" fill="var(--text-muted)" font-size="10" class="tabular">${t.sleep}</text>
+            <text x="${padLeft + plotW + 6}" y="${y + 3.5}" text-anchor="start" fill="var(--text-muted)" font-size="10" class="tabular">${t.mood}</text>
+          `);
+        });
+
+        // Monthly Mode: Subtle 5h Low-Sleep Reference Line
+        if (!isWeekly) {
+          const y5h = padTop + (1 - 5 / 12) * plotH;
+          parts.push(`
+            <line x1="${padLeft}" y1="${y5h.toFixed(1)}" x2="${padLeft + plotW}" y2="${y5h.toFixed(1)}"
+              stroke="var(--state-mania)" stroke-width="1" stroke-dasharray="3 3" opacity="0.45" />
+            <text x="${padLeft + 3}" y="${(y5h - 3).toFixed(1)}" fill="var(--state-mania)" font-size="9" font-weight="600" opacity="0.8" class="tabular">5h</text>
+          `);
+        }
+
+        const coords = slots.map((slot, idx) => {
+          const cx = padLeft + (idx + 0.5) * stepX;
+          if (!slot.entry) {
+            return { iso: slot.iso, entry: null, idx, cx };
+          }
+          const sleepClamped = Math.min(12, Math.max(0, slot.entry.sleep));
+          const barH = (sleepClamped / 12) * plotH;
+          const barY = padTop + plotH - barH;
+          const moodLvl = getMoodMeta(slot.entry.mood).level;
+          const moodY = padTop + ((5 - moodLvl) / 4) * plotH;
+          return { iso: slot.iso, entry: slot.entry, idx, cx, barY, barH, moodY };
+        });
+
+        // 1. Vertical Sleep Bars (Wide rounded bars in Weekly; slim bars in Monthly)
+        const barW = isWeekly
+          ? Math.max(18, Math.min(30, stepX * 0.56))
+          : Math.max(3.5, Math.min(10, stepX * 0.64));
+
+        coords.forEach(c => {
+          const isSel = c.iso === appState.selectedDate;
+          if (!c.entry) {
+            if (isWeekly) {
+              parts.push(`
+                <rect x="${c.cx - barW / 2}" y="${padTop + plotH - 8}" width="${barW}" height="8"
+                  rx="3" fill="none" stroke="var(--border-hairline)" stroke-dasharray="2 2" />
+              `);
+            }
+            return;
+          }
+
+          const fill = isSel ? 'var(--sleep-bar-active)' : 'var(--sleep-bar)';
+          parts.push(`
+            <rect x="${c.cx - barW / 2}" y="${c.barY}" width="${barW}" height="${Math.max(3, c.barH)}"
+              rx="${isWeekly ? 5 : Math.min(3, barW / 2)}" fill="${fill}" />
+          `);
+
+          // Weekly Mode: Exact sleep hour label above or inside each bar
+          if (isWeekly) {
+            const labelInside = c.barH >= 22;
+            const textY = labelInside ? c.barY + 13 : c.barY - 5;
+            parts.push(`
+              <text x="${c.cx}" y="${textY.toFixed(1)}" text-anchor="middle"
+                fill="${labelInside ? 'var(--text-primary)' : 'var(--text-secondary)'}"
+                font-size="9.5" font-weight="600" class="tabular">${formatSleepNum(c.entry.sleep)}h</text>
+            `);
+          }
+        });
+
+        // 2. Selected Day Scrubbing Crosshair Line
+        const selCoord = coords.find(c => c.iso === appState.selectedDate);
+        if (selCoord) {
+          parts.push(`
+            <line x1="${selCoord.cx}" y1="${padTop - 6}" x2="${selCoord.cx}" y2="${padTop + plotH}"
+              stroke="var(--cursor-line)" stroke-width="1.2" stroke-dasharray="2.5 2.5" />
+          `);
+        }
+
+        // 3. State-Coloured Connected Mood Trajectory Segments (Breaks cleanly across unlogged gaps)
+        for (let i = 0; i < coords.length - 1; i++) {
+          const a = coords[i];
+          const b = coords[i + 1];
+          if (!a.entry || !b.entry) continue;
+          const segColor = cssVar(getStateMeta(b.entry.state).colorVar);
+          parts.push(`
+            <line x1="${a.cx.toFixed(1)}" y1="${a.moodY.toFixed(1)}" x2="${b.cx.toFixed(1)}" y2="${b.moodY.toFixed(1)}"
+              stroke="${segColor}" stroke-width="${isWeekly ? 2.2 : 1.75}" stroke-linecap="round" opacity="0.82" />
+          `);
+        }
+
+        // 4. State-Coloured Mood Nodes + Top Row Badges (S/P/E, /D /DP /H, *)
+        const nodeR = isWeekly ? 5.2 : 3.2;
+        coords.forEach(c => {
+          if (!c.entry) return;
+          const stMeta = getStateMeta(c.entry.state);
+          const color = cssVar(stMeta.colorVar);
+          const isSel = c.iso === appState.selectedDate;
+          const r = isSel ? nodeR + 1.8 : nodeR;
+
+          if (isSel) {
+            parts.push(`<circle cx="${c.cx}" cy="${c.moodY}" r="${r + 4.5}" fill="${color}" opacity="0.22" />`);
+          }
+          parts.push(`
+            <circle cx="${c.cx}" cy="${c.moodY}" r="${r}" fill="${color}"
+              stroke="var(--bg-card)" stroke-width="1.5" />
+          `);
+
+          const phaseCode = getPhaseMeta(c.entry.phase).code;
+          const psychCode = getPsychMeta(c.entry.psychotic).shortCode;
+          const hasNote = c.entry.notes && c.entry.notes.trim().length > 0;
+
+          if (phaseCode) {
+            parts.push(`
+              <text x="${c.cx}" y="11" text-anchor="middle" fill="${color}" font-size="10" font-weight="700" class="tabular">${phaseCode}</text>
+            `);
+          }
+          if (psychCode) {
+            parts.push(`
+              <text x="${c.cx}" y="${phaseCode ? 21 : 12}" text-anchor="middle" fill="var(--psychotic-crimson)" font-size="9" font-weight="700" class="tabular">${psychCode}</text>
+            `);
+          }
+          if (hasNote) {
+            const noteY = phaseCode && psychCode ? 30 : (phaseCode || psychCode) ? 22 : 13;
+            parts.push(`
+              <text x="${c.cx}" y="${noteY}" text-anchor="middle" fill="var(--text-secondary)" font-size="11" font-weight="700">*</text>
+            `);
+          }
+        });
+
+        // 5. X-Axis Labels (Weekly: "M 16" .. "S 22"; Monthly: "1", "5", "10", "15", "20", "25", "30")
+        coords.forEach((c, idx) => {
+          const isSel = c.iso === appState.selectedDate;
+          if (isWeekly) {
+            const dayNum = c.iso.slice(8, 10);
+            const wkShort = MON_TO_SUN_LABELS[idx];
+            parts.push(`
+              <text x="${c.cx}" y="${height - 6}" text-anchor="middle"
+                fill="${isSel ? 'var(--text-primary)' : 'var(--text-muted)'}"
+                font-size="10" font-weight="${isSel ? '700' : '500'}" class="tabular">
+                ${wkShort} ${dayNum}
+              </text>
+            `);
+          } else {
+            const dayInt = parseInt(c.iso.slice(8, 10), 10);
+            if (dayInt === 1 || dayInt % 5 === 0 || idx === n - 1) {
+              if (idx !== n - 1 && (n - 1 - idx) <= 2) return;
+              parts.push(`
+                <text x="${c.cx}" y="${height - 6}" text-anchor="middle"
+                  fill="${isSel ? 'var(--text-primary)' : 'var(--text-muted)'}"
+                  font-size="10" font-weight="${isSel ? '700' : '500'}" class="tabular">
+                  ${dayInt}
+                </text>
+              `);
+            }
+          }
+        });
+
+        targetSvgEl.innerHTML = parts.join('');
+        if (interactive) {
+          updateInspectorBox(selCoord ? selCoord.entry : null, appState.selectedDate);
+        }
+      }
+
+      function updateInspectorBox(entry, fallbackIso) {
+        const headerEl = document.getElementById('inspectorHeader');
+        const noteEl = document.getElementById('inspectorNoteText');
+        const editBtn = document.getElementById('inspectorEditBtn');
+
+        if (!entry) {
+          const iso = fallbackIso || appState.selectedDate;
+          headerEl.innerHTML = `
+            <span class="font-semibold">${formatBritishFull(iso)}</span>
+            <span class="px-2 py-0.5 rounded-full text-[11px]"
+              style="background-color: var(--bg-card); color: var(--text-muted);">
+              Unlogged day
+            </span>
+          `;
+          noteEl.textContent = 'Tap "Log Day" to record sleep, mood, and clinical state for this date.';
+          noteEl.style.color = 'var(--text-muted)';
+          editBtn.textContent = 'Log Day';
+          editBtn.classList.remove('hidden');
+          editBtn.onclick = () => openCheckInSheet('tap', iso);
+          return;
+        }
+
+        const stMeta = getStateMeta(entry.state);
+        const stateColor = cssVar(stMeta.colorVar);
+        const stateTint = cssVar(stMeta.tintVar);
+        const phaseMeta = getPhaseMeta(entry.phase);
+        const psychMeta = getPsychMeta(entry.psychotic);
+
+        headerEl.innerHTML = `
+          <span class="font-semibold">${formatBritishFull(entry.date)}</span>
+          <span class="px-2 py-0.5 rounded-full text-[11px] font-semibold"
+            style="background-color: ${stateTint}; color: ${stateColor};">
+            ${entry.state}
+          </span>
+          <span class="text-[11px]" style="color: var(--text-secondary);">
+            ${formatSleepNum(entry.sleep)}h · ${entry.mood}
+          </span>
+          ${phaseMeta.id !== 'none' ? `
+            <span class="px-1.5 py-0.5 rounded text-[10px] font-bold uppercase"
+              style="background-color: var(--bg-card); border: 1px solid var(--border-strong);">
+              ${phaseMeta.label} (${phaseMeta.code})
+            </span>` : ''}
+          ${psychMeta.id !== 'none' ? `
+            <span class="px-2 py-0.5 rounded-full text-[11px] font-semibold"
+              style="background-color: var(--psychotic-crimson-tint); color: var(--psychotic-crimson);">
+              ${psychMeta.label}
+            </span>` : ''}
+        `;
+
+        noteEl.textContent = entry.notes && entry.notes.trim()
+          ? entry.notes.trim()
+          : 'No notes recorded for this day.';
+        noteEl.style.color = entry.notes && entry.notes.trim() ? 'var(--text-primary)' : 'var(--text-muted)';
+
+        editBtn.textContent = 'Edit Day';
+        editBtn.classList.remove('hidden');
+        editBtn.onclick = () => openCheckInSheet('tap', entry.date);
+      }
+
+      function bindChartScrubbing() {
+        const wrapper = document.getElementById('svgChartWrapper');
+        let dragging = false;
+
+        function scrubAtClientX(clientX) {
+          if (!appState.chartGeometry || appState.chartGeometry.slots.length === 0) return;
+          const rect = wrapper.getBoundingClientRect();
+          const { padLeft, plotW, stepX, slots } = appState.chartGeometry;
+          const x = Math.max(0, Math.min(plotW - 0.01, clientX - rect.left - padLeft));
+          const idx = Math.floor(x / stepX);
+          const chosen = slots[Math.max(0, Math.min(slots.length - 1, idx))];
+          if (chosen && chosen.iso !== appState.selectedDate) {
+            appState.selectedDate = chosen.iso;
+            renderSvgLifeChart(document.getElementById('lifeChartSvg'), wrapper, true);
+            renderTimesheetGrid(document.getElementById('timesheetGridContainer'), true);
+          }
+        }
+
+        wrapper.addEventListener('mousedown', e => {
+          dragging = true;
+          scrubAtClientX(e.clientX);
+        });
+        window.addEventListener('mousemove', e => {
+          if (dragging) scrubAtClientX(e.clientX);
+        });
+        window.addEventListener('mouseup', () => {
+          dragging = false;
+        });
+
+        wrapper.addEventListener('touchstart', e => {
+          if (e.touches.length > 0) scrubAtClientX(e.touches[0].clientX);
+        }, { passive: true });
+        wrapper.addEventListener('touchmove', e => {
+          if (e.touches.length > 0) scrubAtClientX(e.touches[0].clientX);
+        }, { passive: true });
+      }
+
+      /* ----------------------------------------------------------------------
+         8. CARD 3: WEEKLY STRIP OR MONTHLY TIMESHEET CALENDAR MATRIX
+         ---------------------------------------------------------------------- */
+      function buildTimesheetCellHtml(iso, entry, isOutsideMonth, isWeekly) {
+        const isSelected = iso === appState.selectedDate;
+        const dayNum = parseInt(iso.slice(8, 10), 10);
+        const cellH = isWeekly ? 'h-[62px]' : 'h-[52px]';
+        const dimClass = isOutsideMonth ? 'opacity-35' : '';
+
+        if (!entry) {
+          return `
+            <button type="button" data-cell-date="${iso}"
+              class="ts-cell ${cellH} ${dimClass} px-1 py-1 rounded-xl flex flex-col items-center justify-between transition active:scale-95"
+              style="background-color: var(--bg-subtle); border: ${isSelected ? '1.5px solid var(--text-primary)' : '1px dashed var(--border-hairline)'}; color: var(--text-muted);"
+              title="${formatBritishFull(iso)} (Tap to log)">
+              <span class="text-[9.5px] font-medium tabular self-start leading-none">${dayNum}</span>
+              <span class="text-[10px] opacity-50 my-auto">—</span>
+            </button>
+          `;
+        }
+
+        const stMeta = getStateMeta(entry.state);
+        const moodGlyph = getMoodMeta(entry.mood).glyph;
+        const line1 = `${formatSleepNum(entry.sleep)} ${moodGlyph}`;
+
+        const mixedCode = entry.state.startsWith('mixed') ? stMeta.shortCode : '';
+        const phaseCode = getPhaseMeta(entry.phase).code;
+        const psychCode = getPsychMeta(entry.psychotic).shortCode;
+        const noteStar = entry.notes && entry.notes.trim().length > 0 ? '*' : '';
+        const line2Tokens = [mixedCode, phaseCode, psychCode, noteStar].filter(Boolean);
+
+        // Surviving stays unshaded (card surface), symptomatic states get semantic tint blocks
+        const isSurviving = entry.state === 'surviving';
+        const bgFill = isSurviving ? 'var(--bg-card)' : cssVar(stMeta.tintVar);
+        const borderCol = isSelected
+          ? 'var(--text-primary)'
+          : isSurviving
+            ? 'var(--border-hairline)'
+            : cssVar(stMeta.borderVar);
+        const borderWidth = isSelected ? '1.5px' : '1px';
+
+        return `
+          <button type="button" data-cell-date="${iso}"
+            class="ts-cell ${cellH} ${dimClass} px-1 py-1 rounded-xl flex flex-col items-center justify-between leading-none tabular transition active:scale-95"
+            style="background-color: ${bgFill}; border: ${borderWidth} solid ${borderCol};"
+            title="${formatBritishFull(iso)} · ${entry.state}">
+            <span class="text-[9px] font-medium self-start opacity-65" style="color: var(--text-secondary);">${dayNum}</span>
+            <div class="flex flex-col items-center justify-center my-auto">
+              <span class="${isWeekly ? 'text-[11px]' : 'text-[10px]'} font-semibold tracking-tight" style="color: var(--text-primary);">${line1}</span>
+              <span class="${isWeekly ? 'text-[9.5px]' : 'text-[8.5px]'} font-bold mt-0.5 min-h-[10px]"
+                style="color: ${psychCode ? 'var(--psychotic-crimson)' : cssVar(stMeta.colorVar)};">
+                ${line2Tokens.join(' ')}
+              </span>
+            </div>
+          </button>
+        `;
+      }
+
+      function renderTimesheetGrid(targetEl, interactive) {
+        const win = getPeriodWindow();
+        const entryMap = new Map(appState.entries.map(e => [e.date, e]));
+
+        const headerCols = MON_TO_SUN_LABELS.map(lbl =>
+          `<div class="text-center text-[10px] font-semibold uppercase tracking-wider pb-1" style="color: var(--text-muted);">${lbl}</div>`
+        ).join('');
+
+        if (win.mode === 'weekly') {
+          const cellsHtml = win.allDates.map(iso =>
+            buildTimesheetCellHtml(iso, entryMap.get(iso) || null, false, true)
+          ).join('');
+
+          targetEl.innerHTML = `
+            <div class="space-y-1">
+              <div class="grid grid-cols-7 gap-1">${headerCols}</div>
+              <div class="grid grid-cols-7 gap-1">${cellsHtml}</div>
+            </div>
+          `;
+        } else {
+          // Full Monday-first Monthly Calendar Matrix
+          const firstMon = getMondayISO(win.startIso);
+          const lastDayDt = parseISO(win.endIso);
+          const lastDow = lastDayDt.getDay(); // 0=Sun..6=Sat
+          const addToSun = lastDow === 0 ? 0 : 7 - lastDow;
+          const finalSun = addDays(win.endIso, addToSun);
+
+          const weeks = [];
+          let cursorMon = firstMon;
+          while (cursorMon <= finalSun) {
+            const weekCells = [];
+            for (let i = 0; i < 7; i++) {
+              const iso = addDays(cursorMon, i);
+              const isOutside = iso.slice(0, 7) !== appState.monthIso;
+              weekCells.push(buildTimesheetCellHtml(iso, entryMap.get(iso) || null, isOutside, false));
+            }
+            weeks.push(`<div class="grid grid-cols-7 gap-1">${weekCells.join('')}</div>`);
+            cursorMon = addDays(cursorMon, 7);
+          }
+
+          targetEl.innerHTML = `
+            <div class="space-y-1">
+              <div class="grid grid-cols-7 gap-1">${headerCols}</div>
+              <div class="space-y-1">${weeks.join('')}</div>
+            </div>
+          `;
+        }
+
+        if (interactive) {
+          targetEl.querySelectorAll('.ts-cell').forEach(btn => {
+            btn.addEventListener('click', () => {
+              const iso = btn.getAttribute('data-cell-date');
+              appState.selectedDate = iso;
+              openCheckInSheet('tap', iso);
+            });
+          });
+        }
+      }
+
+      /* ----------------------------------------------------------------------
+         9. CARD 4: FILTERED NOTES & FLAGGED EVENTS FEED
+         ---------------------------------------------------------------------- */
+      function isFlaggedEntry(entry) {
+        return (
+          entry.state !== 'surviving' ||
+          entry.psychotic !== 'none' ||
+          entry.phase !== 'none' ||
+          entry.sleep <= 5 ||
+          entry.sleep >= 9.5 ||
+          (entry.notes && entry.notes.trim().length > 0)
+        );
+      }
+
+      function renderNotesFeed(targetEl, interactive) {
+        const win = getPeriodWindow();
+        const visible = getPeriodEntries();
+        const reversed = [...visible].reverse();
+        const list = appState.feedFilter === 'flagged'
+          ? reversed.filter(isFlaggedEntry)
+          : reversed;
+
+        if (list.length === 0) {
+          targetEl.innerHTML = `
+            <div class="p-4 rounded-2xl text-center text-[12px]" style="background-color: var(--bg-subtle); color: var(--text-muted);">
+              No notes or flagged episode days in ${win.label}. Switch to "All Days" to view baseline entries.
+            </div>
+          `;
+          return;
+        }
+
+        targetEl.innerHTML = list.map(e => {
+          const stMeta = getStateMeta(e.state);
+          const stateColor = cssVar(stMeta.colorVar);
+          const stateTint = cssVar(stMeta.tintVar);
+          const phaseMeta = getPhaseMeta(e.phase);
+          const psychMeta = getPsychMeta(e.psychotic);
+          const moodMeta = getMoodMeta(e.mood);
+
+          return `
+            <article data-feed-date="${e.date}"
+              class="feed-item p-3 rounded-2xl hairline space-y-1.5 transition cursor-pointer"
+              style="background-color: var(--bg-subtle);">
+              <div class="flex items-start justify-between gap-2">
+                <div class="flex items-center flex-wrap gap-1.5 tabular">
+                  <span class="text-[12.5px] font-semibold">${formatBritishWeekday(e.date)}</span>
+                  <span class="px-2 py-0.5 rounded-full text-[10.5px] font-semibold"
+                    style="background-color: ${stateTint}; color: ${stateColor};">
+                    ${e.state}
+                  </span>
+                  <span class="text-[11px]" style="color: var(--text-secondary);">
+                    ${formatSleepNum(e.sleep)}h · ${e.mood} (${moodMeta.glyph})
+                  </span>
+                  ${phaseMeta.id !== 'none' ? `
+                    <span class="px-1.5 py-0.5 rounded text-[10px] font-bold uppercase"
+                      style="background-color: var(--bg-card); border: 1px solid var(--border-strong);">
+                      ${phaseMeta.label} (${phaseMeta.code})
+                    </span>` : ''}
+                  ${psychMeta.id !== 'none' ? `
+                    <span class="px-2 py-0.5 rounded-full text-[10.5px] font-semibold"
+                      style="background-color: var(--psychotic-crimson-tint); color: var(--psychotic-crimson);">
+                      ${psychMeta.label} (${psychMeta.shortCode})
+                    </span>` : ''}
+                </div>
+                ${interactive ? `
+                  <button type="button" data-edit-feed="${e.date}"
+                    class="feed-edit-btn px-2 py-0.5 rounded-lg text-[10.5px] font-medium hairline shrink-0 no-print"
+                    style="background-color: var(--bg-card); color: var(--text-secondary);">
+                    Edit
+                  </button>` : ''}
+              </div>
+              ${e.notes && e.notes.trim() ? `
+                <p class="text-[12px] leading-relaxed" style="color: var(--text-primary);">${escapeHtml(e.notes.trim())}</p>
+              ` : ''}
+            </article>
+          `;
+        }).join('');
+
+        if (interactive) {
+          targetEl.querySelectorAll('.feed-item').forEach(card => {
+            card.addEventListener('click', ev => {
+              if (ev.target.closest('.feed-edit-btn')) return;
+              const targetIso = card.getAttribute('data-feed-date');
+              appState.selectedDate = targetIso;
+              appState.weekMondayIso = getMondayISO(targetIso);
+              appState.monthIso = targetIso.slice(0, 7);
+              renderAllViews();
+              document.getElementById('visualizationCard').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            });
+          });
+
+          targetEl.querySelectorAll('.feed-edit-btn').forEach(btn => {
+            btn.addEventListener('click', ev => {
+              ev.stopPropagation();
+              openCheckInSheet('tap', btn.getAttribute('data-edit-feed'));
+            });
+          });
+        }
+      }
+
+      /* ----------------------------------------------------------------------
+         10. SLIDE-UP CHECK-IN & BACKLOG BOTTOM SHEET
+         ---------------------------------------------------------------------- */
+      function syncDraftFromDate(iso) {
+        const cleanIso = /^\d{4}-\d{2}-\d{2}$/.test(iso) ? iso : DEFAULT_TODAY_ISO;
+        const existing = appState.entries.find(e => e.date === cleanIso);
+        if (existing) {
+          sheetDraft.date = existing.date;
+          sheetDraft.sleep = existing.sleep;
+          sheetDraft.mood = existing.mood;
+          sheetDraft.state = existing.state;
+          sheetDraft.psychotic = existing.psychotic;
+          sheetDraft.phase = existing.phase;
+          sheetDraft.notes = existing.notes || '';
+        } else {
+          sheetDraft.date = cleanIso;
+          sheetDraft.sleep = 7.5;
+          sheetDraft.mood = 'neutral';
+          sheetDraft.state = 'surviving';
+          sheetDraft.psychotic = 'none';
+          sheetDraft.phase = 'none';
+          sheetDraft.notes = '';
+        }
+      }
+
+      function renderSheetControls() {
+        const existing = appState.entries.find(e => e.date === sheetDraft.date);
+
+        // Date display
+        document.getElementById('britishDateLabel').textContent = formatBritishWeekday(sheetDraft.date);
+        document.getElementById('nativeDatePicker').value = sheetDraft.date;
+        document.getElementById('editingStatusNote').classList.toggle('hidden', !existing);
+        document.getElementById('deleteDayBtn').classList.toggle('hidden', !existing);
+
+        // Sleep display & quick pills
+        document.getElementById('sleepReadoutNum').textContent = formatSleepNum(sheetDraft.sleep);
+        document.getElementById('sleepQuickPills').innerHTML = QUICK_SLEEP_PRESETS.map(hrs => {
+          const active = Math.abs(sheetDraft.sleep - hrs) < 0.01;
+          return `
+            <button type="button" data-sleep-preset="${hrs}"
+              class="py-1.5 rounded-xl text-[11.5px] font-semibold tabular hairline transition active:scale-95"
+              style="background-color: ${active ? 'var(--text-primary)' : 'var(--bg-subtle)'};
+                     color: ${active ? 'var(--bg-canvas)' : 'var(--text-primary)'};">
+              ${formatSleepNum(hrs)}h
+            </button>
+          `;
+        }).join('');
+
+        // Mood pills
+        document.getElementById('moodPillsContainer').innerHTML = MOOD_LEVELS.map(m => {
+          const active = sheetDraft.mood === m.id;
+          return `
+            <button type="button" data-mood-id="${m.id}"
+              class="py-2 px-1 rounded-lg text-center transition active:scale-95 flex flex-col items-center justify-center"
+              style="background-color: ${active ? 'var(--bg-card)' : 'transparent'};
+                     color: ${active ? 'var(--text-primary)' : 'var(--text-secondary)'};
+                     box-shadow: ${active ? '0 1px 3px rgba(0,0,0,0.12)' : 'none'};">
+              <span class="text-[12px] font-bold tabular leading-none">${m.glyph}</span>
+              <span class="text-[9.5px] font-medium mt-1 leading-none">${m.label}</span>
+            </button>
+          `;
+        }).join('');
+
+        // State pills
+        document.getElementById('statePillsContainer').innerHTML = CLINICAL_STATES.map(s => {
+          const active = sheetDraft.state === s.id;
+          const color = cssVar(s.colorVar);
+          const tint = cssVar(s.tintVar);
+          return `
+            <button type="button" data-state-id="${s.id}"
+              class="px-2.5 py-2 rounded-xl text-[11.5px] font-semibold text-left flex items-center gap-1.5 transition active:scale-95"
+              style="background-color: ${active ? tint : 'var(--bg-subtle)'};
+                     border: 1.5px solid ${active ? color : 'var(--border-hairline)'};
+                     color: ${active ? color : 'var(--text-primary)'};">
+              <span class="w-2 h-2 rounded-full shrink-0" style="background-color: ${color};"></span>
+              <span class="truncate">${s.label}</span>
+            </button>
+          `;
+        }).join('');
+
+        // Psychotic pills
+        document.getElementById('psychoticPillsContainer').innerHTML = PSYCHOTIC_OPTIONS.map(p => {
+          const active = sheetDraft.psychotic === p.id;
+          const isAlert = p.id !== 'none';
+          const bg = active
+            ? (isAlert ? 'var(--psychotic-crimson-tint)' : 'var(--bg-card)')
+            : 'var(--bg-subtle)';
+          const border = active
+            ? (isAlert ? 'var(--psychotic-crimson)' : 'var(--text-primary)')
+            : 'var(--border-hairline)';
+          const col = active && isAlert ? 'var(--psychotic-crimson)' : 'var(--text-primary)';
+          return `
+            <button type="button" data-psych-id="${p.id}"
+              class="px-3 py-2 rounded-xl text-[11.5px] font-semibold flex items-center justify-between transition active:scale-95"
+              style="background-color: ${bg}; border: 1.5px solid ${border}; color: ${col};">
+              <span>${p.label}</span>
+              ${p.shortCode ? `<span class="text-[10px] font-bold opacity-85">${p.shortCode}</span>` : ''}
+            </button>
+          `;
+        }).join('');
+
+        // Episode Marker pills
+        document.getElementById('phasePillsContainer').innerHTML = PHASE_OPTIONS.map(ph => {
+          const active = sheetDraft.phase === ph.id;
+          return `
+            <button type="button" data-phase-id="${ph.id}"
+              class="py-2 rounded-lg text-[11.5px] font-semibold transition active:scale-95"
+              style="background-color: ${active ? 'var(--bg-card)' : 'transparent'};
+                     color: ${active ? 'var(--text-primary)' : 'var(--text-secondary)'};
+                     box-shadow: ${active ? '0 1px 3px rgba(0,0,0,0.12)' : 'none'};">
+              ${ph.label}${ph.code ? ` (${ph.code})` : ''}
+            </button>
+          `;
+        }).join('');
+
+        // Notes textarea
+        document.getElementById('notesTextarea').value = sheetDraft.notes;
+
+        // Bind generated pill clicks
+        document.querySelectorAll('[data-sleep-preset]').forEach(btn => {
+          btn.addEventListener('click', () => {
+            sheetDraft.sleep = Number(btn.getAttribute('data-sleep-preset'));
+            renderSheetControls();
+          });
+        });
+
+        document.querySelectorAll('[data-mood-id]').forEach(btn => {
+          btn.addEventListener('click', () => {
+            sheetDraft.mood = btn.getAttribute('data-mood-id');
+            renderSheetControls();
+          });
+        });
+
+        document.querySelectorAll('[data-state-id]').forEach(btn => {
+          btn.addEventListener('click', () => {
+            sheetDraft.state = btn.getAttribute('data-state-id');
+            renderSheetControls();
+          });
+        });
+
+        document.querySelectorAll('[data-psych-id]').forEach(btn => {
+          btn.addEventListener('click', () => {
+            sheetDraft.psychotic = btn.getAttribute('data-psych-id');
+            renderSheetControls();
+          });
+        });
+
+        document.querySelectorAll('[data-phase-id]').forEach(btn => {
+          btn.addEventListener('click', () => {
+            sheetDraft.phase = btn.getAttribute('data-phase-id');
+            renderSheetControls();
+          });
+        });
+      }
+
+      function switchSheetTab(tabName) {
+        sheetDraft.activeTab = tabName;
+        const isTap = tabName === 'tap';
+        const tapBtn = document.getElementById('tabTapEntryBtn');
+        const pasteBtn = document.getElementById('tabPasteBacklogBtn');
+
+        tapBtn.setAttribute('aria-selected', String(isTap));
+        pasteBtn.setAttribute('aria-selected', String(!isTap));
+
+        tapBtn.style.backgroundColor = isTap ? 'var(--bg-card)' : 'transparent';
+        tapBtn.style.color = isTap ? 'var(--text-primary)' : 'var(--text-secondary)';
+        tapBtn.style.boxShadow = isTap ? '0 1px 3px rgba(0,0,0,0.1)' : 'none';
+
+        pasteBtn.style.backgroundColor = !isTap ? 'var(--bg-card)' : 'transparent';
+        pasteBtn.style.color = !isTap ? 'var(--text-primary)' : 'var(--text-secondary)';
+        pasteBtn.style.boxShadow = !isTap ? '0 1px 3px rgba(0,0,0,0.1)' : 'none';
+
+        document.getElementById('tapEntryPanel').classList.toggle('hidden', !isTap);
+        document.getElementById('tapEntryPanel').classList.toggle('flex', isTap);
+        document.getElementById('pasteBacklogPanel').classList.toggle('hidden', isTap);
+        document.getElementById('pasteBacklogPanel').classList.toggle('flex', !isTap);
+
+        if (!isTap) {
+          renderBacklogPreview();
+        }
+      }
+
+      function openCheckInSheet(tabName, dateIso) {
+        syncDraftFromDate(dateIso || appState.selectedDate || DEFAULT_TODAY_ISO);
+        renderSheetControls();
+        switchSheetTab(tabName || 'tap');
+        document.getElementById('checkInBackdrop').classList.add('open');
+      }
+
+      function closeCheckInSheet() {
+        document.getElementById('checkInBackdrop').classList.remove('open');
+      }
+
+      function saveCurrentDraft(advanceToNextDay) {
+        sheetDraft.notes = document.getElementById('notesTextarea').value;
+        const savedDate = sheetDraft.date;
+        upsertEntry({
+          date: sheetDraft.date,
+          sleep: sheetDraft.sleep,
+          mood: sheetDraft.mood,
+          state: sheetDraft.state,
+          psychotic: sheetDraft.psychotic,
+          phase: sheetDraft.phase,
+          notes: sheetDraft.notes
+        });
+        renderAllViews();
+        pulseBriefCard();
+
+        if (advanceToNextDay) {
+          const nextIso = addDays(savedDate, 1);
+          syncDraftFromDate(nextIso);
+          renderSheetControls();
+          showToast(`Saved ${formatBritishShort(savedDate)} · Ready for ${formatBritishShort(nextIso)}`);
+        } else {
+          closeCheckInSheet();
+          showToast(`Saved ${formatBritishFull(savedDate)}`);
+        }
+      }
+
+      /* ----------------------------------------------------------------------
+         11. SHORTHAND BACKLOG PARSER
+         ---------------------------------------------------------------------- */
+      function parseShorthandLine(rawLine) {
+        const line = rawLine.trim();
+        if (!line) return null;
+
+        // Extract optional note starting with "*"
+        let note = '';
+        let core = line;
+        const starIdx = line.indexOf('*');
+        if (starIdx >= 0) {
+          note = line.slice(starIdx + 1).trim();
+          core = line.slice(0, starIdx).trim();
+        }
+
+        // Split by middle-dot, pipe, semicolon, or comma
+        const tokens = core
+          .split(/[·|;,]/)
+          .map(t => t.trim())
+          .filter(Boolean);
+
+        if (tokens.length === 0) return null;
+
+        // 1. Parse Date from first token (e.g., "04 Nov", "4 Nov 2026", "2026-11-04")
+        let isoDate = null;
+        const first = tokens[0];
+        if (/^\d{4}-\d{2}-\d{2}$/.test(first)) {
+          isoDate = first;
+        } else {
+          const dmMatch = first.match(/^(\d{1,2})\s+([A-Za-z]{3,9})(?:\s+(\d{4}))?$/);
+          if (dmMatch) {
+            const day = parseInt(dmMatch[1], 10);
+            const monStr = dmMatch[2].slice(0, 3).toLowerCase();
+            const monIdx = MONTHS_SHORT.findIndex(m => m.toLowerCase() === monStr);
+            const year = dmMatch[3] ? parseInt(dmMatch[3], 10) : 2026;
+            if (monIdx >= 0 && day >= 1 && day <= 31) {
+              isoDate = `${year}-${String(monIdx + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+            }
+          }
+        }
+        if (!isoDate) return null;
+
+        let sleep = 7.5;
+        let mood = 'neutral';
+        let state = 'surviving';
+        let psychotic = 'none';
+        let phase = 'none';
+
+        tokens.slice(1).forEach(tok => {
+          const low = tok.toLowerCase().trim();
+
+          // Hours (e.g., "7.5h", "5h", "3.5")
+          const sleepMatch = low.match(/^(\d+(?:\.\d+)?)\s*h(?:rs?)?$/);
+          if (sleepMatch) {
+            sleep = Math.max(0, Math.min(14, Math.round(parseFloat(sleepMatch[1]) * 2) / 2));
+            return;
+          }
+
+          // Mood glyphs or names
+          if (low === '--' || low === 'very low') { mood = 'very low'; return; }
+          if (low === '-' || low === 'low') { mood = 'low'; return; }
+          if (low === '=' || low === 'neutral') { mood = 'neutral'; return; }
+          if (low === '+' || low === 'high') { mood = 'high'; return; }
+          if (low === '++' || low === 'very high') { mood = 'very high'; return; }
+
+          // States
+          if (low === 'surviving') { state = 'surviving'; return; }
+          if (low === 'depressed') { state = 'depressed'; return; }
+          if (low === 'very depressed') { state = 'very depressed'; return; }
+          if (low === 'mixed (d)' || low === 'md' || low === 'mixed d') { state = 'mixed (d)'; return; }
+          if (low === 'mixed (h)' || low === 'mh' || low === 'mixed h') { state = 'mixed (h)'; return; }
+          if (low === 'mixed (m)' || low === 'mm' || low === 'mixed m') { state = 'mixed (m)'; return; }
+          if (low === 'mania' || low === 'manic') { state = 'mania'; return; }
+
+          // Psychotic
+          if (low === 'delusions' || low === '/d' || low === 'd') { psychotic = 'delusions'; return; }
+          if (low === 'depersonalisation' || low === 'depersonalization' || low === '/dp' || low === 'dp') { psychotic = 'depersonalisation'; return; }
+          if (low === 'hallucinations' || low === '/h' || low === 'h') { psychotic = 'hallucinations'; return; }
+          if (low === 'none') { return; }
+
+          // Phase
+          if (low === 'start' || low === 's') { phase = 'start'; return; }
+          if (low === 'peak' || low === 'p') { phase = 'peak'; return; }
+          if (low === 'end' || low === 'e') { phase = 'end'; return; }
+        });
+
+        return normalizeEntry({
+          date: isoDate,
+          sleep,
+          mood,
+          state,
+          psychotic,
+          phase,
+          notes: note
+        });
+      }
+
+      function parseBacklogText(text) {
+        return String(text || '')
+          .split(/\r?\n/)
+          .map(parseShorthandLine)
+          .filter(Boolean);
+      }
+
+      function renderBacklogPreview() {
+        const raw = document.getElementById('backlogTextarea').value;
+        const parsed = parseBacklogText(raw);
+        document.getElementById('parseCountBadge').textContent = `${parsed.length} ${parsed.length === 1 ? 'line' : 'lines'} ready`;
+
+        const listEl = document.getElementById('parsePreviewList');
+        if (parsed.length === 0) {
+          listEl.innerHTML = `<div style="color: var(--text-muted);">Paste lines above to preview parsed clinical entries.</div>`;
+          return;
+        }
+
+        listEl.innerHTML = parsed.map(e => {
+          const moodG = getMoodMeta(e.mood).glyph;
+          const psychCode = getPsychMeta(e.psychotic).shortCode;
+          const phaseCode = getPhaseMeta(e.phase).code;
+          const flags = [phaseCode, psychCode, e.notes ? '*' : ''].filter(Boolean).join(' ');
+          return `
+            <div class="flex items-center justify-between gap-2 py-0.5">
+              <span class="font-semibold">${formatBritishShort(e.date)}</span>
+              <span>${formatSleepNum(e.sleep)}h · ${moodG} · ${e.state} ${flags ? `(${flags})` : ''}</span>
+            </div>
+          `;
+        }).join('');
+      }
+
+      /* ----------------------------------------------------------------------
+         12. FULL-SCREEN PSYCHIATRIST "DOCTOR VIEW" MODAL
+         ---------------------------------------------------------------------- */
+      function openDoctorView() {
+        const win = getPeriodWindow();
+        const visible = getPeriodEntries();
+        const data = computeBriefData(visible);
+        const container = document.getElementById('doctorViewContent');
+
+        document.getElementById('docViewTitle').textContent =
+          `Bipolar 1 Clinical Summary (${win.label})`;
+
+        container.innerHTML = `
+          <!-- Brief Summary Card -->
+          <div class="editorial-card p-4 space-y-3">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div class="p-3 rounded-2xl hairline" style="background-color: var(--bg-subtle);">
+                <div class="text-[10px] font-semibold uppercase tracking-wider" style="color: var(--text-muted);">Sleep Baseline &amp; Shifts</div>
+                <div class="text-[18px] font-semibold tabular mt-0.5">${data.sleepAvgText}</div>
+                <div class="text-[12px] mt-0.5" style="color: var(--text-secondary);">${data.sleepFlagsText}</div>
+              </div>
+              <div class="p-3 rounded-2xl hairline" style="background-color: var(--bg-subtle);">
+                <div class="text-[10px] font-semibold uppercase tracking-wider" style="color: var(--text-muted);">State Breakdown (${data.count} Days)</div>
+                <div class="text-[13px] font-medium tabular mt-1">${data.stateSummaryText}</div>
+              </div>
+            </div>
+
+            <div class="p-3 rounded-2xl hairline space-y-1" style="background-color: var(--bg-subtle);">
+              <div class="text-[10px] font-semibold uppercase tracking-wider" style="color: var(--text-muted);">Episode Arcs</div>
+              <div class="text-[12px] tabular space-y-1">
+                ${data.arcs.length === 0
+                  ? 'No Start / Peak / End markers logged.'
+                  : data.arcs.map((a, i) => `<div><strong>Episode ${i + 1}:</strong> ${a.start ? 'Start ' + formatBritishShort(a.start) : 'Start (prior)'}${a.peak ? ' → Peak ' + formatBritishShort(a.peak) : ''}${a.end ? ' → End ' + formatBritishShort(a.end) : ' → Ongoing'} · <span class="capitalize font-semibold">${Array.from(a.states).join(' → ')}</span></div>`).join('')}
+              </div>
+              ${data.psychoticList.length > 0 ? `<div class="pt-1.5 mt-1.5 hairline-t text-[12px] font-semibold" style="color: var(--psychotic-crimson);">Psychotic Symptoms: ${data.psychoticList.map(p => `${p.symptom} (${p.datesText})`).join(' · ')}</div>` : ''}
+            </div>
+          </div>
+
+          <!-- Chart Snapshot -->
+          <div class="editorial-card p-4 space-y-2">
+            <div class="text-[12px] font-semibold">Sleep &amp; Mood Life Chart (${win.mode === 'weekly' ? 'Weekly' : 'Monthly'})</div>
+            <div id="docChartWrap" class="w-full">
+              <svg id="docLifeChartSvg" class="w-full block overflow-visible" style="height: 222px;"></svg>
+            </div>
+          </div>
+
+          <!-- Weekly / Monthly Timesheet Snapshot -->
+          <div class="editorial-card p-4 space-y-2">
+            <div class="text-[12px] font-semibold">${win.mode === 'weekly' ? 'Weekly Timesheet Strip' : 'Monthly Timesheet Matrix'}</div>
+            <div id="docTimesheetWrap"></div>
+          </div>
+
+          <!-- Flagged Notes -->
+          <div class="editorial-card p-4 space-y-2">
+            <div class="text-[12px] font-semibold">Flagged Dates &amp; Clinical Notes</div>
+            <div id="docFeedWrap" class="space-y-2"></div>
+          </div>
+        `;
+
+        document.getElementById('doctorViewModal').classList.remove('hidden');
+
+        // Render SVG, Timesheet, and Flagged Feed inside Doctor View
+        renderSvgLifeChart(document.getElementById('docLifeChartSvg'), document.getElementById('docChartWrap'), false);
+        renderTimesheetGrid(document.getElementById('docTimesheetWrap'), false);
+        const prevFilter = appState.feedFilter;
+        appState.feedFilter = 'flagged';
+        renderNotesFeed(document.getElementById('docFeedWrap'), false);
+        appState.feedFilter = prevFilter;
+      }
+
+      /* ----------------------------------------------------------------------
+         13. MASTER RENDER & EVENT WIRING
+         ---------------------------------------------------------------------- */
+      function renderAllViews() {
+        const win = getPeriodWindow();
+        const visible = getPeriodEntries();
+
+        // Update Header Demo Menu state
+        document.getElementById('toggleDemoDataLabel').textContent = appState.isSample
+          ? 'Clear Demo Data'
+          : 'Load Demo Data';
+        document.getElementById('demoStatusDot').style.backgroundColor = appState.isSample
+          ? 'var(--state-mania)'
+          : 'var(--state-surviving)';
+
+        // Update Segmented Control (Weekly vs Monthly)
+        const track = document.getElementById('viewModeTrack');
+        track.setAttribute('data-mode', appState.viewMode);
+        const isWeekly = appState.viewMode === 'weekly';
+
+        const wBtn = document.getElementById('segWeeklyBtn');
+        const mBtn = document.getElementById('segMonthlyBtn');
+        wBtn.setAttribute('aria-selected', String(isWeekly));
+        mBtn.setAttribute('aria-selected', String(!isWeekly));
+        wBtn.style.color = isWeekly ? 'var(--text-primary)' : 'var(--text-secondary)';
+        mBtn.style.color = !isWeekly ? 'var(--text-primary)' : 'var(--text-secondary)';
+
+        // Update Period Navigator & Today Pill
+        document.getElementById('periodLabelText').textContent = win.label;
+        document.getElementById('periodTodayBtn').classList.toggle('hidden', win.isCurrent);
+
+        // Update Visualization & Grid Headings for Weekly vs Monthly
+        document.getElementById('chartCardTitle').textContent = isWeekly
+          ? 'Weekly Sleep & Mood'
+          : 'Monthly Sleep & Mood';
+        document.getElementById('chartCardSubtitle').textContent = isWeekly
+          ? 'Mon–Sun alignment · Tap any day to inspect'
+          : 'Full month trajectory · Scrub across days';
+        document.getElementById('chartLoggedBadge').textContent = `${visible.length}/${win.allDates.length} logged`;
+
+        document.getElementById('gridCardTitle').textContent = isWeekly
+          ? 'Weekly Timesheet Strip'
+          : 'Monthly Calendar Matrix';
+
+        // Update Feed Filter Pills styling
+        document.querySelectorAll('.feed-pill').forEach(btn => {
+          const active = btn.getAttribute('data-feed') === appState.feedFilter;
+          btn.style.backgroundColor = active ? 'var(--bg-card)' : 'transparent';
+          btn.style.color = active ? 'var(--text-primary)' : 'var(--text-secondary)';
+          btn.style.boxShadow = active ? '0 1px 2px rgba(0,0,0,0.08)' : 'none';
+        });
+
+        renderClinicalBrief();
+        renderSvgLifeChart(document.getElementById('lifeChartSvg'), document.getElementById('svgChartWrapper'), true);
+        renderTimesheetGrid(document.getElementById('timesheetGridContainer'), true);
+        renderNotesFeed(document.getElementById('notesFeedContainer'), true);
+      }
+
+      function initEvents() {
+        // Theme toggle
+        document.getElementById('themeToggleBtn').addEventListener('click', () => {
+          const currentlyDark = document.documentElement.classList.contains('dark');
+          setTheme(!currentlyDark);
+        });
+
+        // Header Popover Menu (Demo Data / Clear & Export / Import JSON)
+        const menuBtn = document.getElementById('headerMenuBtn');
+        const menuPopover = document.getElementById('headerMenuPopover');
+        menuBtn.addEventListener('click', e => {
+          e.stopPropagation();
+          const willOpen = menuPopover.classList.contains('hidden');
+          menuPopover.classList.toggle('hidden', !willOpen);
+          menuBtn.setAttribute('aria-expanded', String(willOpen));
+        });
+        document.addEventListener('click', e => {
+          if (!menuPopover.contains(e.target) && e.target !== menuBtn) {
+            menuPopover.classList.add('hidden');
+            menuBtn.setAttribute('aria-expanded', 'false');
+          }
+        });
+
+        document.getElementById('toggleDemoDataBtn').addEventListener('click', () => {
+          menuPopover.classList.add('hidden');
+          if (appState.isSample) {
+            appState.entries = [];
+            appState.isSample = false;
+            appState.selectedDate = DEFAULT_TODAY_ISO;
+            persistToStorage();
+            renderAllViews();
+            showToast('Demo data cleared — ready for your entries');
+          } else {
+            appState.entries = createRealisticSampleEntries();
+            appState.isSample = true;
+            appState.selectedDate = DEFAULT_TODAY_ISO;
+            appState.weekMondayIso = getMondayISO(DEFAULT_TODAY_ISO);
+            appState.monthIso = DEFAULT_TODAY_ISO.slice(0, 7);
+            persistToStorage();
+            renderAllViews();
+            showToast('Loaded 18-day demo dataset');
+          }
+        });
+
+        // Weekly vs. Monthly Segmented Control
+        function switchViewMode(nextMode) {
+          if (appState.viewMode === nextMode) return;
+          appState.viewMode = nextMode;
+          const anchor = appState.selectedDate || DEFAULT_TODAY_ISO;
+          if (nextMode === 'weekly') {
+            appState.weekMondayIso = getMondayISO(anchor);
+          } else {
+            appState.monthIso = anchor.slice(0, 7);
+          }
+          renderAllViews();
+        }
+
+        document.getElementById('segWeeklyBtn').addEventListener('click', () => switchViewMode('weekly'));
+        document.getElementById('segMonthlyBtn').addEventListener('click', () => switchViewMode('monthly'));
+
+        // Period Navigation (‹ Prev / Today / Next ›)
+        document.getElementById('periodPrevBtn').addEventListener('click', () => {
+          if (appState.viewMode === 'weekly') {
+            appState.weekMondayIso = addDays(appState.weekMondayIso, -7);
+            appState.selectedDate = appState.weekMondayIso;
+          } else {
+            appState.monthIso = addMonthsYM(appState.monthIso, -1);
+            appState.selectedDate = `${appState.monthIso}-01`;
+          }
+          renderAllViews();
+        });
+
+        document.getElementById('periodNextBtn').addEventListener('click', () => {
+          if (appState.viewMode === 'weekly') {
+            appState.weekMondayIso = addDays(appState.weekMondayIso, 7);
+            appState.selectedDate = appState.weekMondayIso;
+          } else {
+            appState.monthIso = addMonthsYM(appState.monthIso, 1);
+            appState.selectedDate = `${appState.monthIso}-01`;
+          }
+          renderAllViews();
+        });
+
+        document.getElementById('periodTodayBtn').addEventListener('click', () => {
+          appState.selectedDate = DEFAULT_TODAY_ISO;
+          appState.weekMondayIso = getMondayISO(DEFAULT_TODAY_ISO);
+          appState.monthIso = DEFAULT_TODAY_ISO.slice(0, 7);
+          renderAllViews();
+        });
+
+        // Top Quick-Action 1: "Log Baseline Today (7.5h · =)"
+        document.getElementById('quickBaselineBtn').addEventListener('click', () => {
+          const existing = appState.entries.find(e => e.date === DEFAULT_TODAY_ISO);
+          upsertEntry({
+            date: DEFAULT_TODAY_ISO,
+            sleep: 7.5,
+            mood: 'neutral',
+            state: 'surviving',
+            psychotic: 'none',
+            phase: 'none',
+            notes: existing ? existing.notes : ''
+          });
+          renderAllViews();
+          pulseBriefCard();
+          showToast('Logged 17 Nov 2026 · 7.5h · =');
+        });
+
+        // Top Quick-Action 2: "+ Log Day"
+        document.getElementById('openSheetBtn').addEventListener('click', () => {
+          openCheckInSheet('tap', appState.selectedDate || DEFAULT_TODAY_ISO);
+        });
+
+        // Copy Brief & Doctor View
+        document.getElementById('copyBriefBtn').addEventListener('click', copyBriefToClipboard);
+        document.getElementById('doctorViewBtn').addEventListener('click', openDoctorView);
+        document.getElementById('closeDoctorViewBtn').addEventListener('click', () => {
+          document.getElementById('doctorViewModal').classList.add('hidden');
+        });
+        document.getElementById('docPrintBtn').addEventListener('click', () => window.print());
+
+        // Feed Filter Pills
+        document.querySelectorAll('.feed-pill').forEach(btn => {
+          btn.addEventListener('click', () => {
+            appState.feedFilter = btn.getAttribute('data-feed');
+            renderAllViews();
+          });
+        });
+
+        // Check-In Bottom Sheet Controls
+        document.getElementById('closeSheetBtn').addEventListener('click', closeCheckInSheet);
+        document.getElementById('checkInBackdrop').addEventListener('click', e => {
+          if (e.target.id === 'checkInBackdrop') closeCheckInSheet();
+        });
+
+        document.getElementById('tabTapEntryBtn').addEventListener('click', () => switchSheetTab('tap'));
+        document.getElementById('tabPasteBacklogBtn').addEventListener('click', () => switchSheetTab('paste'));
+
+        // Date Stepper & Jump to 14 Days Ago
+        document.getElementById('jump14DaysBtn').addEventListener('click', () => {
+          const twoWeeksAgo = addDays(DEFAULT_TODAY_ISO, -14); // 2026-11-03
+          syncDraftFromDate(twoWeeksAgo);
+          renderSheetControls();
+        });
+
+        document.getElementById('datePrevBtn').addEventListener('click', () => {
+          syncDraftFromDate(addDays(sheetDraft.date, -1));
+          renderSheetControls();
+        });
+
+        document.getElementById('dateNextBtn').addEventListener('click', () => {
+          syncDraftFromDate(addDays(sheetDraft.date, 1));
+          renderSheetControls();
+        });
+
+        document.getElementById('nativeDatePicker').addEventListener('change', e => {
+          if (e.target.value) {
+            syncDraftFromDate(e.target.value);
+            renderSheetControls();
+          }
+        });
+
+        // Sleep Stepper
+        document.getElementById('sleepMinusBtn').addEventListener('click', () => {
+          sheetDraft.sleep = Math.max(0, Math.round((sheetDraft.sleep - 0.5) * 2) / 2);
+          renderSheetControls();
+        });
+
+        document.getElementById('sleepPlusBtn').addEventListener('click', () => {
+          sheetDraft.sleep = Math.min(14, Math.round((sheetDraft.sleep + 0.5) * 2) / 2);
+          renderSheetControls();
+        });
+
+        // Delete Day button inside sheet
+        document.getElementById('deleteDayBtn').addEventListener('click', () => {
+          const targetDate = sheetDraft.date;
+          deleteEntry(targetDate);
+          renderAllViews();
+          closeCheckInSheet();
+          showToast(`Deleted ${formatBritishFull(targetDate)}`);
+        });
+
+        // Save & Save + Next Day
+        document.getElementById('saveCloseBtn').addEventListener('click', () => saveCurrentDraft(false));
+        document.getElementById('saveNextDayBtn').addEventListener('click', () => saveCurrentDraft(true));
+
+        // Paste Backlog Tab Controls
+        document.getElementById('backlogTextarea').addEventListener('input', renderBacklogPreview);
+
+        document.getElementById('fillExampleBtn').addEventListener('click', () => {
+          document.getElementById('backlogTextarea').value = [
+            '08 Nov · 5h · + · mania · Start · * Sleep dropped sharply without fatigue',
+            '09 Nov · 4h · ++ · mania · * Pressured speech and racing thoughts',
+            '10 Nov · 3.5h · ++ · mania · /D · Peak · * Paranoid ideas about coworkers',
+            '11 Nov · 4.5h · + · mixed (m) · /D · * Agitated restlessness',
+            '12 Nov · 5.5h · - · mixed (d) · /DP · * Exhausted with inner tension',
+            '13 Nov · 6.5h · = · surviving · End · * Sleep consolidating after med adjustment',
+            '14 Nov · 8.5h · - · depressed · * Post-episode crash and low drive'
+          ].join('\n');
+          renderBacklogPreview();
+        });
+
+        document.getElementById('clearBacklogTextBtn').addEventListener('click', () => {
+          document.getElementById('backlogTextarea').value = '';
+          renderBacklogPreview();
+        });
+
+        document.getElementById('parsePopulateBtn').addEventListener('click', () => {
+          const items = parseBacklogText(document.getElementById('backlogTextarea').value);
+          if (items.length === 0) {
+            showToast('No valid lines found to parse');
+            return;
+          }
+          items.forEach(item => upsertEntry(item));
+          renderAllViews();
+          pulseBriefCard();
+          closeCheckInSheet();
+          showToast(`Imported ${items.length} ${items.length === 1 ? 'day' : 'days'} onto chart`);
+        });
+
+        // Header Menu JSON Export / Import
+        document.getElementById('exportJsonBtn').addEventListener('click', () => {
+          menuPopover.classList.add('hidden');
+          const payload = JSON.stringify({
+            exportedAt: new Date().toISOString(),
+            entries: appState.entries
+          }, null, 2);
+          const blob = new Blob([payload], { type: 'application/json' });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `bipolar-tracker-${DEFAULT_TODAY_ISO}.json`;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          URL.revokeObjectURL(url);
+          showToast('JSON backup downloaded');
+        });
+
+        document.getElementById('importJsonInput').addEventListener('change', e => {
+          menuPopover.classList.add('hidden');
+          const file = e.target.files && e.target.files[0];
+          if (!file) return;
+          const reader = new FileReader();
+          reader.onload = ev => {
+            try {
+              const parsed = JSON.parse(ev.target.result);
+              const list = Array.isArray(parsed) ? parsed : parsed.entries;
+              if (!Array.isArray(list)) throw new Error('Invalid JSON structure');
+              appState.entries = list.map(normalizeEntry).sort((a, b) => a.date.localeCompare(b.date));
+              appState.isSample = false;
+              persistToStorage();
+              renderAllViews();
+              showToast(`Imported ${appState.entries.length} entries`);
+            } catch (err) {
+              showToast('Could not parse JSON file');
+            }
+          };
+          reader.readAsText(file);
+          e.target.value = '';
+        });
+
+        // Responsive Resize Redraw
+        window.addEventListener('resize', () => {
+          renderSvgLifeChart(document.getElementById('lifeChartSvg'), document.getElementById('svgChartWrapper'), true);
+        });
+
+        bindChartScrubbing();
+      }
+
+      /* ----------------------------------------------------------------------
+         14. BOOTSTRAP ON WINDOW LOAD
+         ---------------------------------------------------------------------- */
+      window.addEventListener('load', () => {
+        initTheme();
+        loadFromStorage();
+        initEvents();
+        renderAllViews();
+      });
+    })();
+  </script>
+</body>
+</html>
