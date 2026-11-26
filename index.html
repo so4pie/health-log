@@ -8,10 +8,6 @@
   <meta name="apple-mobile-web-app-title" content="Psych Log" />
   <title>Psych Log</title>
 
-  <!-- Custom iOS Home Screen Icon:
-       By default, the inline script below generates a discreet 180x180 monochrome Swiss-editorial icon.
-       To use your own custom image instead, upload a 180x180 PNG named "icon.png" to your GitHub repo root,
-       replace href="" below with href="icon.png", and remove the inline icon generator script. -->
   <link id="appleTouchIconLink" rel="apple-touch-icon" sizes="180x180" href="icon.jpg" />
   <link id="faviconIconLink" rel="icon" type="image/jpeg" href="icon.jpg" />
 
@@ -30,14 +26,10 @@
       --text-muted: #8E8E93;
       --border-hairline: rgba(0, 0, 0, 0.07);
       --border-strong: rgba(0, 0, 0, 0.16);
-      --grid-line: rgba(0, 0, 0, 0.055);
-      --sleep-bar: rgba(142, 142, 147, 0.22);
-      --sleep-bar-active: rgba(142, 142, 147, 0.48);
-      --cursor-line: rgba(20, 20, 19, 0.35);
       --card-shadow: 0 1px 2px rgba(0, 0, 0, 0.03), 0 4px 12px rgba(0, 0, 0, 0.015);
       --sheet-shadow: 0 -10px 36px rgba(0, 0, 0, 0.14);
 
-      /* Exact Clinical State Semantic Palette */
+      /* Exact Clinical State Semantic Palette (High-Contrast Teal for Hypomania) */
       --state-surviving: #8E8E93;
       --state-surviving-tint: #F2F2F7;
       --state-surviving-border: rgba(142, 142, 147, 0.32);
@@ -54,10 +46,10 @@
       --state-mixed-tint: rgba(139, 92, 246, 0.15);
       --state-mixed-border: rgba(139, 92, 246, 0.38);
 
-      --state-hypomania: #D97706;
-      --state-hypomania-tint: rgba(217, 119, 6, 0.14);
-      --state-hypomania-border: rgba(217, 119, 6, 0.38);
-      
+      --state-hypomania: #0D9488;
+      --state-hypomania-tint: rgba(13, 148, 136, 0.15);
+      --state-hypomania-border: rgba(13, 148, 136, 0.44);
+
       --state-mania: #EA580C;
       --state-mania-tint: rgba(234, 88, 12, 0.15);
       --state-mania-border: rgba(234, 88, 12, 0.40);
@@ -76,10 +68,6 @@
       --text-muted: #787F8D;
       --border-hairline: rgba(255, 255, 255, 0.08);
       --border-strong: rgba(255, 255, 255, 0.16);
-      --grid-line: rgba(255, 255, 255, 0.06);
-      --sleep-bar: rgba(166, 172, 184, 0.18);
-      --sleep-bar-active: rgba(166, 172, 184, 0.42);
-      --cursor-line: rgba(236, 238, 242, 0.38);
       --card-shadow: 0 1px 3px rgba(0, 0, 0, 0.35);
       --sheet-shadow: 0 -12px 44px rgba(0, 0, 0, 0.55);
 
@@ -99,10 +87,10 @@
       --state-mixed-tint: rgba(164, 133, 248, 0.22);
       --state-mixed-border: rgba(164, 133, 248, 0.46);
 
-      --state-hypomania: #FBBF24;
-      --state-hypomania-tint: rgba(251, 191, 36, 0.20);
-      --state-hypomania-border: rgba(251, 191, 36, 0.44);
-      
+      --state-hypomania: #2DD4BF;
+      --state-hypomania-tint: rgba(45, 212, 191, 0.20);
+      --state-hypomania-border: rgba(45, 212, 191, 0.48);
+
       --state-mania: #F58232;
       --state-mania-tint: rgba(245, 130, 50, 0.22);
       --state-mania-border: rgba(245, 130, 50, 0.46);
@@ -210,7 +198,6 @@
       transform: translateY(0);
     }
 
-    /* Subtle Pulse Feedback when 1-Tap Baseline is pressed */
     @keyframes briefFlash {
       0% { transform: scale(1); }
       40% { transform: scale(1.012); }
@@ -236,7 +223,6 @@
       border-radius: 999px;
     }
 
-    /* Clean Print / PDF Handout Layout */
     @media print {
       body {
         background: #FFFFFF !important;
@@ -280,21 +266,18 @@
       </div>
 
       <div class="relative flex items-center gap-1.5 shrink-0">
-        <!-- Dark / Light Mode Toggle (☀︎ / ☾) -->
         <button id="themeToggleBtn" type="button" aria-label="Toggle Dark or Light Mode"
           class="w-9 h-9 rounded-xl hairline flex items-center justify-center text-[15px] transition active:scale-95"
           style="background-color: var(--bg-card); color: var(--text-secondary);">
           <span id="themeGlyph">☾</span>
         </button>
 
-        <!-- Compact Header Menu (Demo Data / Clear & Export JSON) -->
         <button id="headerMenuBtn" type="button" aria-label="Open Tracker Options" aria-expanded="false"
           class="w-9 h-9 rounded-xl hairline flex items-center justify-center text-[16px] font-bold transition active:scale-95"
           style="background-color: var(--bg-card); color: var(--text-secondary);">
           ⋯
         </button>
 
-        <!-- Popover Menu -->
         <div id="headerMenuPopover"
           class="hidden absolute right-0 top-11 w-52 rounded-2xl hairline p-1.5 z-40 space-y-0.5"
           style="background-color: var(--bg-card); box-shadow: 0 10px 30px rgba(0,0,0,0.16);">
@@ -329,7 +312,7 @@
   <main class="max-w-[480px] mx-auto px-4 pt-3.5 space-y-3.5">
 
     <!-- ======================================================================
-         TOP QUICK-ACTION STRIP (ZERO-FRICTION & RETROACTIVE LOGGING)
+         1. LOG TODAY / LOG PREVIOUS BUTTONS
          ====================================================================== -->
     <section class="grid grid-cols-2 gap-2 no-print" aria-label="Quick Check-In Actions">
       <button id="quickBaselineBtn" type="button"
@@ -362,7 +345,7 @@
     </section>
 
     <!-- ======================================================================
-         CARD 1: AUTO-GENERATED CLINICAL BRIEF
+         2. CLINICAL BRIEF (STATES, EPISODES & PSYCHOTIC SYMPTOMS)
          ====================================================================== -->
     <section id="clinicalBriefCard" class="editorial-card p-4 space-y-3.5" aria-label="Auto-Generated Clinical Brief">
       <div class="flex flex-wrap items-start justify-between gap-2">
@@ -375,7 +358,6 @@
           </p>
         </div>
 
-        <!-- 1-Tap Copy Brief & Full-Screen Doctor View -->
         <div class="flex items-center gap-1.5 no-print">
           <button id="copyBriefBtn" type="button"
             class="px-3 py-1.5 rounded-xl text-[12px] font-medium hairline transition active:scale-95 flex items-center gap-1.5"
@@ -399,32 +381,22 @@
         </div>
       </div>
 
-      <!-- Sleep & States Breakdown Grid -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-        <div class="p-3 rounded-2xl hairline space-y-1" style="background-color: var(--bg-subtle);">
-          <div class="text-[10px] font-semibold uppercase tracking-wider" style="color: var(--text-muted);">
-            Sleep Baseline &amp; Shifts
-          </div>
-          <div id="briefSleepAvg" class="text-[17px] font-semibold tabular leading-tight">—</div>
-          <div id="briefSleepFlags" class="text-[12px] leading-snug tabular" style="color: var(--text-secondary);">—</div>
+      <!-- States Composition -->
+      <div class="p-3 rounded-2xl hairline space-y-1.5" style="background-color: var(--bg-subtle);">
+        <div class="text-[10px] font-semibold uppercase tracking-wider" style="color: var(--text-muted);">
+          States
         </div>
-
-        <div class="p-3 rounded-2xl hairline space-y-1.5" style="background-color: var(--bg-subtle);">
-          <div class="text-[10px] font-semibold uppercase tracking-wider" style="color: var(--text-muted);">
-            States
-          </div>
-          <div id="briefStateBar" class="w-full h-2 rounded-full overflow-hidden flex gap-[1.5px]" style="background-color: var(--bg-well);"></div>
-          <div id="briefStateText" class="text-[12px] leading-snug tabular" style="color: var(--text-secondary);">—</div>
-        </div>
+        <div id="briefStateBar" class="w-full h-2 rounded-full overflow-hidden flex gap-[1.5px]" style="background-color: var(--bg-well);"></div>
+        <div id="briefStateText" class="text-[12px] leading-snug tabular" style="color: var(--text-secondary);">—</div>
       </div>
 
       <!-- Auto-Constructed Episodes & Psychotic Dates -->
       <div class="p-3 rounded-2xl hairline space-y-2" style="background-color: var(--bg-subtle);">
         <div>
           <div class="text-[10px] font-semibold uppercase tracking-wider mb-1" style="color: var(--text-muted);">
-            Episodes (Start → Peak → End)
+            Episodes (≥ 4 Consecutive Days or Marked)
           </div>
-          <div id="briefEpisodeArcs" class="space-y-1 text-[12px] leading-relaxed tabular"></div>
+          <div id="briefEpisodeArcs" class="space-y-1.5 text-[12px] leading-relaxed tabular"></div>
         </div>
 
         <div id="briefPsychoticWrap" class="hidden pt-2 hairline-t">
@@ -437,112 +409,54 @@
     </section>
 
     <!-- ======================================================================
-         WEEKLY VS. MONTHLY SEGMENTED TOGGLE & PERIOD NAVIGATOR
+         3. WEEKLY / MONTHLY OVERVIEW
          ====================================================================== -->
-    <section id="periodNavSection" class="editorial-card p-3 space-y-2.5 no-print" aria-label="View Mode and Period Navigator">
-      <!-- iOS Animated Sliding-Pill Segmented Control -->
-      <div id="viewModeTrack" class="ios-seg-track" data-mode="weekly" role="tablist" aria-label="Weekly or Monthly View">
-        <div class="ios-seg-thumb" aria-hidden="true"></div>
-        <button type="button" id="segWeeklyBtn" data-view-mode="weekly" role="tab" aria-selected="true" class="ios-seg-btn">
-          Weekly
-        </button>
-        <button type="button" id="segMonthlyBtn" data-view-mode="monthly" role="tab" aria-selected="false" class="ios-seg-btn">
-          Monthly
-        </button>
-      </div>
-
-      <!-- Period Stepper (‹ 16 Nov – 22 Nov 2026 › or ‹ November 2026 ›) + Today Pill -->
-      <div class="flex items-center justify-between gap-2">
-        <button id="periodPrevBtn" type="button" aria-label="Previous Period"
-          class="w-9 h-9 rounded-xl hairline flex items-center justify-center text-[16px] font-semibold transition active:scale-95 shrink-0"
-          style="background-color: var(--bg-subtle); color: var(--text-primary);">
-          ‹
-        </button>
-
-        <div class="flex items-center justify-center gap-2 min-w-0 flex-1">
-          <span id="periodLabelText" class="text-[13.5px] font-semibold tracking-tight tabular truncate">
-            16 Nov – 22 Nov 2026
-          </span>
-          <button id="periodTodayBtn" type="button"
-            class="hidden px-2.5 py-0.5 rounded-full text-[11px] font-semibold hairline transition active:scale-95 shrink-0"
-            style="background-color: var(--text-primary); color: var(--bg-canvas);">
-            Today
+    <section class="editorial-card p-4 space-y-3" aria-label="Weekly or Monthly Overview">
+      <div class="space-y-2 no-print">
+        <div id="viewModeTrack" class="ios-seg-track" data-mode="weekly" role="tablist" aria-label="Weekly or Monthly View">
+          <div class="ios-seg-thumb" aria-hidden="true"></div>
+          <button type="button" id="segWeeklyBtn" data-view-mode="weekly" role="tab" aria-selected="true" class="ios-seg-btn">
+            Weekly
+          </button>
+          <button type="button" id="segMonthlyBtn" data-view-mode="monthly" role="tab" aria-selected="false" class="ios-seg-btn">
+            Monthly
           </button>
         </div>
 
-        <button id="periodNextBtn" type="button" aria-label="Next Period"
-          class="w-9 h-9 rounded-xl hairline flex items-center justify-center text-[16px] font-semibold transition active:scale-95 shrink-0"
-          style="background-color: var(--bg-subtle); color: var(--text-primary);">
-          ›
-        </button>
-      </div>
-    </section>
+        <div class="flex items-center justify-between gap-2">
+          <button id="periodPrevBtn" type="button" aria-label="Previous Period"
+            class="w-8 h-8 rounded-xl hairline flex items-center justify-center text-[15px] font-semibold transition active:scale-95 shrink-0"
+            style="background-color: var(--bg-subtle); color: var(--text-primary);">
+            ‹
+          </button>
 
-    <!-- ======================================================================
-         CARD 2: INTERACTIVE DUAL-TRACK SVG LIFE CHART
-         ====================================================================== -->
-    <section id="visualizationCard" class="editorial-card p-4 space-y-3" aria-label="Interactive Dual-Track Life Chart">
-      <div class="flex items-center justify-between gap-2">
-        <div>
-          <h2 id="chartCardTitle" class="text-[15px] font-semibold tracking-tight">Weekly Sleep &amp; Mood</h2>
+          <div class="flex items-center justify-center gap-2 min-w-0 flex-1">
+            <span id="periodLabelText" class="text-[13px] font-semibold tracking-tight tabular truncate">
+              23 Nov – 29 Nov 2026
+            </span>
+            <button id="periodTodayBtn" type="button"
+              class="hidden px-2.5 py-0.5 rounded-full text-[11px] font-semibold hairline transition active:scale-95 shrink-0"
+              style="background-color: var(--text-primary); color: var(--bg-canvas);">
+              Today
+            </button>
+          </div>
+
+          <button id="periodNextBtn" type="button" aria-label="Next Period"
+            class="w-8 h-8 rounded-xl hairline flex items-center justify-center text-[15px] font-semibold transition active:scale-95 shrink-0"
+            style="background-color: var(--bg-subtle); color: var(--text-primary);">
+            ›
+          </button>
         </div>
-        <span id="chartLoggedBadge" class="text-[11px] font-medium tabular px-2 py-0.5 rounded-full hairline"
+      </div>
+
+      <div class="flex flex-wrap items-center justify-between gap-2 pt-0.5">
+        <h2 id="gridCardTitle" class="text-[15px] font-semibold tracking-tight">Weekly Overview</h2>
+        <span id="overviewLoggedBadge" class="text-[11px] font-medium tabular px-2 py-0.5 rounded-full hairline"
           style="background-color: var(--bg-subtle); color: var(--text-secondary);">
-          2/7 logged
+          0/7 logged
         </span>
       </div>
 
-      <!-- Inline Hand-Crafted SVG Chart -->
-      <div id="svgChartWrapper" class="relative w-full select-none touch-none pt-1">
-        <svg id="lifeChartSvg" class="w-full block overflow-visible" style="height: 222px;" role="img" aria-label="Sleep bars and Mood line chart"></svg>
-      </div>
-
-      <!-- Compact Chart Legend -->
-      <div class="flex flex-wrap items-center justify-between gap-2 text-[11px] pt-1 hairline-t" style="color: var(--text-muted);">
-        <div class="flex items-center gap-3">
-          <span class="inline-flex items-center gap-1.5">
-            <span class="w-2.5 h-2.5 rounded-[3px] inline-block" style="background-color: var(--sleep-bar-active);"></span>
-            Sleep (0–12h)
-          </span>
-          <span class="inline-flex items-center gap-1.5">
-            <span class="w-2 h-2 rounded-full inline-block" style="background-color: var(--state-mania);"></span>
-            Mood (-- to ++)
-          </span>
-        </div>
-        <div class="tabular">
-          <span class="font-semibold" style="color: var(--text-secondary);">S/P/E</span> Phase ·
-          <span class="font-semibold" style="color: var(--psychotic-crimson);">/D /DP /H</span> Psychotic ·
-          <span class="font-semibold" style="color: var(--text-secondary);">*</span> Note
-        </div>
-      </div>
-
-      <!-- Live Inspected Day Readout Bar directly beneath graph -->
-      <div id="inspectorBox" class="p-3 rounded-2xl hairline space-y-1.5" style="background-color: var(--bg-subtle);">
-        <div class="flex items-center justify-between gap-2">
-          <div id="inspectorHeader" class="flex items-center flex-wrap gap-1.5 text-[12px] tabular">
-            <span style="color: var(--text-muted);">Select a day on the chart</span>
-          </div>
-          <button id="inspectorEditBtn" type="button"
-            class="hidden px-2.5 py-1 rounded-lg text-[11px] font-medium hairline shrink-0 no-print"
-            style="background-color: var(--bg-card); color: var(--text-primary);">
-            Edit Day
-          </button>
-        </div>
-        <p id="inspectorNoteText" class="text-[12px] leading-relaxed" style="color: var(--text-secondary);"></p>
-      </div>
-    </section>
-
-    <!-- ======================================================================
-         CARD 3: WEEKLY OVERVIEW OR MONTHLY TIMESHEET CALENDAR MATRIX
-         ====================================================================== -->
-    <section class="editorial-card p-4 space-y-3" aria-label="Visual Timesheet Grid">
-      <div class="flex flex-wrap items-center justify-between gap-2">
-        <div>
-          <h2 id="gridCardTitle" class="text-[15px] font-semibold tracking-tight">Weekly Overview</h2>
-        </div>
-      </div>
-
-      <!-- 7-Column Calendar Matrix -->
       <div id="timesheetGridContainer"></div>
 
       <!-- Semantic State Colour Key -->
@@ -557,7 +471,22 @@
     </section>
 
     <!-- ======================================================================
-         CARD 4: KEY (COMPACT VISUAL ENCODING LEGEND)
+         4. FREQUENCY (Y-AXIS MOOD ++ TO -- WITH ASCENDING DAY CARDS)
+         ====================================================================== -->
+    <section id="frequencyCard" class="editorial-card p-4 space-y-3" aria-label="Frequency by Mood">
+      <div class="flex items-center justify-between gap-2">
+        <h2 class="text-[15px] font-semibold tracking-tight">Frequency</h2>
+        <span id="frequencyCountBadge" class="text-[11px] font-medium tabular px-2 py-0.5 rounded-full hairline"
+          style="background-color: var(--bg-subtle); color: var(--text-secondary);">
+          0 cards
+        </span>
+      </div>
+
+      <div id="frequencyRowsContainer" class="divide-y" style="border-color: var(--border-hairline);"></div>
+    </section>
+
+    <!-- ======================================================================
+         5. KEY (COMPACT VISUAL ENCODING LEGEND)
          ====================================================================== -->
     <section id="briefKeyCard" class="editorial-card p-4 space-y-2.5" aria-label="Clinical Shorthand Key">
       <div class="flex items-center justify-between gap-2">
@@ -588,7 +517,7 @@
               Flags
             </div>
             <div class="tabular leading-relaxed" style="color: var(--text-primary);">
-              <strong>md / mh / mm</strong> mixed · <strong>hypo</strong> hypomania<br/>
+              <strong>md / mh / mm</strong> mixed · <strong>hypo</strong> hypomania · <strong>surv</strong> surviving alongside state<br/>
               <strong>S</strong> start · <strong>P</strong> peak · <strong>E</strong> end · <strong>*</strong> has note below<br/>
               <span style="color: var(--psychotic-crimson);" class="font-semibold">/D</span> delusions · <span style="color: var(--psychotic-crimson);" class="font-semibold">/DP</span> depersonalisation · <span style="color: var(--psychotic-crimson);" class="font-semibold">/H</span> hallucinations · <span style="color: var(--psychotic-crimson);" class="font-semibold">/DS</span> dissociation
             </div>
@@ -598,7 +527,7 @@
     </section>
 
     <!-- ======================================================================
-         CARD 5: NOTES FEED
+         6. NOTES FEED
          ====================================================================== -->
     <section class="editorial-card p-4 space-y-3" aria-label="Notes Feed">
       <div class="flex items-center justify-between gap-2">
@@ -639,7 +568,7 @@
       <div class="px-5 pt-4 pb-3 hairline-b space-y-3 shrink-0">
         <div class="flex items-center justify-between">
           <div>
-            <h3 id="sheetHeading" class="text-[16px] font-semibold tracking-tight">Log or Backfill Day</h3>
+            <h3 id="sheetHeading" class="text-[16px] font-semibold tracking-tight">Log</h3>
             <p class="text-[11px]" style="color: var(--text-muted);">Pick any past or current date · Updates chart &amp; brief live</p>
           </div>
           <button id="closeSheetBtn" type="button" aria-label="Close Check-In Sheet"
@@ -649,7 +578,6 @@
           </button>
         </div>
 
-        <!-- Two Tabs: "Tap Entry" & "Paste Backlog" -->
         <div class="grid grid-cols-2 p-1 rounded-xl hairline" style="background-color: var(--bg-subtle);" role="tablist">
           <button id="tabTapEntryBtn" type="button" role="tab" aria-selected="true"
             class="sheet-tab-btn py-1.5 rounded-lg text-[12px] font-semibold transition">
@@ -663,7 +591,7 @@
       </div>
 
       <!-- ====================================================================
-           TAB 1: TAP ENTRY (RETROACTIVE DATE PICKER + SEGMENTED PILLS)
+           TAB 1: TAP ENTRY
            ==================================================================== -->
       <div id="tapEntryPanel" class="flex flex-col flex-1 min-h-0">
         <div class="p-5 overflow-y-auto space-y-5 flex-1">
@@ -679,7 +607,6 @@
               </span>
             </div>
 
-            <!-- Quick Retroactive Jump Pills -->
             <div class="grid grid-cols-4 gap-1.5">
               <button type="button" id="jumpYesterdayBtn"
                 class="py-1.5 px-2 rounded-xl text-[11px] font-medium hairline transition active:scale-95 text-center"
@@ -703,7 +630,6 @@
               </button>
             </div>
 
-            <!-- Day Stepper + Interactive British Date Calendar Trigger -->
             <div class="flex items-center gap-2">
               <button id="datePrevBtn" type="button" aria-label="Previous day"
                 class="w-11 h-11 rounded-xl hairline text-[15px] font-semibold flex items-center justify-center active:scale-95"
@@ -714,7 +640,7 @@
                   class="w-full h-11 px-3 rounded-xl hairline text-[14px] font-semibold tabular flex items-center justify-center gap-2 cursor-pointer"
                   style="background-color: var(--bg-subtle);">
                   <span>📅</span>
-                  <span id="britishDateText">17 Nov 2026</span>
+                  <span id="britishDateText">26 Nov 2026</span>
                 </div>
                 <input id="nativeDatePicker" type="date" aria-label="Choose date"
                   class="absolute inset-0 opacity-0 w-full h-full cursor-pointer" />
@@ -730,7 +656,7 @@
             </div>
           </div>
 
-          <!-- 2. Sleep Hours (0–14h in 0.5h increments + Quick-Tap Pill Buttons) -->
+          <!-- 2. Sleep Hours -->
           <div class="space-y-2">
             <div class="flex items-center justify-between">
               <label class="text-[11px] font-semibold uppercase tracking-wider" style="color: var(--text-muted);">
@@ -739,10 +665,8 @@
               <span class="text-[11px] tabular" style="color: var(--text-muted);">0h – 14h (0.5h step)</span>
             </div>
 
-            <!-- Quick-Tap Sleep Pills: 3.5h, 5h, 6.5h, 7.5h, 8.5h, 10h -->
             <div id="sleepQuickPills" class="grid grid-cols-6 gap-1"></div>
 
-            <!-- Stepper -->
             <div class="flex items-center justify-between px-3 py-2 rounded-xl hairline" style="background-color: var(--bg-subtle);">
               <button id="sleepMinusBtn" type="button" aria-label="Decrease sleep by 0.5 hours"
                 class="w-10 h-10 rounded-xl hairline text-[18px] font-medium flex items-center justify-center active:scale-95"
@@ -765,15 +689,18 @@
             <div id="moodPillsContainer" class="grid grid-cols-5 gap-1 p-1 rounded-xl hairline" style="background-color: var(--bg-subtle);"></div>
           </div>
 
-          <!-- 4. State (7 states) -->
+          <!-- 4. State (Multi-select: surviving can be paired with any state) -->
           <div class="space-y-1.5">
-            <label class="text-[11px] font-semibold uppercase tracking-wider block" style="color: var(--text-muted);">
-              4. State
-            </label>
+            <div class="flex items-center justify-between gap-2">
+              <label class="text-[11px] font-semibold uppercase tracking-wider" style="color: var(--text-muted);">
+                4. State
+              </label>
+              <span class="text-[10.5px]" style="color: var(--text-muted);">Surviving can be paired with any state</span>
+            </div>
             <div id="statePillsContainer" class="grid grid-cols-2 sm:grid-cols-4 gap-1.5"></div>
           </div>
 
-          <!-- 5. Psychotic Symptoms (4 options) -->
+          <!-- 5. Psychotic Symptoms -->
           <div class="space-y-1.5">
             <label class="text-[11px] font-semibold uppercase tracking-wider block" style="color: var(--text-muted);">
               5. Psychotic Symptoms
@@ -781,15 +708,15 @@
             <div id="psychoticPillsContainer" class="grid grid-cols-2 gap-1.5"></div>
           </div>
 
-          <!-- 6. Episode Marker (4 options) -->
+          <!-- 6. Episode Marker -->
           <div class="space-y-1.5">
             <label class="text-[11px] font-semibold uppercase tracking-wider block" style="color: var(--text-muted);">
-              6. Episode Marker
+              6. Episode Marker (Optional)
             </label>
             <div id="phasePillsContainer" class="grid grid-cols-4 gap-1 p-1 rounded-xl hairline" style="background-color: var(--bg-subtle);"></div>
           </div>
 
-          <!-- 7. Notes (Optional Freeform) -->
+          <!-- 7. Notes -->
           <div class="space-y-1.5">
             <div class="flex items-center justify-between">
               <label for="notesTextarea" class="text-[11px] font-semibold uppercase tracking-wider" style="color: var(--text-muted);">
@@ -806,7 +733,6 @@
           </div>
         </div>
 
-        <!-- Sticky Footer with "Save" and "Save & Next Day →" -->
         <div class="px-5 py-3.5 hairline-t safe-bottom flex items-center justify-between gap-2 shrink-0"
           style="background-color: var(--bg-card);">
           <button id="saveCloseBtn" type="button"
@@ -823,7 +749,7 @@
       </div>
 
       <!-- ====================================================================
-           TAB 2: PASTE BACKLOG (SMART SHORTHAND PARSER)
+           TAB 2: PASTE BACKLOG
            ==================================================================== -->
       <div id="pasteBacklogPanel" class="hidden flex-col flex-1 min-h-0">
         <div class="p-5 overflow-y-auto space-y-3.5 flex-1">
@@ -838,7 +764,7 @@
               </div>
             </div>
             <p class="text-[12px] leading-snug" style="color: var(--text-secondary);">
-              One day per line: <code class="px-1 py-0.5 rounded text-[11px]" style="background: var(--bg-subtle);">DD Mon · Hours · Mood · State · Psychotic · Start/Peak/End · * Note</code>
+              One day per line (supports paired states like <code class="px-1 py-0.5 rounded text-[11px]" style="background: var(--bg-subtle);">mixed (mh) + surviving</code>):
             </p>
           </div>
 
@@ -846,7 +772,6 @@
             class="w-full p-3.5 rounded-2xl hairline text-[12px] font-mono leading-relaxed focus:outline-none"
             style="background-color: var(--bg-subtle); color: var(--text-primary);"></textarea>
 
-          <!-- Live Parse Preview Box -->
           <div class="p-3 rounded-2xl hairline space-y-1.5" style="background-color: var(--bg-subtle);">
             <div class="flex items-center justify-between">
               <span class="text-[10px] font-semibold uppercase tracking-wider" style="color: var(--text-muted);">
@@ -872,12 +797,11 @@
   </div>
 
   <!-- ========================================================================
-       FULL-SCREEN PSYCHIATRIST "DOCTOR VIEW" MODAL (10-MINUTE CONSULTATION)
+       FULL-SCREEN PSYCHIATRIST "DOCTOR VIEW" MODAL
        ======================================================================== -->
   <div id="doctorViewModal" class="hidden fixed inset-0 z-50 overflow-y-auto"
     style="background-color: var(--bg-canvas);">
     <div class="max-w-3xl mx-auto px-4 py-4 safe-top safe-bottom space-y-4">
-      <!-- Top Bar -->
       <div class="flex items-center justify-between gap-2 pb-3 hairline-b no-print">
         <div>
           <span class="text-[10px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-full"
@@ -900,7 +824,6 @@
         </div>
       </div>
 
-      <!-- Mirror of Clinical Brief + Chart + Timesheet + Key + Flagged Notes -->
       <div id="doctorViewContent" class="space-y-4"></div>
     </div>
   </div>
@@ -920,7 +843,7 @@
       'use strict';
 
       /* ----------------------------------------------------------------------
-         1. CONSTANTS & EXACT CLINICAL SCHEMA
+         1. CONSTANTS & CLINICAL SCHEMA
          ---------------------------------------------------------------------- */
       const STORAGE_KEY = 'psych_log_editorial_v1';
       const THEME_KEY = 'psych_log_theme_v1';
@@ -940,7 +863,6 @@
         'January', 'February', 'March', 'April', 'May', 'June',
         'July', 'August', 'September', 'October', 'November', 'December'
       ];
-      const WEEKDAYS_SHORT = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
       const MON_TO_SUN_LABELS = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
 
       const MOOD_LEVELS = [
@@ -951,21 +873,33 @@
         { id: 'very high', glyph: '++', label: 'Very High', level: 5 }
       ];
 
+      const MOOD_Y_AXIS_DESC = [...MOOD_LEVELS].reverse();
+
       const CLINICAL_STATES = [
-        { id: 'very depressed', shortCode: '',   colorVar: '--state-very-depressed', tintVar: '--state-very-depressed-tint', borderVar: '--state-very-depressed-border' },
-        { id: 'depressed',      shortCode: '',   colorVar: '--state-depressed',      tintVar: '--state-depressed-tint',      borderVar: '--state-depressed-border' },
-        { id: 'surviving',      shortCode: '',   colorVar: '--state-surviving',      tintVar: '--state-surviving-tint',      borderVar: '--state-surviving-border' },
-        { id: 'mixed (d)',      shortCode: 'md', colorVar: '--state-mixed',          tintVar: '--state-mixed-tint',          borderVar: '--state-mixed-border' },
-        { id: 'mixed (h)',      shortCode: 'mh', colorVar: '--state-mixed',          tintVar: '--state-mixed-tint',          borderVar: '--state-mixed-border' },
-        { id: 'mixed (m)',      shortCode: 'mm', colorVar: '--state-mixed',          tintVar: '--state-mixed-tint',          borderVar: '--state-mixed-border' },
-        { id: 'hypomania',      shortCode: 'hypo', colorVar: '--state-hypomania',      tintVar: '--state-hypomania-tint',      borderVar: '--state-hypomania-border' },
-        { id: 'mania',          shortCode: '',   colorVar: '--state-mania',          tintVar: '--state-mania-tint',          borderVar: '--state-mania-border' }
+        { id: 'very depressed', shortCode: '',     family: 'depressive', colorVar: '--state-very-depressed', tintVar: '--state-very-depressed-tint', borderVar: '--state-very-depressed-border' },
+        { id: 'depressed',      shortCode: '',     family: 'depressive', colorVar: '--state-depressed',      tintVar: '--state-depressed-tint',      borderVar: '--state-depressed-border' },
+        { id: 'surviving',      shortCode: 'surv', family: 'baseline',   colorVar: '--state-surviving',      tintVar: '--state-surviving-tint',      borderVar: '--state-surviving-border' },
+        { id: 'mixed (d)',      shortCode: 'md',   family: 'mixed',      colorVar: '--state-mixed',          tintVar: '--state-mixed-tint',          borderVar: '--state-mixed-border' },
+        { id: 'mixed (h)',      shortCode: 'mh',   family: 'mixed',      colorVar: '--state-mixed',          tintVar: '--state-mixed-tint',          borderVar: '--state-mixed-border' },
+        { id: 'mixed (m)',      shortCode: 'mm',   family: 'mixed',      colorVar: '--state-mixed',          tintVar: '--state-mixed-tint',          borderVar: '--state-mixed-border' },
+        { id: 'hypomania',      shortCode: 'hypo', family: 'hypomania',  colorVar: '--state-hypomania',      tintVar: '--state-hypomania-tint',      borderVar: '--state-hypomania-border' },
+        { id: 'mania',          shortCode: '',     family: 'mania',      colorVar: '--state-mania',          tintVar: '--state-mania-tint',          borderVar: '--state-mania-border' }
+      ];
+
+      const EPISODE_STATE_IDS = [
+        'very depressed',
+        'depressed',
+        'mixed (d)',
+        'mixed (h)',
+        'mixed (m)',
+        'hypomania',
+        'mania'
       ];
 
       const PSYCHOTIC_SYMPTOMS = [
         { id: 'none',              shortCode: '',    label: 'none' },
         { id: 'delusions',         shortCode: '/D',  label: 'delusions (/D)' },
-        { id: 'dissociation', label: 'Dissociation', shortCode: '/DS' },
+        { id: 'dissociation',      shortCode: '/DS', label: 'dissociation (/DS)' },
         { id: 'depersonalisation', shortCode: '/DP', label: 'depersonalisation (/DP)' },
         { id: 'hallucinations',    shortCode: '/H',  label: 'hallucinations (/H)' }
       ];
@@ -986,8 +920,8 @@
           `${d(-9)} · 4.0h · very high · mania · none · * Pressured speech and racing thoughts`,
           `${d(-8)} · 3.5h · very high · mania · delusions · Peak · * Peak day 1: strong paranoid ideas about coworkers monitoring messages`,
           `${d(-7)} · 3.5h · very high · mania · delusions · Peak · * Peak day 2: grandiosity, zero fatigue, rapid speech`,
-          `${d(-6)} · 4.0h · high · mixed (m) · delusions · Peak · * Peak day 3: agitated restlessness alongside racing thoughts`,
-          `${d(-5)} · 5.5h · low · mixed (d) · depersonalisation · * Heavy exhaustion with wired inner tension`,
+          `${d(-6)} · 4.0h · high · mixed (m) + surviving · delusions · * Agitated restlessness alongside racing thoughts while maintaining routines`,
+          `${d(-5)} · 5.5h · low · mixed (d) + surviving · depersonalisation · * Heavy exhaustion with wired inner tension`,
           `${d(-4)} · 6.5h · neutral · surviving · none · End · * Sleep consolidating after evening dose adjustment`
         ].join('\n');
       }
@@ -1019,37 +953,26 @@
         return Math.round((b - a) / 86400000);
       }
 
-      // British Full Date: "17 Nov 2026"
       function formatBritishFull(iso) {
         if (!iso || !/^\d{4}-\d{2}-\d{2}$/.test(iso)) return iso || '';
         const [y, m, d] = iso.split('-').map(Number);
         return `${String(d).padStart(2, '0')} ${MONTHS_SHORT[m - 1]} ${y}`;
       }
 
-      // British Short Date: "17 Nov"
       function formatBritishShort(iso) {
         if (!iso || !/^\d{4}-\d{2}-\d{2}$/.test(iso)) return iso || '';
         const [, m, d] = iso.split('-').map(Number);
         return `${String(d).padStart(2, '0')} ${MONTHS_SHORT[m - 1]}`;
       }
 
-      // British Date with Weekday: "Tue, 17 Nov 2026"
-      function formatBritishWeekday(iso) {
-        if (!iso) return '';
-        const dt = parseISO(iso);
-        return `${WEEKDAYS_SHORT[dt.getDay()]}, ${formatBritishFull(iso)}`;
-      }
-
-      // Full Month Heading: "November 2026"
       function formatMonthYear(yearMonth) {
         const [y, m] = yearMonth.split('-').map(Number);
         return `${MONTHS_FULL[m - 1]} ${y}`;
       }
 
-      // Find Monday of the week containing `iso`
       function getMondayISO(iso) {
         const dt = parseISO(iso);
-        const day = dt.getDay(); // 0=Sun, 1=Mon..6=Sat
+        const day = dt.getDay();
         const diffToMon = day === 0 ? -6 : 1 - day;
         dt.setDate(dt.getDate() + diffToMon);
         return toISO(dt);
@@ -1081,13 +1004,12 @@
       let appState = {
         entries: [],
         isSample: false,
-        viewMode: 'weekly',                        // 'weekly' | 'monthly'
+        viewMode: 'weekly',
         weekMondayIso: getMondayISO(TODAY_ISO),
         monthIso: TODAY_ISO.slice(0, 7),
-        feedFilter: 'flagged',                     // 'flagged' | 'all'
+        feedFilter: 'flagged',
         selectedDate: TODAY_ISO,
-        keyExpanded: true,
-        chartGeometry: null
+        keyExpanded: true
       };
 
       let sheetDraft = {
@@ -1095,6 +1017,7 @@
         date: TODAY_ISO,
         sleep: 7.5,
         mood: 'neutral',
+        states: ['surviving'],
         state: 'surviving',
         psychotic: 'none',
         phase: 'none',
@@ -1102,30 +1025,29 @@
       };
 
       function createRealisticSampleEntries() {
-        // Includes a multi-day episode with Start, 3 consecutive Peak days in a row, and End
         const rows = [
-          { offset: -14, sleep: 7.5, mood: 'neutral',   state: 'surviving',      psychotic: 'none',              phase: 'none',  notes: '' },
-          { offset: -13, sleep: 8.0, mood: 'neutral',   state: 'surviving',      psychotic: 'none',              phase: 'none',  notes: '' },
-          { offset: -12, sleep: 7.0, mood: 'neutral',   state: 'surviving',      psychotic: 'none',              phase: 'none',  notes: '' },
-          { offset: -11, sleep: 6.5, mood: 'low',       state: 'surviving',      psychotic: 'none',              phase: 'none',  notes: 'Sharp emotional dip after interpersonal stress; settled by morning.' },
-          { offset: -10, sleep: 5.0, mood: 'high',      state: 'mania',          psychotic: 'none',              phase: 'start', notes: 'Sleep dropped sharply without fatigue; wired energy overnight.' },
-          { offset: -9,  sleep: 4.0, mood: 'very high', state: 'mania',          psychotic: 'none',              phase: 'none',  notes: 'Pressured speech, started three projects at 3am.' },
-          { offset: -8,  sleep: 3.5, mood: 'very high', state: 'mania',          psychotic: 'delusions',         phase: 'peak',  notes: 'Peak day 1: strong paranoid ideas about coworkers monitoring messages.' },
-          { offset: -7,  sleep: 3.5, mood: 'very high', state: 'mania',          psychotic: 'delusions',         phase: 'peak',  notes: 'Peak day 2: grandiosity, zero fatigue, rapid speech.' },
-          { offset: -6,  sleep: 4.0, mood: 'high',      state: 'mixed (m)',      psychotic: 'delusions',         phase: 'peak',  notes: 'Peak day 3: agitated restlessness alongside racing thoughts.' },
-          { offset: -5,  sleep: 5.5, mood: 'low',       state: 'mixed (d)',      psychotic: 'depersonalisation', phase: 'none',  notes: 'Heavy exhaustion with wired inner tension and brief depersonalisation.' },
-          { offset: -4,  sleep: 6.5, mood: 'neutral',   state: 'surviving',      psychotic: 'none',              phase: 'end',   notes: 'Sleep consolidating after evening dose adjustment; delusions resolved.' },
-          { offset: -3,  sleep: 8.5, mood: 'low',       state: 'depressed',      psychotic: 'none',              phase: 'none',  notes: 'Post-episode crash; low drive and morning grogginess.' },
-          { offset: -2,  sleep: 9.5, mood: 'very low',  state: 'very depressed', psychotic: 'none',              phase: 'none',  notes: 'Heavy fatigue and social withdrawal; stayed in bed most of morning.' },
-          { offset: -1,  sleep: 7.5, mood: 'neutral',   state: 'surviving',      psychotic: 'none',              phase: 'none',  notes: '' },
-          { offset: 0,   sleep: 7.5, mood: 'neutral',   state: 'surviving',      psychotic: 'none',              phase: 'none',  notes: 'Baseline steady; ready to review episodes at clinic.' }
+          { offset: -14, sleep: 7.5, mood: 'neutral',   states: ['surviving'],                 psychotic: 'none',              phase: 'none',  notes: '' },
+          { offset: -13, sleep: 8.0, mood: 'neutral',   states: ['surviving'],                 psychotic: 'none',              phase: 'none',  notes: '' },
+          { offset: -12, sleep: 7.0, mood: 'neutral',   states: ['surviving'],                 psychotic: 'none',              phase: 'none',  notes: '' },
+          { offset: -11, sleep: 6.5, mood: 'low',       states: ['surviving'],                 psychotic: 'none',              phase: 'none',  notes: 'Sharp emotional dip after interpersonal stress; settled by morning.' },
+          { offset: -10, sleep: 5.0, mood: 'high',      states: ['mania'],                     psychotic: 'none',              phase: 'start', notes: 'Sleep dropped sharply without fatigue; wired energy overnight.' },
+          { offset: -9,  sleep: 4.0, mood: 'very high', states: ['mania'],                     psychotic: 'none',              phase: 'none',  notes: 'Pressured speech, started three projects at 3am.' },
+          { offset: -8,  sleep: 3.5, mood: 'very high', states: ['mania'],                     psychotic: 'delusions',         phase: 'peak',  notes: 'Peak day 1: strong paranoid ideas about coworkers monitoring messages.' },
+          { offset: -7,  sleep: 3.5, mood: 'very high', states: ['mania'],                     psychotic: 'delusions',         phase: 'peak',  notes: 'Peak day 2: grandiosity, zero fatigue, rapid speech.' },
+          { offset: -6,  sleep: 4.0, mood: 'high',      states: ['mixed (m)', 'surviving'],    psychotic: 'delusions',         phase: 'none',  notes: 'Agitated restlessness alongside racing thoughts while maintaining routines.' },
+          { offset: -5,  sleep: 5.5, mood: 'low',       states: ['mixed (d)', 'surviving'],    psychotic: 'depersonalisation', phase: 'none',  notes: 'Heavy exhaustion with wired inner tension and brief depersonalisation.' },
+          { offset: -4,  sleep: 6.5, mood: 'neutral',   states: ['surviving'],                 psychotic: 'none',              phase: 'end',   notes: 'Sleep consolidating after evening dose adjustment; delusions resolved.' },
+          { offset: -3,  sleep: 8.5, mood: 'low',       states: ['depressed'],                 psychotic: 'none',              phase: 'none',  notes: 'Post-episode crash; low drive and morning grogginess.' },
+          { offset: -2,  sleep: 9.5, mood: 'very low',  states: ['very depressed'],            psychotic: 'none',              phase: 'none',  notes: 'Heavy fatigue and social withdrawal; stayed in bed most of morning.' },
+          { offset: -1,  sleep: 7.5, mood: 'neutral',   states: ['surviving'],                 psychotic: 'none',              phase: 'none',  notes: '' },
+          { offset: 0,   sleep: 7.5, mood: 'neutral',   states: ['surviving'],                 psychotic: 'none',              phase: 'none',  notes: 'Baseline steady; ready to review episodes at clinic.' }
         ];
 
-        return rows.map(r => ({
+        return rows.map(r => normalizeEntry({
           date: addDays(TODAY_ISO, r.offset),
           sleep: r.sleep,
           mood: r.mood,
-          state: r.state,
+          states: r.states,
           psychotic: r.psychotic,
           phase: r.phase,
           notes: r.notes
@@ -1133,11 +1055,60 @@
       }
 
       /* ----------------------------------------------------------------------
-         4. STORAGE & THEME PERSISTENCE
+         4. STORAGE, MULTI-STATE NORMALIZATION & THEME PERSISTENCE
          ---------------------------------------------------------------------- */
+      function normalizeStatesList(rawStates, rawSingleState) {
+        const validIds = new Set(CLINICAL_STATES.map(s => s.id));
+        let candidateList = [];
+
+        if (Array.isArray(rawStates) && rawStates.length > 0) {
+          candidateList = rawStates.map(s => String(s).trim().toLowerCase());
+        } else if (typeof rawSingleState === 'string' && rawSingleState.trim()) {
+          candidateList = rawSingleState
+            .split(/\+|,|&|\//)
+            .map(s => s.trim().toLowerCase())
+            .filter(Boolean);
+        }
+
+        const uniqueValid = [];
+        candidateList.forEach(st => {
+          if (validIds.has(st) && !uniqueValid.includes(st)) {
+            uniqueValid.push(st);
+          }
+        });
+
+        if (uniqueValid.length === 0) {
+          return ['surviving'];
+        }
+
+        // Order episode states first, followed by 'surviving' if co-present
+        const episodePart = uniqueValid.filter(s => s !== 'surviving');
+        const hasSurviving = uniqueValid.includes('surviving');
+        return hasSurviving ? [...episodePart, 'surviving'] : episodePart;
+      }
+
+      function getPrimaryState(statesArr) {
+        if (!Array.isArray(statesArr) || statesArr.length === 0) return 'surviving';
+        const nonSurv = statesArr.find(s => s !== 'surviving');
+        return nonSurv || 'surviving';
+      }
+
+      function getEpisodeStates(statesArr) {
+        if (!Array.isArray(statesArr)) return [];
+        return statesArr.filter(s => EPISODE_STATE_IDS.includes(s));
+      }
+
+      function formatEntryStatesLabel(entry) {
+        const list = Array.isArray(entry.states) && entry.states.length > 0
+          ? entry.states
+          : [entry.state || 'surviving'];
+        return list.join(' + ');
+      }
+
       function normalizeEntry(raw) {
         const validMood = MOOD_LEVELS.some(m => m.id === raw.mood) ? raw.mood : 'neutral';
-        const validState = CLINICAL_STATES.some(s => s.id === raw.state) ? raw.state : 'surviving';
+        const states = normalizeStatesList(raw.states, raw.state);
+        const primaryState = getPrimaryState(states);
         const validPsych = PSYCHOTIC_SYMPTOMS.some(p => p.id === raw.psychotic) ? raw.psychotic : 'none';
         const validPhase = EPISODE_PHASES.some(p => p.id === raw.phase) ? raw.phase : 'none';
         const sleepNum = Math.min(14, Math.max(0, Math.round((Number(raw.sleep) || 0) * 2) / 2));
@@ -1146,7 +1117,8 @@
           date: String(raw.date),
           sleep: sleepNum,
           mood: validMood,
-          state: validState,
+          states,
+          state: primaryState,
           psychotic: validPsych,
           phase: validPhase,
           notes: raw.notes ? String(raw.notes).trim() : ''
@@ -1167,7 +1139,6 @@
         } catch (err) {
           console.warn('Storage read fallback:', err);
         }
-        // Start completely blank on first load
         appState.entries = [];
         appState.isSample = false;
       }
@@ -1283,11 +1254,12 @@
       }
 
       function isFlaggedEntry(entry) {
+        const hasEpisodeState = getEpisodeStates(entry.states).length > 0;
         return Boolean(
           (entry.notes && entry.notes.trim().length > 0) ||
           entry.phase !== 'none' ||
           entry.psychotic !== 'none' ||
-          entry.state !== 'surviving'
+          hasEpisodeState
         );
       }
 
@@ -1309,7 +1281,7 @@
       }
 
       /* ----------------------------------------------------------------------
-         6. CARD 1: AUTO-GENERATED CLINICAL BRIEF ENGINE
+         6. CLINICAL BRIEF ENGINE (4+ CONSECUTIVE DAYS EPISODE ENGINE)
          ---------------------------------------------------------------------- */
       function formatPeakDatesList(peakDates) {
         if (!peakDates || peakDates.length === 0) return '';
@@ -1340,74 +1312,152 @@
         }).join(', ');
       }
 
+      function getEntryEpisodeFamily(entry) {
+        const epStates = getEpisodeStates(entry.states);
+        if (epStates.length === 0) return null;
+        return getStateMeta(epStates[0]).family;
+      }
+
+      function detectClinicalEpisodes(visible) {
+        if (!visible || visible.length === 0) return [];
+        const sorted = [...visible].sort((a, b) => a.date.localeCompare(b.date));
+
+        // Build contiguous runs of episode-eligible days (Depressed, Very Depressed, Mixed, Hypomania, Mania)
+        // Note: 'surviving' co-occurring with an episode state does NOT break the run!
+        const clusters = [];
+        let current = null;
+
+        sorted.forEach(entry => {
+          const epStates = getEpisodeStates(entry.states);
+          const family = getEntryEpisodeFamily(entry);
+
+          if (!family) {
+            // Pure 'surviving' day closes any open episode run
+            if (current) {
+              current.closedByBaseline = true;
+              clusters.push(current);
+              current = null;
+            }
+            return;
+          }
+
+          if (!current) {
+            current = {
+              family,
+              entries: [entry],
+              closedByBaseline: false,
+              closedByEndFlag: entry.phase === 'end'
+            };
+            if (entry.phase === 'end') {
+              clusters.push(current);
+              current = null;
+            }
+            return;
+          }
+
+          const prevEntry = current.entries[current.entries.length - 1];
+          const isConsecutiveDay = diffDaysBetween(prevEntry.date, entry.date) === 1;
+          const sameFamily = current.family === family;
+          const explicitNewStart = entry.phase === 'start';
+
+          if (isConsecutiveDay && sameFamily && !explicitNewStart) {
+            current.entries.push(entry);
+            if (entry.phase === 'end') {
+              current.closedByEndFlag = true;
+              clusters.push(current);
+              current = null;
+            }
+          } else {
+            // New episode family, gap in dates, or explicit Start flag
+            current.closedByTransition = true;
+            clusters.push(current);
+            current = {
+              family,
+              entries: [entry],
+              closedByBaseline: false,
+              closedByEndFlag: entry.phase === 'end'
+            };
+            if (entry.phase === 'end') {
+              clusters.push(current);
+              current = null;
+            }
+          }
+        });
+
+        if (current) {
+          clusters.push(current);
+        }
+
+        // Keep clusters that are >= 4 consecutive days OR have an explicit Start / Peak / End marker
+        const episodes = [];
+        clusters.forEach(cluster => {
+          const dayCount = cluster.entries.length;
+          const hasExplicitMarker = cluster.entries.some(e => e.phase !== 'none');
+          if (dayCount < 4 && !hasExplicitMarker) return;
+
+          const start = cluster.entries[0].date;
+          const lastEntry = cluster.entries[cluster.entries.length - 1];
+          const peaks = cluster.entries
+            .filter(e => e.phase === 'peak')
+            .map(e => e.date);
+
+          const isEnded = Boolean(
+            cluster.closedByBaseline ||
+            cluster.closedByEndFlag ||
+            cluster.closedByTransition
+          );
+          const end = isEnded ? lastEntry.date : null;
+
+          const stateSet = new Set();
+          cluster.entries.forEach(e => {
+            getEpisodeStates(e.states).forEach(s => stateSet.add(s));
+          });
+
+          episodes.push({
+            start,
+            peaks,
+            end,
+            dayCount,
+            states: Array.from(stateSet)
+          });
+        });
+
+        return episodes;
+      }
+
       function computeBriefData(visible) {
         const count = visible.length;
         if (count === 0) {
           return {
             count: 0,
-            sleepAvgText: '—',
-            sleepFlagsText: 'No entries logged yet',
             stateCounts: {},
+            totalStateOccurrences: 0,
             stateSummaryText: '—',
             arcs: [],
             psychoticList: []
           };
         }
 
-        const totalSleep = visible.reduce((sum, e) => sum + e.sleep, 0);
-        const avgSleep = (totalSleep / count).toFixed(1);
-        const lowSleepDays = visible.filter(e => e.sleep <= 5);
-        const highSleepDays = visible.filter(e => e.sleep >= 9.5);
-
-        const flagSnippets = [];
-        if (lowSleepDays.length > 0) {
-          flagSnippets.push(`≤5h on ${lowSleepDays.length}d (${lowSleepDays.map(d => formatBritishShort(d.date)).join(', ')})`);
-        }
-        if (highSleepDays.length > 0) {
-          flagSnippets.push(`≥9.5h on ${highSleepDays.length}d (${highSleepDays.map(d => formatBritishShort(d.date)).join(', ')})`);
-        }
-        const sleepFlagsText = flagSnippets.length > 0
-          ? flagSnippets.join(' · ')
-          : 'No ≤5h or ≥9.5h shifts';
-
-        // State Breakdown
+        // State Breakdown (counts every active state on each day, so 'mixed + surviving' counts both)
         const stateCounts = {};
+        let totalStateOccurrences = 0;
         CLINICAL_STATES.forEach(s => { stateCounts[s.id] = 0; });
-        visible.forEach(e => { stateCounts[e.state] = (stateCounts[e.state] || 0) + 1; });
+
+        visible.forEach(e => {
+          const list = Array.isArray(e.states) && e.states.length > 0 ? e.states : [e.state];
+          list.forEach(st => {
+            stateCounts[st] = (stateCounts[st] || 0) + 1;
+            totalStateOccurrences += 1;
+          });
+        });
 
         const activeStates = CLINICAL_STATES
           .filter(s => stateCounts[s.id] > 0)
           .map(s => `${s.id}: ${stateCounts[s.id]}d`);
         const stateSummaryText = activeStates.join(' · ');
 
-        // Episodes (Start -> Peak(s) -> End — supports multiple consecutive Peak days)
-        const arcs = [];
-        let currentArc = null;
-        visible.forEach(e => {
-          if (e.phase === 'start') {
-            if (currentArc) arcs.push(currentArc);
-            currentArc = { start: e.date, peaks: [], end: null, states: new Set([e.state]) };
-          } else if (e.phase === 'peak') {
-            if (!currentArc) {
-              currentArc = { start: null, peaks: [e.date], end: null, states: new Set([e.state]) };
-            } else {
-              currentArc.peaks.push(e.date);
-              currentArc.states.add(e.state);
-            }
-          } else if (e.phase === 'end') {
-            if (!currentArc) {
-              currentArc = { start: null, peaks: [], end: e.date, states: new Set([e.state]) };
-            } else {
-              currentArc.end = e.date;
-              currentArc.states.add(e.state);
-            }
-            arcs.push(currentArc);
-            currentArc = null;
-          } else if (currentArc && e.state !== 'surviving') {
-            currentArc.states.add(e.state);
-          }
-        });
-        if (currentArc) arcs.push(currentArc);
+        // Episodes (>= 4 consecutive days or explicit marker; Peak optional)
+        const arcs = detectClinicalEpisodes(visible);
 
         // Psychotic Symptoms Logged
         const psychMap = {};
@@ -1424,9 +1474,8 @@
 
         return {
           count,
-          sleepAvgText: `${avgSleep}h avg`,
-          sleepFlagsText,
           stateCounts,
+          totalStateOccurrences,
           stateSummaryText,
           arcs,
           psychoticList
@@ -1439,19 +1488,17 @@
         const data = computeBriefData(visible);
 
         document.getElementById('briefDateRangeText').textContent = win.label;
-        document.getElementById('briefSleepAvg').textContent = data.sleepAvgText;
-        document.getElementById('briefSleepFlags').textContent = data.sleepFlagsText;
         document.getElementById('headerSpanBadge').textContent = formatBritishFull(TODAY_ISO);
 
         // Segmented State Composition Bar
         const barEl = document.getElementById('briefStateBar');
-        if (data.count === 0) {
+        if (data.count === 0 || data.totalStateOccurrences === 0) {
           barEl.innerHTML = '';
         } else {
           barEl.innerHTML = CLINICAL_STATES
             .filter(s => data.stateCounts[s.id] > 0)
             .map(s => {
-              const pct = (data.stateCounts[s.id] / data.count) * 100;
+              const pct = (data.stateCounts[s.id] / data.totalStateOccurrences) * 100;
               return `<div style="width:${pct.toFixed(2)}%; background-color:var(${s.colorVar});" title="${s.id}: ${data.stateCounts[s.id]}d"></div>`;
             }).join('');
         }
@@ -1462,23 +1509,22 @@
         if (data.count === 0) {
           arcsEl.innerHTML = `<div style="color: var(--text-muted);">—</div>`;
         } else if (data.arcs.length === 0) {
-          arcsEl.innerHTML = `<div style="color: var(--text-muted);">No Start / Peak / End markers logged in this period.</div>`;
+          arcsEl.innerHTML = `<div style="color: var(--text-muted);">No episodes (4+ consecutive days or marked) in this period.</div>`;
         } else {
           arcsEl.innerHTML = data.arcs.map((arc, idx) => {
-            const startTxt = arc.start ? `Start ${formatBritishShort(arc.start)}` : 'Start (prior)';
+            const startTxt = `Start ${formatBritishShort(arc.start)}`;
             const peakFormatted = formatPeakDatesList(arc.peaks);
             const peakTxt = peakFormatted ? ` → Peak ${peakFormatted}` : '';
             const endTxt = arc.end ? ` → End ${formatBritishShort(arc.end)}` : ' → Ongoing';
-            const statesArr = Array.from(arc.states).filter(s => s !== 'surviving');
-            const stateLabel = statesArr.length > 0 ? statesArr.join(' → ') : 'surviving';
+            const stateLabel = arc.states.length > 0 ? arc.states.join(' / ') : 'episode';
 
             return `
               <div class="flex flex-wrap items-center gap-1.5">
                 <span class="font-semibold">Episode ${idx + 1}:</span>
                 <span>${startTxt}${peakTxt}${endTxt}</span>
-                <span class="px-1.5 py-0.5 rounded-md text-[11px] font-medium capitalize"
+                <span class="px-1.5 py-0.5 rounded-md text-[11px] font-medium"
                   style="background-color: var(--bg-card); border: 1px solid var(--border-hairline);">
-                  ${stateLabel}
+                  ${stateLabel} (${arc.dayCount}d)
                 </span>
               </div>
             `;
@@ -1506,17 +1552,16 @@
 
         const lines = [
           `PSYCH LOG CLINICAL BRIEF (${win.label} · ${data.count} days logged)`,
-          `• Sleep: ${data.sleepAvgText} (${data.sleepFlagsText})`,
           `• States: ${data.stateSummaryText}`
         ];
 
         if (data.arcs.length > 0) {
           data.arcs.forEach((arc, i) => {
-            const s = arc.start ? formatBritishShort(arc.start) : 'prior';
+            const s = formatBritishShort(arc.start);
             const peakFormatted = formatPeakDatesList(arc.peaks);
             const p = peakFormatted ? ` → Peak ${peakFormatted}` : '';
             const e = arc.end ? ` → End ${formatBritishShort(arc.end)}` : ' → Ongoing';
-            lines.push(`• Episode ${i + 1}: Start ${s}${p}${e} (${Array.from(arc.states).join(' / ')})`);
+            lines.push(`• Episode ${i + 1}: Start ${s}${p}${e} (${arc.states.join(' / ')}, ${arc.dayCount}d)`);
           });
         }
         if (data.psychoticList.length > 0) {
@@ -1527,7 +1572,7 @@
         if (flaggedNotes.length > 0) {
           lines.push('', 'KEY NOTES:');
           flaggedNotes.forEach(e => {
-            lines.push(`- ${formatBritishFull(e.date)} (${formatSleepNum(e.sleep)}h, ${e.mood}, ${e.state}): ${e.notes}`);
+            lines.push(`- ${formatBritishFull(e.date)} (${formatSleepNum(e.sleep)}h, ${e.mood}, ${formatEntryStatesLabel(e)}): ${e.notes}`);
           });
         }
         return lines.join('\n');
@@ -1552,324 +1597,19 @@
       }
 
       /* ----------------------------------------------------------------------
-         7. CARD 2: INTERACTIVE DUAL-TRACK SVG LIFE CHART (WEEKLY & MONTHLY)
+         7. WEEKLY / MONTHLY OVERVIEW TIMESHEET MATRIX
          ---------------------------------------------------------------------- */
-      function renderSvgLifeChart(targetSvgEl, targetWrapperEl, interactive) {
-        const win = getPeriodWindow();
-        const entryMap = new Map(appState.entries.map(e => [e.date, e]));
-        const slots = win.allDates.map(iso => ({
-          iso,
-          entry: entryMap.get(iso) || null
-        }));
-
-        const width = Math.max(280, Math.floor((targetWrapperEl || document.getElementById('svgChartWrapper')).getBoundingClientRect().width) || 340);
-        const height = 222;
-        targetSvgEl.setAttribute('viewBox', `0 0 ${width} ${height}`);
-
-        // Ensure selectedDate stays inside the viewed period if possible
-        if (!appState.selectedDate || !win.allDates.includes(appState.selectedDate)) {
-          const loggedInPeriod = slots.filter(s => s.entry);
-          appState.selectedDate = loggedInPeriod.length > 0
-            ? loggedInPeriod[loggedInPeriod.length - 1].iso
-            : (win.isCurrent ? TODAY_ISO : win.startIso);
-        }
-
-        const padLeft = 32;
-        const padRight = 26;
-        const padTop = 34;
-        const padBottom = 26;
-        const plotW = width - padLeft - padRight;
-        const plotH = height - padTop - padBottom;
-        const n = slots.length;
-        const stepX = plotW / n;
-        const isWeekly = win.mode === 'weekly';
-
-        if (interactive) {
-          appState.chartGeometry = { padLeft, plotW, stepX, slots };
-        }
-
-        const parts = [];
-
-        // Y-Axis Gridlines: Left = Sleep (0h–12h), Right = Mood (-- to ++)
-        const ticks = [
-          { frac: 0,    sleep: '12h', mood: '++' },
-          { frac: 0.25, sleep: '9h',  mood: '+' },
-          { frac: 0.5,  sleep: '6h',  mood: '=' },
-          { frac: 0.75, sleep: '3h',  mood: '-' },
-          { frac: 1,    sleep: '0h',  mood: '--' }
-        ];
-
-        ticks.forEach(t => {
-          const y = padTop + t.frac * plotH;
-          parts.push(`
-            <line x1="${padLeft}" y1="${y}" x2="${padLeft + plotW}" y2="${y}"
-              stroke="var(--grid-line)" stroke-width="1" />
-            <text x="${padLeft - 6}" y="${y + 3.5}" text-anchor="end" fill="var(--text-muted)" font-size="10" class="tabular">${t.sleep}</text>
-            <text x="${padLeft + plotW + 6}" y="${y + 3.5}" text-anchor="start" fill="var(--text-muted)" font-size="10" class="tabular">${t.mood}</text>
-          `);
-        });
-
-        // Monthly Mode: Subtle 5h Low-Sleep Reference Line
-        if (!isWeekly) {
-          const y5h = padTop + (1 - 5 / 12) * plotH;
-          parts.push(`
-            <line x1="${padLeft}" y1="${y5h.toFixed(1)}" x2="${padLeft + plotW}" y2="${y5h.toFixed(1)}"
-              stroke="var(--state-mania)" stroke-width="1" stroke-dasharray="3 3" opacity="0.45" />
-            <text x="${padLeft + 3}" y="${(y5h - 3).toFixed(1)}" fill="var(--state-mania)" font-size="9" font-weight="600" opacity="0.8" class="tabular">5h</text>
-          `);
-        }
-
-        const coords = slots.map((slot, idx) => {
-          const cx = padLeft + (idx + 0.5) * stepX;
-          if (!slot.entry) {
-            return { iso: slot.iso, entry: null, idx, cx };
-          }
-          const sleepClamped = Math.min(12, Math.max(0, slot.entry.sleep));
-          const barH = (sleepClamped / 12) * plotH;
-          const barY = padTop + plotH - barH;
-          const moodLvl = getMoodMeta(slot.entry.mood).level;
-          const moodY = padTop + ((5 - moodLvl) / 4) * plotH;
-          return { iso: slot.iso, entry: slot.entry, idx, cx, barY, barH, moodY };
-        });
-
-        // 1. Vertical Sleep Bars (Wide rounded bars in Weekly; slim bars in Monthly)
-        const barW = isWeekly
-          ? Math.max(18, Math.min(30, stepX * 0.56))
-          : Math.max(3.5, Math.min(10, stepX * 0.64));
-
-        coords.forEach(c => {
-          const isSel = c.iso === appState.selectedDate;
-          if (!c.entry) {
-            if (isWeekly) {
-              parts.push(`
-                <rect x="${c.cx - barW / 2}" y="${padTop + plotH - 8}" width="${barW}" height="8"
-                  rx="3" fill="none" stroke="var(--border-hairline)" stroke-dasharray="2 2" />
-              `);
-            }
-            return;
-          }
-
-          const fill = isSel ? 'var(--sleep-bar-active)' : 'var(--sleep-bar)';
-          parts.push(`
-            <rect x="${c.cx - barW / 2}" y="${c.barY}" width="${barW}" height="${Math.max(3, c.barH)}"
-              rx="${isWeekly ? 5 : Math.min(3, barW / 2)}" fill="${fill}" />
-          `);
-
-          // Weekly Mode: Exact sleep hour label above or inside each bar
-          if (isWeekly) {
-            const labelInside = c.barH >= 22;
-            const textY = labelInside ? c.barY + 13 : c.barY - 5;
-            parts.push(`
-              <text x="${c.cx}" y="${textY.toFixed(1)}" text-anchor="middle"
-                fill="${labelInside ? 'var(--text-primary)' : 'var(--text-secondary)'}"
-                font-size="9.5" font-weight="600" class="tabular">${formatSleepNum(c.entry.sleep)}h</text>
-            `);
-          }
-        });
-
-        // 2. Selected Day Scrubbing Crosshair Line
-        const selCoord = coords.find(c => c.iso === appState.selectedDate);
-        if (selCoord) {
-          parts.push(`
-            <line x1="${selCoord.cx}" y1="${padTop - 6}" x2="${selCoord.cx}" y2="${padTop + plotH}"
-              stroke="var(--cursor-line)" stroke-width="1.2" stroke-dasharray="2.5 2.5" />
-          `);
-        }
-
-        // 3. State-Coloured Connected Mood Trajectory Segments (Breaks cleanly across unlogged gaps)
-        for (let i = 0; i < coords.length - 1; i++) {
-          const a = coords[i];
-          const b = coords[i + 1];
-          if (!a.entry || !b.entry) continue;
-          const segColor = cssVar(getStateMeta(b.entry.state).colorVar);
-          parts.push(`
-            <line x1="${a.cx.toFixed(1)}" y1="${a.moodY.toFixed(1)}" x2="${b.cx.toFixed(1)}" y2="${b.moodY.toFixed(1)}"
-              stroke="${segColor}" stroke-width="${isWeekly ? 2.2 : 1.75}" stroke-linecap="round" opacity="0.82" />
-          `);
-        }
-
-        // 4. State-Coloured Mood Nodes + Top Row Badges (S/P/E, /D /DP /H, *)
-        const nodeR = isWeekly ? 5.2 : 3.2;
-        coords.forEach(c => {
-          if (!c.entry) return;
-          const stMeta = getStateMeta(c.entry.state);
-          const color = cssVar(stMeta.colorVar);
-          const isSel = c.iso === appState.selectedDate;
-          const r = isSel ? nodeR + 1.8 : nodeR;
-
-          if (isSel) {
-            parts.push(`<circle cx="${c.cx}" cy="${c.moodY}" r="${r + 4.5}" fill="${color}" opacity="0.22" />`);
-          }
-          parts.push(`
-            <circle cx="${c.cx}" cy="${c.moodY}" r="${r}" fill="${color}"
-              stroke="var(--bg-card)" stroke-width="1.5" />
-          `);
-
-          const phaseCode = getPhaseMeta(c.entry.phase).code;
-          const psychCode = getPsychMeta(c.entry.psychotic).shortCode;
-          const hasNote = c.entry.notes && c.entry.notes.trim().length > 0;
-
-          if (phaseCode) {
-            parts.push(`
-              <text x="${c.cx}" y="11" text-anchor="middle" fill="${color}" font-size="10" font-weight="700" class="tabular">${phaseCode}</text>
-            `);
-          }
-          if (psychCode) {
-            parts.push(`
-              <text x="${c.cx}" y="${phaseCode ? 21 : 12}" text-anchor="middle" fill="var(--psychotic-crimson)" font-size="9" font-weight="700" class="tabular">${psychCode}</text>
-            `);
-          }
-          if (hasNote) {
-            const noteY = phaseCode && psychCode ? 30 : (phaseCode || psychCode) ? 22 : 13;
-            parts.push(`
-              <text x="${c.cx}" y="${noteY}" text-anchor="middle" fill="var(--text-secondary)" font-size="11" font-weight="700">*</text>
-            `);
-          }
-        });
-
-        // 5. X-Axis Labels (Weekly: "M 16" .. "S 22"; Monthly: "1", "5", "10", "15", "20", "25", "30")
-        coords.forEach((c, idx) => {
-          const isSel = c.iso === appState.selectedDate;
-          if (isWeekly) {
-            const dayNum = c.iso.slice(8, 10);
-            const wkShort = MON_TO_SUN_LABELS[idx];
-            parts.push(`
-              <text x="${c.cx}" y="${height - 6}" text-anchor="middle"
-                fill="${isSel ? 'var(--text-primary)' : 'var(--text-muted)'}"
-                font-size="10" font-weight="${isSel ? '700' : '500'}" class="tabular">
-                ${wkShort} ${dayNum}
-              </text>
-            `);
-          } else {
-            const dayInt = parseInt(c.iso.slice(8, 10), 10);
-            if (dayInt === 1 || dayInt % 5 === 0 || idx === n - 1) {
-              if (idx !== n - 1 && (n - 1 - idx) <= 2) return;
-              parts.push(`
-                <text x="${c.cx}" y="${height - 6}" text-anchor="middle"
-                  fill="${isSel ? 'var(--text-primary)' : 'var(--text-muted)'}"
-                  font-size="10" font-weight="${isSel ? '700' : '500'}" class="tabular">
-                  ${dayInt}
-                </text>
-              `);
-            }
-          }
-        });
-
-        targetSvgEl.innerHTML = parts.join('');
-        if (interactive) {
-          updateInspectorBox(selCoord ? selCoord.entry : null, appState.selectedDate);
-        }
-      }
-
-      function updateInspectorBox(entry, fallbackIso) {
-        const headerEl = document.getElementById('inspectorHeader');
-        const noteEl = document.getElementById('inspectorNoteText');
-        const editBtn = document.getElementById('inspectorEditBtn');
-
-        if (!entry) {
-          const iso = fallbackIso || appState.selectedDate;
-          headerEl.innerHTML = `
-            <span class="font-semibold">${formatBritishFull(iso)}</span>
-            <span class="px-2 py-0.5 rounded-full text-[11px]"
-              style="background-color: var(--bg-card); color: var(--text-muted);">
-              Unlogged day
-            </span>
-          `;
-          noteEl.textContent = 'Tap "Log Day" or tap any grid cell to retroactively record sleep, mood, and clinical state.';
-          noteEl.style.color = 'var(--text-muted)';
-          editBtn.textContent = 'Log Day';
-          editBtn.classList.remove('hidden');
-          editBtn.onclick = () => openCheckInSheet('tap', iso);
-          return;
-        }
-
-        const stMeta = getStateMeta(entry.state);
-        const stateColor = cssVar(stMeta.colorVar);
-        const stateTint = cssVar(stMeta.tintVar);
-        const phaseMeta = getPhaseMeta(entry.phase);
-        const psychMeta = getPsychMeta(entry.psychotic);
-
-        headerEl.innerHTML = `
-          <span class="font-semibold">${formatBritishFull(entry.date)}</span>
-          <span class="px-2 py-0.5 rounded-full text-[11px] font-semibold"
-            style="background-color: ${stateTint}; color: ${stateColor};">
-            ${entry.state}
-          </span>
-          <span class="text-[11px]" style="color: var(--text-secondary);">
-            ${formatSleepNum(entry.sleep)}h · ${entry.mood}
-          </span>
-          ${phaseMeta.id !== 'none' ? `
-            <span class="px-1.5 py-0.5 rounded text-[10px] font-bold uppercase"
-              style="background-color: var(--bg-card); border: 1px solid var(--border-strong);">
-              ${phaseMeta.label} (${phaseMeta.code})
-            </span>` : ''}
-          ${psychMeta.id !== 'none' ? `
-            <span class="px-2 py-0.5 rounded-full text-[11px] font-semibold"
-              style="background-color: var(--psychotic-crimson-tint); color: var(--psychotic-crimson);">
-              ${psychMeta.label}
-            </span>` : ''}
-        `;
-
-        noteEl.textContent = entry.notes && entry.notes.trim()
-          ? entry.notes.trim()
-          : 'No notes recorded for this day.';
-        noteEl.style.color = entry.notes && entry.notes.trim() ? 'var(--text-primary)' : 'var(--text-muted)';
-
-        editBtn.textContent = 'Edit Day';
-        editBtn.classList.remove('hidden');
-        editBtn.onclick = () => openCheckInSheet('tap', entry.date);
-      }
-
-      function bindChartScrubbing() {
-        const wrapper = document.getElementById('svgChartWrapper');
-        let dragging = false;
-
-        function scrubAtClientX(clientX) {
-          if (!appState.chartGeometry || appState.chartGeometry.slots.length === 0) return;
-          const rect = wrapper.getBoundingClientRect();
-          const { padLeft, plotW, stepX, slots } = appState.chartGeometry;
-          const x = Math.max(0, Math.min(plotW - 0.01, clientX - rect.left - padLeft));
-          const idx = Math.floor(x / stepX);
-          const chosen = slots[Math.max(0, Math.min(slots.length - 1, idx))];
-          if (chosen && chosen.iso !== appState.selectedDate) {
-            appState.selectedDate = chosen.iso;
-            renderSvgLifeChart(document.getElementById('lifeChartSvg'), wrapper, true);
-            renderTimesheetGrid(document.getElementById('timesheetGridContainer'), true);
-          }
-        }
-
-        wrapper.addEventListener('mousedown', e => {
-          dragging = true;
-          scrubAtClientX(e.clientX);
-        });
-        window.addEventListener('mousemove', e => {
-          if (dragging) scrubAtClientX(e.clientX);
-        });
-        window.addEventListener('mouseup', () => {
-          dragging = false;
-        });
-
-        wrapper.addEventListener('touchstart', e => {
-          if (e.touches.length > 0) scrubAtClientX(e.touches[0].clientX);
-        }, { passive: true });
-        wrapper.addEventListener('touchmove', e => {
-          if (e.touches.length > 0) scrubAtClientX(e.touches[0].clientX);
-        }, { passive: true });
-      }
-
-      /* ----------------------------------------------------------------------
-         8. CARD 3: WEEKLY OVERVIEW OR MONTHLY TIMESHEET CALENDAR MATRIX
-         ---------------------------------------------------------------------- */
-      function buildTimesheetCellHtml(iso, entry, isOutsideMonth, isWeekly) {
+      function buildDayCardHtml(iso, entry, isOutsideMonth, isWeekly, extraClass) {
         const isSelected = iso === appState.selectedDate;
         const dayNum = parseInt(iso.slice(8, 10), 10);
-        const cellH = isWeekly ? 'h-[62px]' : 'h-[52px]';
+        const cellH = isWeekly ? 'h-[64px]' : 'h-[56px]';
         const dimClass = isOutsideMonth ? 'opacity-35' : '';
+        const widthClass = extraClass || '';
 
         if (!entry) {
           return `
             <button type="button" data-cell-date="${iso}"
-              class="ts-cell ${cellH} ${dimClass} px-1 py-1 rounded-xl flex flex-col items-center justify-between transition active:scale-95"
+              class="ts-cell ${cellH} ${widthClass} ${dimClass} px-1 py-1 rounded-xl flex flex-col items-center justify-between transition active:scale-95"
               style="background-color: var(--bg-subtle); border: ${isSelected ? '1.5px solid var(--text-primary)' : '1px dashed var(--border-hairline)'}; color: var(--text-muted);"
               title="${formatBritishFull(iso)} (Tap to log)">
               <span class="text-[9.5px] font-medium tabular self-start leading-none">${dayNum}</span>
@@ -1878,35 +1618,38 @@
           `;
         }
 
-        const stMeta = getStateMeta(entry.state);
+        const primaryState = getPrimaryState(entry.states);
+        const stMeta = getStateMeta(primaryState);
         const moodGlyph = getMoodMeta(entry.mood).glyph;
         const line1 = `${formatSleepNum(entry.sleep)} ${moodGlyph}`;
 
-        const mixedCode = entry.state.startsWith('mixed') ? stMeta.shortCode : '';
+        const stateCode = (primaryState.startsWith('mixed') || primaryState === 'hypomania') ? stMeta.shortCode : '';
+        const hasCoSurviving = primaryState !== 'surviving' && Array.isArray(entry.states) && entry.states.includes('surviving');
+        const survCode = hasCoSurviving ? 'surv' : '';
         const phaseCode = getPhaseMeta(entry.phase).code;
         const psychCode = getPsychMeta(entry.psychotic).shortCode;
         const noteStar = entry.notes && entry.notes.trim().length > 0 ? '*' : '';
-        const line2Tokens = [mixedCode, phaseCode, psychCode, noteStar].filter(Boolean);
+        const line2Tokens = [stateCode, survCode, phaseCode, psychCode, noteStar].filter(Boolean);
 
-        // Surviving stays unshaded (card surface), symptomatic states get semantic tint blocks
-        const isSurviving = entry.state === 'surviving';
-        const bgFill = isSurviving ? 'var(--bg-card)' : cssVar(stMeta.tintVar);
+        // Pure 'surviving' stays unshaded (card surface), symptomatic states get semantic tint blocks
+        const isPureSurviving = primaryState === 'surviving';
+        const bgFill = isPureSurviving ? 'var(--bg-card)' : cssVar(stMeta.tintVar);
         const borderCol = isSelected
           ? 'var(--text-primary)'
-          : isSurviving
+          : isPureSurviving
             ? 'var(--border-hairline)'
             : cssVar(stMeta.borderVar);
         const borderWidth = isSelected ? '1.5px' : '1px';
 
         return `
           <button type="button" data-cell-date="${iso}"
-            class="ts-cell ${cellH} ${dimClass} px-1 py-1 rounded-xl flex flex-col items-center justify-between leading-none tabular transition active:scale-95"
+            class="ts-cell ${cellH} ${widthClass} ${dimClass} px-0.5 py-1 rounded-xl flex flex-col items-center justify-between leading-none tabular transition active:scale-95"
             style="background-color: ${bgFill}; border: ${borderWidth} solid ${borderCol};"
-            title="${formatBritishFull(iso)} · ${entry.state}">
-            <span class="text-[9px] font-medium self-start opacity-65" style="color: var(--text-secondary);">${dayNum}</span>
-            <div class="flex flex-col items-center justify-center my-auto">
+            title="${formatBritishFull(iso)} · ${formatEntryStatesLabel(entry)}">
+            <span class="text-[9px] font-medium self-start pl-0.5 opacity-65" style="color: var(--text-secondary);">${dayNum}</span>
+            <div class="flex flex-col items-center justify-center my-auto w-full">
               <span class="${isWeekly ? 'text-[11px]' : 'text-[10px]'} font-semibold tracking-tight" style="color: var(--text-primary);">${line1}</span>
-              <span class="${isWeekly ? 'text-[9.5px]' : 'text-[8.5px]'} font-bold mt-0.5 min-h-[10px]"
+              <span class="${isWeekly ? 'text-[9px]' : 'text-[8px]'} font-bold mt-0.5 min-h-[10px] leading-tight text-center break-words w-full"
                 style="color: ${psychCode ? 'var(--psychotic-crimson)' : cssVar(stMeta.colorVar)};">
                 ${line2Tokens.join(' ')}
               </span>
@@ -1925,7 +1668,7 @@
 
         if (win.mode === 'weekly') {
           const cellsHtml = win.allDates.map(iso =>
-            buildTimesheetCellHtml(iso, entryMap.get(iso) || null, false, true)
+            buildDayCardHtml(iso, entryMap.get(iso) || null, false, true, '')
           ).join('');
 
           targetEl.innerHTML = `
@@ -1935,10 +1678,9 @@
             </div>
           `;
         } else {
-          // Full Monday-first Monthly Calendar Matrix
           const firstMon = getMondayISO(win.startIso);
           const lastDayDt = parseISO(win.endIso);
-          const lastDow = lastDayDt.getDay(); // 0=Sun..6=Sat
+          const lastDow = lastDayDt.getDay();
           const addToSun = lastDow === 0 ? 0 : 7 - lastDow;
           const finalSun = addDays(win.endIso, addToSun);
 
@@ -1949,7 +1691,7 @@
             for (let i = 0; i < 7; i++) {
               const iso = addDays(cursorMon, i);
               const isOutside = iso.slice(0, 7) !== appState.monthIso;
-              weekCells.push(buildTimesheetCellHtml(iso, entryMap.get(iso) || null, isOutside, false));
+              weekCells.push(buildDayCardHtml(iso, entryMap.get(iso) || null, isOutside, false, ''));
             }
             weeks.push(`<div class="grid grid-cols-7 gap-1">${weekCells.join('')}</div>`);
             cursorMon = addDays(cursorMon, 7);
@@ -1975,7 +1717,54 @@
       }
 
       /* ----------------------------------------------------------------------
-         9. CARD 5: FILTERED NOTES & FLAGGED EVENTS FEED
+         8. FREQUENCY CARD DECK (Y-AXIS MOOD ++ TO --, ASCENDING DAY ORDER)
+         ---------------------------------------------------------------------- */
+      function renderFrequencyCardDeck(targetEl, interactive) {
+        const visible = getPeriodEntries();
+
+        const rowsHtml = MOOD_Y_AXIS_DESC.map(moodObj => {
+          const suitEntries = visible
+            .filter(e => e.mood === moodObj.id)
+            .sort((a, b) => a.date.localeCompare(b.date));
+
+          const cardsHtml = suitEntries.length === 0
+            ? `<span class="text-[11px] py-2" style="color: var(--text-muted);">—</span>`
+            : suitEntries.map(entry =>
+                buildDayCardHtml(entry.date, entry, false, false, 'w-[50px] shrink-0')
+              ).join('');
+
+          return `
+            <div class="flex items-stretch py-2 first:pt-0 last:pb-0">
+              <div class="w-10 shrink-0 pr-2 flex flex-col items-center justify-center border-r tabular"
+                style="border-color: var(--border-hairline);">
+                <span class="text-[13px] font-bold leading-none" style="color: var(--text-primary);">${moodObj.glyph}</span>
+                <span class="text-[9px] font-medium mt-1 leading-none" style="color: var(--text-muted);">
+                  ${suitEntries.length > 0 ? `${suitEntries.length}d` : ''}
+                </span>
+              </div>
+
+              <div class="flex-1 min-w-0 pl-2.5 flex flex-wrap items-center gap-1.5">
+                ${cardsHtml}
+              </div>
+            </div>
+          `;
+        }).join('');
+
+        targetEl.innerHTML = rowsHtml;
+
+        if (interactive) {
+          targetEl.querySelectorAll('.ts-cell').forEach(btn => {
+            btn.addEventListener('click', () => {
+              const iso = btn.getAttribute('data-cell-date');
+              appState.selectedDate = iso;
+              openCheckInSheet('tap', iso);
+            });
+          });
+        }
+      }
+
+      /* ----------------------------------------------------------------------
+         9. FILTERED NOTES & FLAGGED EVENTS FEED
          ---------------------------------------------------------------------- */
       function renderNotesFeed(targetEl, interactive) {
         const win = getPeriodWindow();
@@ -1995,11 +1784,21 @@
         }
 
         targetEl.innerHTML = list.map(entry => {
-          const stMeta = getStateMeta(entry.state);
-          const color = cssVar(stMeta.colorVar);
-          const tint = cssVar(stMeta.tintVar);
+          const stateList = Array.isArray(entry.states) && entry.states.length > 0
+            ? entry.states
+            : [entry.state || 'surviving'];
           const phaseMeta = getPhaseMeta(entry.phase);
           const psychMeta = getPsychMeta(entry.psychotic);
+
+          const stateBadgesHtml = stateList.map(stId => {
+            const stMeta = getStateMeta(stId);
+            return `
+              <span class="px-2 py-0.5 rounded-full text-[10.5px] font-semibold"
+                style="background-color: ${cssVar(stMeta.tintVar)}; color: ${cssVar(stMeta.colorVar)};">
+                ${stId}
+              </span>
+            `;
+          }).join('');
 
           return `
             <article data-feed-date="${entry.date}"
@@ -2008,10 +1807,7 @@
               <div class="flex items-center justify-between gap-2">
                 <div class="flex items-center flex-wrap gap-1.5 text-[11.5px] tabular">
                   <span class="font-semibold">${formatBritishFull(entry.date)}</span>
-                  <span class="px-2 py-0.5 rounded-full text-[10.5px] font-semibold"
-                    style="background-color: ${tint}; color: ${color};">
-                    ${entry.state}
-                  </span>
+                  ${stateBadgesHtml}
                   <span style="color: var(--text-secondary);">${formatSleepNum(entry.sleep)}h · ${entry.mood}</span>
                   ${phaseMeta.id !== 'none' ? `
                     <span class="px-1.5 py-0.5 rounded text-[10px] font-bold uppercase"
@@ -2047,7 +1843,7 @@
               appState.weekMondayIso = getMondayISO(targetIso);
               appState.monthIso = targetIso.slice(0, 7);
               renderAllViews();
-              document.getElementById('visualizationCard').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+              openCheckInSheet('tap', targetIso);
             });
           });
 
@@ -2069,8 +1865,36 @@
       }
 
       /* ----------------------------------------------------------------------
-         10. CHECK-IN SHEET & RETROACTIVE ENTRY CONTROLS
+         10. CHECK-IN SHEET & MULTI-STATE SELECTION
          ---------------------------------------------------------------------- */
+      function toggleDraftState(clickedId) {
+        const current = Array.isArray(sheetDraft.states) ? [...sheetDraft.states] : ['surviving'];
+
+        if (clickedId === 'surviving') {
+          if (current.includes('surviving')) {
+            // Only remove 'surviving' if another episode state is active
+            if (current.length > 1) {
+              sheetDraft.states = current.filter(s => s !== 'surviving');
+            }
+          } else {
+            sheetDraft.states = [...current, 'surviving'];
+          }
+        } else {
+          const hasSurviving = current.includes('surviving');
+          if (current.includes(clickedId)) {
+            // Deselect this episode state; fall back to 'surviving' if nothing left
+            const remaining = current.filter(s => s !== clickedId);
+            sheetDraft.states = remaining.length > 0 ? remaining : ['surviving'];
+          } else {
+            // Set this episode state while keeping 'surviving' if it was toggled on
+            sheetDraft.states = hasSurviving ? [clickedId, 'surviving'] : [clickedId];
+          }
+        }
+
+        sheetDraft.state = getPrimaryState(sheetDraft.states);
+        syncSheetDraftUI();
+      }
+
       function buildSheetPillsOnce() {
         // Sleep quick pills
         const sleepPillsEl = document.getElementById('sleepQuickPills');
@@ -2088,7 +1912,7 @@
           });
         });
 
-        // Mood pills (5 levels)
+        // Mood pills
         const moodEl = document.getElementById('moodPillsContainer');
         moodEl.innerHTML = MOOD_LEVELS.map(m => `
           <button type="button" data-mood="${m.id}"
@@ -2105,7 +1929,7 @@
           });
         });
 
-        // Clinical States (7 states)
+        // Clinical States (8 states — surviving can co-occur with any state)
         const stateEl = document.getElementById('statePillsContainer');
         stateEl.innerHTML = CLINICAL_STATES.map(s => `
           <button type="button" data-state="${s.id}"
@@ -2117,12 +1941,11 @@
 
         stateEl.querySelectorAll('.state-opt-btn').forEach(btn => {
           btn.addEventListener('click', () => {
-            sheetDraft.state = btn.getAttribute('data-state');
-            syncSheetDraftUI();
+            toggleDraftState(btn.getAttribute('data-state'));
           });
         });
 
-        // Psychotic Symptoms (4 options)
+        // Psychotic Symptoms
         const psychEl = document.getElementById('psychoticPillsContainer');
         psychEl.innerHTML = PSYCHOTIC_SYMPTOMS.map(p => `
           <button type="button" data-psychotic="${p.id}"
@@ -2138,7 +1961,7 @@
           });
         });
 
-        // Episode Marker (4 options)
+        // Episode Marker
         const phaseEl = document.getElementById('phasePillsContainer');
         phaseEl.innerHTML = EPISODE_PHASES.map(ph => `
           <button type="button" data-phase="${ph.id}"
@@ -2158,13 +1981,18 @@
       function loadDateIntoDraft(iso) {
         const existing = appState.entries.find(e => e.date === iso);
         if (existing) {
-          sheetDraft = { ...sheetDraft, ...existing };
+          sheetDraft = {
+            ...sheetDraft,
+            ...existing,
+            states: [...existing.states]
+          };
         } else {
           sheetDraft = {
             ...sheetDraft,
             date: iso,
             sleep: 7.5,
             mood: 'neutral',
+            states: ['surviving'],
             state: 'surviving',
             psychotic: 'none',
             phase: 'none',
@@ -2180,7 +2008,6 @@
         document.getElementById('sleepReadoutNum').textContent = formatSleepNum(sheetDraft.sleep);
         document.getElementById('notesTextarea').value = sheetDraft.notes || '';
 
-        // Relative date label (e.g., Today, Yesterday, 6 days ago, In 2 days)
         const relDiff = diffDaysBetween(TODAY_ISO, sheetDraft.date);
         const relBadge = document.getElementById('dateRelativeBadge');
         if (relDiff === 0) relBadge.textContent = 'Today';
@@ -2200,7 +2027,6 @@
         }
         document.getElementById('deleteDayBtn').classList.toggle('hidden', !existing);
 
-        // Sleep presets highlight
         document.querySelectorAll('.sleep-preset-btn').forEach(btn => {
           const val = Number(btn.getAttribute('data-sleep-preset'));
           const active = Math.abs(val - sheetDraft.sleep) < 0.05;
@@ -2208,7 +2034,6 @@
           btn.style.color = active ? 'var(--bg-canvas)' : 'var(--text-primary)';
         });
 
-        // Mood highlight
         document.querySelectorAll('.mood-opt-btn').forEach(btn => {
           const active = btn.getAttribute('data-mood') === sheetDraft.mood;
           btn.style.backgroundColor = active ? 'var(--bg-card)' : 'transparent';
@@ -2216,18 +2041,18 @@
           btn.style.boxShadow = active ? '0 1px 3px rgba(0,0,0,0.1)' : 'none';
         });
 
-        // State highlight
+        const activeStates = Array.isArray(sheetDraft.states) ? sheetDraft.states : ['surviving'];
         document.querySelectorAll('.state-opt-btn').forEach(btn => {
           const id = btn.getAttribute('data-state');
-          const active = id === sheetDraft.state;
+          const active = activeStates.includes(id);
           const stMeta = getStateMeta(id);
           btn.style.backgroundColor = active ? `var(${stMeta.tintVar})` : 'var(--bg-subtle)';
           btn.style.borderColor = active ? `var(${stMeta.colorVar})` : 'var(--border-hairline)';
+          btn.style.borderWidth = active ? '1.5px' : '1px';
           btn.style.color = 'var(--text-primary)';
           btn.style.fontWeight = active ? '600' : '500';
         });
 
-        // Psychotic highlight
         document.querySelectorAll('.psych-opt-btn').forEach(btn => {
           const id = btn.getAttribute('data-psychotic');
           const active = id === sheetDraft.psychotic;
@@ -2245,7 +2070,6 @@
               : 'var(--text-primary)';
         });
 
-        // Phase highlight
         document.querySelectorAll('.phase-opt-btn').forEach(btn => {
           const active = btn.getAttribute('data-phase') === sheetDraft.phase;
           btn.style.backgroundColor = active ? 'var(--bg-card)' : 'transparent';
@@ -2304,7 +2128,7 @@
       }
 
       /* ----------------------------------------------------------------------
-         11. SHORTHAND BACKLOG PARSER ("PASTE BACKLOG")
+         11. SHORTHAND BACKLOG PARSER (SUPPORTS PAIRED STATES LIKE mixed + surviving)
          ---------------------------------------------------------------------- */
       function parseMonthToken(tok) {
         const clean = tok.slice(0, 3).toLowerCase();
@@ -2317,7 +2141,6 @@
         const parsed = [];
 
         lines.forEach(line => {
-          // 1. Extract Date: "08 Nov", "08 Nov 2026", or "2026-11-08"
           let iso = null;
           const isoMatch = line.match(/\b(\d{4}-\d{2}-\d{2})\b/);
           if (isoMatch) {
@@ -2335,7 +2158,6 @@
           }
           if (!iso) return;
 
-          // Split note after "*" if present
           let metaPart = line;
           let notes = '';
           const starIdx = line.indexOf('*');
@@ -2344,14 +2166,12 @@
             notes = line.slice(starIdx + 1).trim();
           }
 
-          // 2. Sleep hours (e.g., "5.0h", "4.5 hrs", "7h")
           let sleep = 7.5;
           const sleepMatch = metaPart.match(/\b(\d{1,2}(?:\.\d)?)\s*(?:h|hr|hrs|hours)\b/i);
           if (sleepMatch) {
             sleep = Math.min(14, Math.max(0, Math.round(parseFloat(sleepMatch[1]) * 2) / 2));
           }
 
-          // 3. Mood ("very low", "low", "neutral", "high", "very high" or glyphs "--", "-", "=", "+", "++")
           const lower = metaPart.toLowerCase();
           let mood = 'neutral';
           if (/\bvery\s+low\b/.test(lower) || /(?:^|[\s·|])--(?:$|[\s·|])/.test(metaPart)) mood = 'very low';
@@ -2359,31 +2179,39 @@
           else if (/\blow\b/.test(lower) || /(?:^|[\s·|])-(?:$|[\s·|])/.test(metaPart)) mood = 'low';
           else if (/\bhigh\b/.test(lower) || /(?:^|[\s·|])\+(?:$|[\s·|])/.test(metaPart)) mood = 'high';
 
-          // 4. Clinical State
-          let state = 'surviving';
-          if (/\bvery\s+depressed\b/.test(lower)) state = 'very depressed';
-          else if (/\bdepressed\b/.test(lower)) state = 'depressed';
-          else if (/\bmixed\s*\(?d\)?\b|\bmd\b/.test(lower)) state = 'mixed (d)';
-          else if (/\bmixed\s*\(?h\)?\b|\bmh\b/.test(lower)) state = 'mixed (h)';
-          else if (/\bmixed\s*\(?m\)?\b|\bmm\b/.test(lower)) state = 'mixed (m)';
-          else if (/\bhypomania\b|\bhypomanic\b|\bhypo\b/.test(lower)) state = 'hypomania';
-          else if (/\bmania\b|\bmanic\b/.test(lower)) state = 'mania';
-          else if (/\bsurviving\b/.test(lower)) state = 'surviving';
+          // Multi-state detection (allows e.g. "mixed (mh) + surviving")
+          const detectedStates = [];
+          if (/\bvery\s+depressed\b/.test(lower)) detectedStates.push('very depressed');
+          else if (/\bdepressed\b/.test(lower)) detectedStates.push('depressed');
 
-          // 5. Psychotic Symptoms
+          if (/\bmixed\s*\(?m?d\)?\b|\bmd\b/.test(lower)) detectedStates.push('mixed (d)');
+          if (/\bmixed\s*\(?m?h\)?\b|\bmh\b/.test(lower)) detectedStates.push('mixed (h)');
+          if (/\bmixed\s*\(?m?m\)?\b|\bmm\b/.test(lower)) detectedStates.push('mixed (m)');
+          if (
+            /\bmixed\b/.test(lower) &&
+            !detectedStates.some(s => s.startsWith('mixed'))
+          ) {
+            detectedStates.push('mixed (d)');
+          }
+
+          if (/\bhypomania\b|\bhypomanic\b|\bhypo\b/.test(lower)) detectedStates.push('hypomania');
+          else if (/\bmania\b|\bmanic\b/.test(lower)) detectedStates.push('mania');
+
+          if (/\bsurviving\b|\bsurv\b/.test(lower)) detectedStates.push('surviving');
+          if (detectedStates.length === 0) detectedStates.push('surviving');
+
           let psychotic = 'none';
           if (/\/dp\b|\bdepersonali[sz]ation\b/.test(lower)) psychotic = 'depersonalisation';
           else if (/\/ds\b|\bdissociation\b/.test(lower)) psychotic = 'dissociation';
           else if (/\/d\b|\bdelusions?\b/.test(lower)) psychotic = 'delusions';
           else if (/\/h\b|\bhallucinations?\b/.test(lower)) psychotic = 'hallucinations';
 
-          // 6. Episode Marker
           let phase = 'none';
           if (/\bstart\b|(?:^|[\s·|])S(?:$|[\s·|])/.test(metaPart)) phase = 'start';
           else if (/\bpeak\b|(?:^|[\s·|])P(?:$|[\s·|])/.test(metaPart)) phase = 'peak';
           else if (/\bend\b|(?:^|[\s·|])E(?:$|[\s·|])/.test(metaPart)) phase = 'end';
 
-          parsed.push(normalizeEntry({ date: iso, sleep, mood, state, psychotic, phase, notes }));
+          parsed.push(normalizeEntry({ date: iso, sleep, mood, states: detectedStates, psychotic, phase, notes }));
         });
 
         return parsed;
@@ -2396,14 +2224,14 @@
 
         const previewEl = document.getElementById('parsePreviewList');
         if (parsed.length === 0) {
-          previewEl.innerHTML = `<div style="color: var(--text-muted);">Type or paste lines formatted like "08 Nov · 5.0h · high · mania · none · Start · * Note"</div>`;
+          previewEl.innerHTML = `<div style="color: var(--text-muted);">Type or paste lines formatted like "13 Nov · 0h · = · mixed (mh) + surviving · * Note"</div>`;
           return;
         }
 
         previewEl.innerHTML = parsed.map(p => `
           <div class="flex items-center justify-between gap-2 py-0.5">
-            <span class="font-semibold">${formatBritishFull(p.date)}</span>
-            <span>${formatSleepNum(p.sleep)}h · ${p.mood} · ${p.state}${p.phase !== 'none' ? ` [${p.phase}]` : ''}${p.psychotic !== 'none' ? ` (${p.psychotic})` : ''}</span>
+            <span class="font-semibold shrink-0">${formatBritishFull(p.date)}</span>
+            <span class="truncate">${formatSleepNum(p.sleep)}h · ${p.mood} · ${formatEntryStatesLabel(p)}${p.phase !== 'none' ? ` [${p.phase}]` : ''}${p.psychotic !== 'none' ? ` (${p.psychotic})` : ''}</span>
           </div>
         `).join('');
       }
@@ -2421,56 +2249,42 @@
           `Psych Log Clinical Summary (${win.label})`;
 
         container.innerHTML = `
-          <!-- Brief Summary Card -->
           <div class="editorial-card p-4 space-y-3">
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <div class="p-3 rounded-2xl hairline" style="background-color: var(--bg-subtle);">
-                <div class="text-[10px] font-semibold uppercase tracking-wider" style="color: var(--text-muted);">Sleep Baseline &amp; Shifts</div>
-                <div class="text-[18px] font-semibold tabular mt-0.5">${data.sleepAvgText}</div>
-                <div class="text-[12px] mt-0.5" style="color: var(--text-secondary);">${data.sleepFlagsText}</div>
-              </div>
-              <div class="p-3 rounded-2xl hairline" style="background-color: var(--bg-subtle);">
-                <div class="text-[10px] font-semibold uppercase tracking-wider" style="color: var(--text-muted);">States (${data.count} Days)</div>
-                <div class="text-[13px] font-medium tabular mt-1">${data.stateSummaryText}</div>
-              </div>
+            <div class="p-3 rounded-2xl hairline" style="background-color: var(--bg-subtle);">
+              <div class="text-[10px] font-semibold uppercase tracking-wider" style="color: var(--text-muted);">States (${data.count} Days)</div>
+              <div class="text-[13px] font-medium tabular mt-1">${data.stateSummaryText}</div>
             </div>
 
             <div class="p-3 rounded-2xl hairline space-y-1" style="background-color: var(--bg-subtle);">
-              <div class="text-[10px] font-semibold uppercase tracking-wider" style="color: var(--text-muted);">Episodes</div>
+              <div class="text-[10px] font-semibold uppercase tracking-wider" style="color: var(--text-muted);">Episodes (≥ 4 Consecutive Days or Marked)</div>
               <div class="text-[12px] tabular space-y-1">
                 ${data.arcs.length === 0
-                  ? 'No Start / Peak / End markers logged.'
+                  ? 'No episodes (4+ consecutive days or marked) in this period.'
                   : data.arcs.map((a, i) => {
                       const peakFormatted = formatPeakDatesList(a.peaks);
-                      return `<div><strong>Episode ${i + 1}:</strong> ${a.start ? 'Start ' + formatBritishShort(a.start) : 'Start (prior)'}${peakFormatted ? ' → Peak ' + peakFormatted : ''}${a.end ? ' → End ' + formatBritishShort(a.end) : ' → Ongoing'} · <span class="capitalize font-semibold">${Array.from(a.states).join(' → ')}</span></div>`;
+                      return `<div><strong>Episode ${i + 1}:</strong> Start ${formatBritishShort(a.start)}${peakFormatted ? ' → Peak ' + peakFormatted : ''}${a.end ? ' → End ' + formatBritishShort(a.end) : ' → Ongoing'} · <span class="font-semibold">${a.states.join(' / ')} (${a.dayCount}d)</span></div>`;
                     }).join('')}
               </div>
               ${data.psychoticList.length > 0 ? `<div class="pt-1.5 mt-1.5 hairline-t text-[12px] font-semibold" style="color: var(--psychotic-crimson);">Psychotic Symptoms: ${data.psychoticList.map(p => `${p.symptom} (${p.datesText})`).join(' · ')}</div>` : ''}
             </div>
           </div>
 
-          <!-- Chart Snapshot -->
-          <div class="editorial-card p-4 space-y-2">
-            <div class="text-[12px] font-semibold">Sleep &amp; Mood Life Chart (${win.mode === 'weekly' ? 'Weekly' : 'Monthly'})</div>
-            <div id="docChartWrap" class="w-full">
-              <svg id="docLifeChartSvg" class="w-full block overflow-visible" style="height: 222px;"></svg>
-            </div>
-          </div>
-
-          <!-- Weekly / Monthly Timesheet Snapshot -->
           <div class="editorial-card p-4 space-y-2">
             <div class="text-[12px] font-semibold">${win.mode === 'weekly' ? 'Weekly Overview' : 'Monthly Overview'}</div>
             <div id="docTimesheetWrap"></div>
           </div>
 
-          <!-- Key Reference in Doctor View -->
+          <div class="editorial-card p-4 space-y-2">
+            <div class="text-[12px] font-semibold">Frequency</div>
+            <div id="docFrequencyWrap" class="divide-y" style="border-color: var(--border-hairline);"></div>
+          </div>
+
           <div class="editorial-card p-4 space-y-1.5 text-[11px]" style="color: var(--text-secondary);">
             <div class="text-[11px] font-semibold" style="color: var(--text-primary);">Key</div>
             <div><strong>Sleep &amp; Mood:</strong> Sleep hrs + Mood (-- very low, - low, = neutral, + high, ++ very high)</div>
-            <div><strong>Flags:</strong> md / mh / mm mixed subtype · S start, P peak, E end, * has note below · /D delusions, /DP depersonalisation, /H hallucinations</div>
+            <div><strong>Flags:</strong> md / mh / mm mixed · hypo hypomania · surv surviving alongside state · S start, P peak, E end, * has note below · /D delusions, /DP depersonalisation, /H hallucinations, /DS dissociation</div>
           </div>
 
-          <!-- Flagged Notes -->
           <div class="editorial-card p-4 space-y-2">
             <div class="text-[12px] font-semibold">Notes</div>
             <div id="docFeedWrap" class="space-y-2"></div>
@@ -2479,9 +2293,8 @@
 
         document.getElementById('doctorViewModal').classList.remove('hidden');
 
-        // Render SVG, Timesheet, and Flagged Feed inside Doctor View
-        renderSvgLifeChart(document.getElementById('docLifeChartSvg'), document.getElementById('docChartWrap'), false);
         renderTimesheetGrid(document.getElementById('docTimesheetWrap'), false);
+        renderFrequencyCardDeck(document.getElementById('docFrequencyWrap'), false);
         const prevFilter = appState.feedFilter;
         appState.feedFilter = 'flagged';
         renderNotesFeed(document.getElementById('docFeedWrap'), false);
@@ -2495,7 +2308,6 @@
         const win = getPeriodWindow();
         const visible = getPeriodEntries();
 
-        // Update Header Demo Menu state
         document.getElementById('toggleDemoDataLabel').textContent = appState.isSample
           ? 'Clear Demo Data'
           : 'Load Demo Data';
@@ -2503,7 +2315,6 @@
           ? 'var(--state-mania)'
           : 'var(--state-surviving)';
 
-        // Update Segmented Control (Weekly vs Monthly)
         const track = document.getElementById('viewModeTrack');
         track.setAttribute('data-mode', appState.viewMode);
         const isWeekly = appState.viewMode === 'weekly';
@@ -2515,28 +2326,21 @@
         wBtn.style.color = isWeekly ? 'var(--text-primary)' : 'var(--text-secondary)';
         mBtn.style.color = !isWeekly ? 'var(--text-primary)' : 'var(--text-secondary)';
 
-        // Update Period Navigator & Today Pill
         document.getElementById('periodLabelText').textContent = win.label;
         document.getElementById('periodTodayBtn').classList.toggle('hidden', win.isCurrent);
-
-        // Update Visualization & Grid Headings for Weekly vs Monthly
-        document.getElementById('chartCardTitle').textContent = isWeekly
-          ? 'Weekly Sleep & Mood'
-          : 'Monthly Sleep & Mood';
-        document.getElementById('chartLoggedBadge').textContent = `${visible.length}/${win.allDates.length} logged`;
 
         document.getElementById('gridCardTitle').textContent = isWeekly
           ? 'Weekly Overview'
           : 'Monthly Overview';
+        document.getElementById('overviewLoggedBadge').textContent = `${visible.length}/${win.allDates.length} logged`;
+        document.getElementById('frequencyCountBadge').textContent = `${visible.length} ${visible.length === 1 ? 'card' : 'cards'}`;
 
-        // Update Key Collapse state
         const keyBody = document.getElementById('briefKeyBody');
         const toggleKeyBtn = document.getElementById('toggleBriefKeyBtn');
         keyBody.classList.toggle('hidden', !appState.keyExpanded);
         toggleKeyBtn.textContent = appState.keyExpanded ? 'Hide' : 'Show';
         toggleKeyBtn.setAttribute('aria-expanded', String(appState.keyExpanded));
 
-        // Update Feed Filter Pills styling
         document.querySelectorAll('.feed-pill').forEach(btn => {
           const active = btn.getAttribute('data-feed') === appState.feedFilter;
           btn.style.backgroundColor = active ? 'var(--bg-card)' : 'transparent';
@@ -2545,19 +2349,17 @@
         });
 
         renderClinicalBrief();
-        renderSvgLifeChart(document.getElementById('lifeChartSvg'), document.getElementById('svgChartWrapper'), true);
         renderTimesheetGrid(document.getElementById('timesheetGridContainer'), true);
+        renderFrequencyCardDeck(document.getElementById('frequencyRowsContainer'), true);
         renderNotesFeed(document.getElementById('notesFeedContainer'), true);
       }
 
       function initEvents() {
-        // Theme toggle
         document.getElementById('themeToggleBtn').addEventListener('click', () => {
           const currentlyDark = document.documentElement.classList.contains('dark');
           setTheme(!currentlyDark);
         });
 
-        // Header Popover Menu (Demo Data / Clear & Export / Import JSON)
         const menuBtn = document.getElementById('headerMenuBtn');
         const menuPopover = document.getElementById('headerMenuPopover');
         menuBtn.addEventListener('click', e => {
@@ -2590,17 +2392,15 @@
             appState.monthIso = TODAY_ISO.slice(0, 7);
             persistToStorage();
             renderAllViews();
-            showToast('Loaded demo dataset (with 3-day Peak example)');
+            showToast('Loaded demo dataset');
           }
         });
 
-        // Key collapse toggle
         document.getElementById('toggleBriefKeyBtn').addEventListener('click', () => {
           appState.keyExpanded = !appState.keyExpanded;
           renderAllViews();
         });
 
-        // Weekly vs. Monthly Segmented Control
         function switchViewMode(nextMode) {
           if (appState.viewMode === nextMode) return;
           appState.viewMode = nextMode;
@@ -2616,7 +2416,6 @@
         document.getElementById('segWeeklyBtn').addEventListener('click', () => switchViewMode('weekly'));
         document.getElementById('segMonthlyBtn').addEventListener('click', () => switchViewMode('monthly'));
 
-        // Period Navigation (‹ Prev / Today / Next ›)
         document.getElementById('periodPrevBtn').addEventListener('click', () => {
           if (appState.viewMode === 'weekly') {
             appState.weekMondayIso = addDays(appState.weekMondayIso, -7);
@@ -2646,14 +2445,13 @@
           renderAllViews();
         });
 
-        // Top Quick-Action 1: "Log Today"
         document.getElementById('quickBaselineBtn').addEventListener('click', () => {
           const existing = appState.entries.find(e => e.date === TODAY_ISO);
           upsertEntry({
             date: TODAY_ISO,
             sleep: 7.5,
             mood: 'neutral',
-            state: 'surviving',
+            states: ['surviving'],
             psychotic: 'none',
             phase: 'none',
             notes: existing ? existing.notes : ''
@@ -2663,12 +2461,10 @@
           showToast(`Logged ${formatBritishFull(TODAY_ISO)} · 7.5h · =`);
         });
 
-        // Top Quick-Action 2: "Log Previous" (defaults to yesterday for immediate retroactive entry)
         document.getElementById('openSheetBtn').addEventListener('click', () => {
           openCheckInSheet('tap', addDays(TODAY_ISO, -1));
         });
 
-        // Copy Brief & Doctor View
         document.getElementById('copyBriefBtn').addEventListener('click', copyBriefToClipboard);
         document.getElementById('doctorViewBtn').addEventListener('click', openDoctorView);
         document.getElementById('closeDoctorViewBtn').addEventListener('click', () => {
@@ -2676,7 +2472,6 @@
         });
         document.getElementById('docPrintBtn').addEventListener('click', () => window.print());
 
-        // Feed Filter Pills
         document.querySelectorAll('.feed-pill').forEach(btn => {
           btn.addEventListener('click', () => {
             appState.feedFilter = btn.getAttribute('data-feed');
@@ -2684,7 +2479,6 @@
           });
         });
 
-        // Sheet Open/Close & Tabs
         document.getElementById('closeSheetBtn').addEventListener('click', closeCheckInSheet);
         document.getElementById('checkInBackdrop').addEventListener('click', e => {
           if (e.target.id === 'checkInBackdrop') closeCheckInSheet();
@@ -2692,7 +2486,6 @@
         document.getElementById('tabTapEntryBtn').addEventListener('click', () => switchSheetTab('tap'));
         document.getElementById('tabPasteBacklogBtn').addEventListener('click', () => switchSheetTab('paste'));
 
-        // Retroactive Date Quick-Jump Pills & Steppers
         document.getElementById('jumpYesterdayBtn').addEventListener('click', () => {
           loadDateIntoDraft(addDays(TODAY_ISO, -1));
         });
@@ -2715,7 +2508,6 @@
           if (e.target.value) loadDateIntoDraft(e.target.value);
         });
 
-        // Sleep steppers
         document.getElementById('sleepMinusBtn').addEventListener('click', () => {
           sheetDraft.sleep = Math.max(0, Math.round((sheetDraft.sleep - 0.5) * 2) / 2);
           syncSheetDraftUI();
@@ -2725,7 +2517,6 @@
           syncSheetDraftUI();
         });
 
-        // Save / Save & Next Day / Delete Day
         document.getElementById('saveCloseBtn').addEventListener('click', () => saveDraftFromTap(false));
         document.getElementById('saveNextDayBtn').addEventListener('click', () => saveDraftFromTap(true));
         document.getElementById('deleteDayBtn').addEventListener('click', () => {
@@ -2735,7 +2526,6 @@
           showToast(`Deleted ${formatBritishFull(sheetDraft.date)}`);
         });
 
-        // Backlog parser events
         const sampleBacklog = buildSampleBacklogShorthand();
         document.getElementById('backlogTextarea').value = sampleBacklog;
         document.getElementById('backlogTextarea').addEventListener('input', updateBacklogParserPreview);
@@ -2757,10 +2547,9 @@
           renderAllViews();
           pulseBriefCard();
           closeCheckInSheet();
-          showToast(`Populated ${parsed.length} ${parsed.length === 1 ? 'day' : 'days'} onto chart`);
+          showToast(`Populated ${parsed.length} ${parsed.length === 1 ? 'day' : 'days'}`);
         });
 
-        // Header JSON Export / Import
         document.getElementById('exportJsonBtn').addEventListener('click', () => {
           menuPopover.classList.add('hidden');
           const payload = JSON.stringify({
@@ -2801,13 +2590,6 @@
           reader.readAsText(file);
           e.target.value = '';
         });
-
-        // Responsive Resize Redraw
-        window.addEventListener('resize', () => {
-          renderSvgLifeChart(document.getElementById('lifeChartSvg'), document.getElementById('svgChartWrapper'), true);
-        });
-
-        bindChartScrubbing();
       }
 
       /* ----------------------------------------------------------------------
