@@ -12,66 +12,8 @@
        By default, the inline script below generates a discreet 180x180 monochrome Swiss-editorial icon.
        To use your own custom image instead, upload a 180x180 PNG named "icon.png" to your GitHub repo root,
        replace href="" below with href="icon.png", and remove the inline icon generator script. -->
-  <link id="appleTouchIconLink" rel="apple-touch-icon" sizes="180x180" href="" />
-  <link id="faviconIconLink" rel="icon" type="image/png" href="" />
-  <script>
-    (function generateDiscreetAppIcon() {
-      try {
-        var size = 180;
-        var canvas = document.createElement('canvas');
-        canvas.width = size;
-        canvas.height = size;
-        var ctx = canvas.getContext('2d');
-        if (!ctx) return;
-
-        // Matte dark editorial ground (#141413) so iOS superellipse masks cleanly
-        ctx.fillStyle = '#141413';
-        ctx.fillRect(0, 0, size, size);
-
-        // Subtle outer hairline frame
-        ctx.strokeStyle = 'rgba(247, 247, 245, 0.10)';
-        ctx.lineWidth = 2;
-        ctx.strokeRect(1, 1, size - 2, size - 2);
-
-        // Minimalist vertical pulse/chart bars in warm off-white (#F7F7F5)
-        var bars = [
-          { x: 46, h: 44, alpha: 0.45 },
-          { x: 68, h: 72, alpha: 0.75 },
-          { x: 90, h: 96, alpha: 1.00 },
-          { x: 112, h: 60, alpha: 0.65 },
-          { x: 134, h: 80, alpha: 0.85 }
-        ];
-        var baselineY = 136;
-        var barW = 10;
-
-        bars.forEach(function (b) {
-          var y = baselineY - b.h;
-          var r = 5;
-          ctx.fillStyle = 'rgba(247, 247, 245, ' + b.alpha + ')';
-          ctx.beginPath();
-          ctx.moveTo(b.x - barW / 2 + r, y);
-          ctx.lineTo(b.x + barW / 2 - r, y);
-          ctx.quadraticCurveTo(b.x + barW / 2, y, b.x + barW / 2, y + r);
-          ctx.lineTo(b.x + barW / 2, baselineY - r);
-          ctx.quadraticCurveTo(b.x + barW / 2, baselineY, b.x + barW / 2 - r, baselineY);
-          ctx.lineTo(b.x - barW / 2 + r, baselineY);
-          ctx.quadraticCurveTo(b.x - barW / 2, baselineY, b.x - barW / 2, baselineY - r);
-          ctx.lineTo(b.x - barW / 2, y + r);
-          ctx.quadraticCurveTo(b.x - barW / 2, y, b.x - barW / 2 + r, y);
-          ctx.closePath();
-          ctx.fill();
-        });
-
-        var dataUrl = canvas.toDataURL('image/png');
-        var touchLink = document.getElementById('appleTouchIconLink');
-        var favLink = document.getElementById('faviconIconLink');
-        if (touchLink) touchLink.href = dataUrl;
-        if (favLink) favLink.href = dataUrl;
-      } catch (e) {
-        // Ignore if canvas data URL export is blocked
-      }
-    })();
-  </script>
+  <link id="appleTouchIconLink" rel="apple-touch-icon" sizes="180x180" href="icon.jpg" />
+  <link id="faviconIconLink" rel="icon" type="image/jpeg" href="icon.jpg" />
 
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
