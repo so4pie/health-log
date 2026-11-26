@@ -54,6 +54,10 @@
       --state-mixed-tint: rgba(139, 92, 246, 0.15);
       --state-mixed-border: rgba(139, 92, 246, 0.38);
 
+      --state-hypomania: #D97706;
+      --state-hypomania-tint: rgba(217, 119, 6, 0.14);
+      --state-hypomania-border: rgba(217, 119, 6, 0.38);
+      
       --state-mania: #EA580C;
       --state-mania-tint: rgba(234, 88, 12, 0.15);
       --state-mania-border: rgba(234, 88, 12, 0.40);
@@ -95,6 +99,10 @@
       --state-mixed-tint: rgba(164, 133, 248, 0.22);
       --state-mixed-border: rgba(164, 133, 248, 0.46);
 
+      --state-hypomania: #FBBF24;
+      --state-hypomania-tint: rgba(251, 191, 36, 0.20);
+      --state-hypomania-border: rgba(251, 191, 36, 0.44);
+      
       --state-mania: #F58232;
       --state-mania-tint: rgba(245, 130, 50, 0.22);
       --state-mania-border: rgba(245, 130, 50, 0.46);
@@ -543,6 +551,7 @@
         <span class="inline-flex items-center gap-1.5"><i class="w-2.5 h-2.5 rounded-[3px] inline-block" style="background: var(--state-depressed);"></i>Depressed</span>
         <span class="inline-flex items-center gap-1.5"><i class="w-2.5 h-2.5 rounded-[3px] inline-block" style="background: var(--state-very-depressed);"></i>Very Depressed</span>
         <span class="inline-flex items-center gap-1.5"><i class="w-2.5 h-2.5 rounded-[3px] inline-block" style="background: var(--state-mixed);"></i>Mixed</span>
+        <span class="inline-flex items-center gap-1.5"><i class="w-2.5 h-2.5 rounded-[3px] inline-block" style="background: var(--state-hypomania);"></i>Hypomania</span>
         <span class="inline-flex items-center gap-1.5"><i class="w-2.5 h-2.5 rounded-[3px] inline-block" style="background: var(--state-mania);"></i>Mania</span>
       </div>
     </section>
@@ -579,9 +588,9 @@
               Flags
             </div>
             <div class="tabular leading-relaxed" style="color: var(--text-primary);">
-              <strong>md / mh / mm</strong> mixed subtype<br/>
+              <strong>md / mh / mm</strong> mixed · <strong>hypo</strong> hypomania<br/>
               <strong>S</strong> start · <strong>P</strong> peak · <strong>E</strong> end · <strong>*</strong> has note below<br/>
-              <span style="color: var(--psychotic-crimson);" class="font-semibold">/D</span> delusions · <span style="color: var(--psychotic-crimson);" class="font-semibold">/DP</span> depersonalisation · <span style="color: var(--psychotic-crimson);" class="font-semibold">/H</span> hallucinations
+              <span style="color: var(--psychotic-crimson);" class="font-semibold">/D</span> delusions · <span style="color: var(--psychotic-crimson);" class="font-semibold">/DP</span> depersonalisation · <span style="color: var(--psychotic-crimson);" class="font-semibold">/H</span> hallucinations · <span style="color: var(--psychotic-crimson);" class="font-semibold">/DS</span> dissociation
             </div>
           </div>
         </div>
@@ -949,12 +958,14 @@
         { id: 'mixed (d)',      shortCode: 'md', colorVar: '--state-mixed',          tintVar: '--state-mixed-tint',          borderVar: '--state-mixed-border' },
         { id: 'mixed (h)',      shortCode: 'mh', colorVar: '--state-mixed',          tintVar: '--state-mixed-tint',          borderVar: '--state-mixed-border' },
         { id: 'mixed (m)',      shortCode: 'mm', colorVar: '--state-mixed',          tintVar: '--state-mixed-tint',          borderVar: '--state-mixed-border' },
+        { id: 'hypomania',      shortCode: 'hypo', colorVar: '--state-hypomania',      tintVar: '--state-hypomania-tint',      borderVar: '--state-hypomania-border' },
         { id: 'mania',          shortCode: '',   colorVar: '--state-mania',          tintVar: '--state-mania-tint',          borderVar: '--state-mania-border' }
       ];
 
       const PSYCHOTIC_SYMPTOMS = [
         { id: 'none',              shortCode: '',    label: 'none' },
         { id: 'delusions',         shortCode: '/D',  label: 'delusions (/D)' },
+        { id: 'dissociation', label: 'Dissociation', shortCode: '/DS' },
         { id: 'depersonalisation', shortCode: '/DP', label: 'depersonalisation (/DP)' },
         { id: 'hallucinations',    shortCode: '/H',  label: 'hallucinations (/H)' }
       ];
@@ -2355,12 +2366,14 @@
           else if (/\bmixed\s*\(?d\)?\b|\bmd\b/.test(lower)) state = 'mixed (d)';
           else if (/\bmixed\s*\(?h\)?\b|\bmh\b/.test(lower)) state = 'mixed (h)';
           else if (/\bmixed\s*\(?m\)?\b|\bmm\b/.test(lower)) state = 'mixed (m)';
+          else if (/\bhypomania\b|\bhypomanic\b|\bhypo\b/.test(lower)) state = 'hypomania';
           else if (/\bmania\b|\bmanic\b/.test(lower)) state = 'mania';
           else if (/\bsurviving\b/.test(lower)) state = 'surviving';
 
           // 5. Psychotic Symptoms
           let psychotic = 'none';
           if (/\/dp\b|\bdepersonali[sz]ation\b/.test(lower)) psychotic = 'depersonalisation';
+          else if (/\/ds\b|\bdissociation\b/.test(lower)) psychotic = 'dissociation';
           else if (/\/d\b|\bdelusions?\b/.test(lower)) psychotic = 'delusions';
           else if (/\/h\b|\bhallucinations?\b/.test(lower)) psychotic = 'hallucinations';
 
