@@ -19,7 +19,7 @@
       --border-strong: rgba(20, 20, 19, 0.18);
 
       --state-existing: #9CA3AF;
-      --state-existing-tint: rgba(156, 163, 175, 0.08);
+      --state-existing-tint: rgba(156, 163, 175, 0.07);
       --state-existing-border: rgba(156, 163, 175, 0.24);
 
       --state-depressed: #3B82F6;
@@ -38,17 +38,17 @@
       --state-mixed-h-tint: rgba(124, 58, 237, 0.11);
       --state-mixed-h-border: rgba(124, 58, 237, 0.34);
 
-      --state-mixed-m: #9333EA;
-      --state-mixed-m-tint: rgba(147, 51, 234, 0.12);
-      --state-mixed-m-border: rgba(147, 51, 234, 0.35);
+      --state-mixed-m: #C026D3;
+      --state-mixed-m-tint: rgba(192, 38, 211, 0.11);
+      --state-mixed-m-border: rgba(192, 38, 211, 0.34);
 
       --state-hypomania: #0D9488;
       --state-hypomania-tint: rgba(13, 148, 136, 0.12);
       --state-hypomania-border: rgba(13, 148, 136, 0.34);
 
-      --state-mania: #DB2777;
-      --state-mania-tint: rgba(219, 39, 119, 0.12);
-      --state-mania-border: rgba(219, 39, 119, 0.36);
+      --state-mania: #E11D48;
+      --state-mania-tint: rgba(225, 29, 72, 0.12);
+      --state-mania-border: rgba(225, 29, 72, 0.36);
 
       --psychotic-crimson: #DC2626;
       --psychotic-crimson-tint: rgba(220, 38, 38, 0.12);
@@ -66,7 +66,7 @@
       --border-strong: rgba(255, 255, 255, 0.18);
 
       --state-existing: #71717A;
-      --state-existing-tint: rgba(113, 113, 122, 0.10);
+      --state-existing-tint: rgba(113, 113, 122, 0.09);
       --state-existing-border: rgba(113, 113, 122, 0.24);
 
       --state-depressed: #7DD3FC;
@@ -85,17 +85,17 @@
       --state-mixed-h-tint: rgba(167, 139, 250, 0.16);
       --state-mixed-h-border: rgba(167, 139, 250, 0.40);
 
-      --state-mixed-m: #C084FC;
-      --state-mixed-m-tint: rgba(192, 132, 252, 0.17);
-      --state-mixed-m-border: rgba(192, 132, 252, 0.42);
+      --state-mixed-m: #E879F9;
+      --state-mixed-m-tint: rgba(232, 121, 249, 0.16);
+      --state-mixed-m-border: rgba(232, 121, 249, 0.40);
 
       --state-hypomania: #2DD4BF;
       --state-hypomania-tint: rgba(45, 212, 191, 0.16);
       --state-hypomania-border: rgba(45, 212, 191, 0.40);
 
-      --state-mania: #F472B6;
-      --state-mania-tint: rgba(244, 114, 182, 0.17);
-      --state-mania-border: rgba(244, 114, 182, 0.42);
+      --state-mania: #FB7185;
+      --state-mania-tint: rgba(251, 113, 133, 0.17);
+      --state-mania-border: rgba(251, 113, 133, 0.42);
 
       --psychotic-crimson: #F87171;
       --psychotic-crimson-tint: rgba(248, 113, 113, 0.16);
@@ -112,6 +112,7 @@
 
     .tabular { font-variant-numeric: tabular-nums; }
     .hairline { border: 1px solid var(--border-hairline); }
+    .hairline-strong { border: 1px solid var(--border-strong); }
     .hairline-t { border-top: 1px solid var(--border-hairline); }
     .hairline-b { border-bottom: 1px solid var(--border-hairline); }
 
@@ -255,8 +256,8 @@
     <!-- 1. QUICK CHECK-IN -->
     <section class="editorial-card p-3.5 flex items-center gap-2" aria-label="Quick Check-In">
       <button id="logTodayBtn" type="button"
-        class="flex-1 py-2.5 px-3 rounded-xl text-[13px] font-semibold hairline transition active:scale-[0.98]"
-        style="background-color: var(--bg-well); color: var(--text-primary);">
+        class="flex-1 py-2.5 px-3 rounded-xl text-[13px] font-semibold hairline-strong transition active:scale-[0.98]"
+        style="background-color: var(--bg-subtle); color: var(--text-primary);">
         + Log Today
       </button>
       <button id="logPreviousBtn" type="button"
@@ -275,7 +276,7 @@
         </div>
 
         <button id="exportPdfBtn" type="button"
-          class="px-3.5 py-1.5 rounded-xl text-[12px] font-semibold hairline transition active:scale-95 flex items-center gap-1.5 shrink-0"
+          class="px-3.5 py-1.5 rounded-xl text-[12px] font-semibold hairline-strong transition active:scale-95 flex items-center gap-1.5 shrink-0"
           style="background-color: var(--bg-subtle); color: var(--text-primary);">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
             <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
@@ -524,7 +525,7 @@
 
         <div class="px-5 py-3.5 hairline-t safe-bottom flex items-center justify-between gap-2 shrink-0" style="background-color: var(--bg-card);">
           <button id="saveCloseBtn" type="button" class="flex-1 py-3 rounded-xl text-[13px] font-semibold hairline transition active:scale-[0.98]" style="background-color: var(--bg-subtle); color: var(--text-primary);">Save</button>
-          <button id="saveNextDayBtn" type="button" class="flex-[1.35] py-3 rounded-xl text-[13px] font-semibold hairline transition active:scale-[0.98]" style="background-color: var(--bg-well); color: var(--text-primary);">Save &amp; Next Day →</button>
+          <button id="saveNextDayBtn" type="button" class="flex-[1.35] py-3 rounded-xl text-[13px] font-semibold hairline-strong transition active:scale-[0.98]" style="background-color: var(--bg-well); color: var(--text-primary);">Save &amp; Next Day →</button>
         </div>
       </div>
 
@@ -540,7 +541,7 @@
               </div>
             </div>
             <p class="text-[12px] leading-snug" style="color: var(--text-secondary);">
-              One day per line (supports paired states like <code class="px-1 py-0.5 rounded text-[11px]" style="background: var(--bg-subtle);">mixed (mh) + existing</code>):
+              One day per line (supports paired states like <code class="px-1 py-0.5 rounded text-[11]" style="background: var(--bg-subtle);">mixed (mh) + existing</code>):
             </p>
           </div>
 
@@ -558,7 +559,7 @@
         </div>
 
         <div class="px-5 py-3.5 hairline-t safe-bottom shrink-0" style="background-color: var(--bg-card);">
-          <button id="parsePopulateBtn" type="button" class="w-full py-3 rounded-xl text-[13px] font-semibold hairline transition active:scale-[0.98]" style="background-color: var(--bg-well); color: var(--text-primary);">Parse &amp; Populate Chart</button>
+          <button id="parsePopulateBtn" type="button" class="w-full py-3 rounded-xl text-[13px] font-semibold hairline-strong transition active:scale-[0.98]" style="background-color: var(--bg-well); color: var(--text-primary);">Parse &amp; Populate Chart</button>
         </div>
       </div>
     </div>
@@ -604,7 +605,7 @@
 
       <div class="px-5 py-3.5 hairline-t safe-bottom flex items-center justify-between gap-2" style="background-color: var(--bg-card);">
         <button id="disconnectSyncBtn" type="button" class="hidden px-3.5 py-3 rounded-xl text-[12px] font-semibold hairline transition active:scale-[0.98]" style="background-color: var(--bg-subtle); color: var(--psychotic-crimson);">Disconnect</button>
-        <button id="saveSyncSettingsBtn" type="button" class="flex-1 py-3 rounded-xl text-[13px] font-semibold hairline transition active:scale-[0.98]" style="background-color: var(--bg-well); color: var(--text-primary);">Save &amp; Sync</button>
+        <button id="saveSyncSettingsBtn" type="button" class="flex-1 py-3 rounded-xl text-[13px] font-semibold hairline-strong transition active:scale-[0.98]" style="background-color: var(--bg-well); color: var(--text-primary);">Save &amp; Sync</button>
       </div>
     </div>
   </div>
@@ -677,9 +678,9 @@
         'very depressed': { fill: [219, 234, 254], border: [59, 130, 246],  accent: [30, 58, 138] },
         'mixed (d)':      { fill: [238, 242, 255], border: [165, 180, 252], accent: [79, 70, 229] },
         'mixed (h)':      { fill: [245, 243, 255], border: [196, 181, 253], accent: [124, 58, 237] },
-        'mixed (m)':      { fill: [250, 245, 255], border: [216, 180, 254], accent: [147, 51, 234] },
+        'mixed (m)':      { fill: [253, 244, 255], border: [240, 171, 252], accent: [192, 38, 211] },
         'hypomania':      { fill: [240, 253, 250], border: [94, 234, 212],  accent: [13, 148, 136] },
-        'mania':          { fill: [253, 242, 248], border: [249, 168, 212], accent: [219, 39, 119] }
+        'mania':          { fill: [255, 241, 242], border: [253, 164, 175], accent: [225, 29, 72] }
       };
 
       function buildSampleBacklogShorthand() {
@@ -1723,12 +1724,15 @@
 
         let y = drawPrintHeader(pdf, `Psych Log · ${monthTitle}`, `${monthEntries.length}/${totalDays} Logged (${pct}%)`, margin, contentW);
 
-        /* 1. CLINICAL BRIEF (2-Column Box with exact jsPDF bounding height so text never overflows) */
+        /* 1. CLINICAL BRIEF (2-Column Box with deterministic line-height measurement so text never clips border) */
         const colGap = 4, leftBriefW = 76, rightBriefW = contentW - leftBriefW - colGap;
+        const briefFontPt = 9.2;
+        const briefLineStepMm = ptToMm(briefFontPt) * 1.28;
+
         pdf.setFont('helvetica', 'normal');
-        pdf.setFontSize(9.5);
+        pdf.setFontSize(briefFontPt);
         const stateTextLines = pdf.splitTextToSize(pdfSafeText(brief.stateSummaryText), leftBriefW - 6);
-        const stateBlockH = stateTextLines.length > 0 ? pdf.getTextDimensions(stateTextLines, { fontSize: 9.5 }).h : 4;
+        const stateBlockH = Math.max(1, stateTextLines.length) * briefLineStepMm;
 
         const epLinesList = brief.arcs.length === 0
           ? ['No episodes (>= 4 consecutive days or marked) in this period.']
@@ -1738,17 +1742,18 @@
             });
         const wrappedEpLines = [];
         epLinesList.forEach(line => wrappedEpLines.push(...pdf.splitTextToSize(pdfSafeText(line), rightBriefW - 6)));
-        const epBlockH = wrappedEpLines.length > 0 ? pdf.getTextDimensions(wrappedEpLines, { fontSize: 9.5 }).h : 4;
+        const epBlockH = Math.max(1, wrappedEpLines.length) * briefLineStepMm;
 
         const psychLineStr = brief.psychoticList.length > 0
           ? 'Psychotic: ' + brief.psychoticList.map(p => `${p.symptom} (${p.datesText})`).join(' · ')
           : '';
+        pdf.setFont('helvetica', 'bold');
         const wrappedPsychLines = psychLineStr ? pdf.splitTextToSize(pdfSafeText(psychLineStr), rightBriefW - 6) : [];
-        const psychBlockH = wrappedPsychLines.length > 0 ? pdf.getTextDimensions(wrappedPsychLines, { fontSize: 9.5 }).h : 0;
+        const psychBlockH = wrappedPsychLines.length * briefLineStepMm;
 
         const leftTotalH = 13 + stateBlockH + 4;
-        const rightTotalH = 9 + epBlockH + (psychBlockH > 0 ? 2.5 + psychBlockH : 0) + 4.5;
-        const briefBoxH = Math.max(leftTotalH, rightTotalH, 25);
+        const rightTotalH = 9 + epBlockH + (psychBlockH > 0 ? 2 + psychBlockH : 0) + 4.5;
+        const briefBoxH = Math.max(leftTotalH, rightTotalH, 26);
 
         pdf.setDrawColor(212, 212, 216);
         pdf.setLineWidth(0.25);
@@ -1772,7 +1777,7 @@
           });
         }
         pdf.setFont('helvetica', 'normal');
-        pdf.setFontSize(9.5);
+        pdf.setFontSize(briefFontPt);
         pdf.setTextColor(39, 39, 42);
         pdf.text(stateTextLines, margin + 3, y + 13);
 
@@ -1785,11 +1790,11 @@
         pdf.text('EPISODES (>= 4 CONSECUTIVE DAYS OR MARKED)', rightBriefX + 3, y + 4.5);
 
         pdf.setFont('helvetica', 'normal');
-        pdf.setFontSize(9.5);
+        pdf.setFontSize(briefFontPt);
         pdf.setTextColor(24, 24, 27);
         pdf.text(wrappedEpLines, rightBriefX + 3, y + 9);
         if (wrappedPsychLines.length > 0) {
-          const psychY = y + 9 + epBlockH + 2.5;
+          const psychY = y + 9 + epBlockH + 2;
           pdf.setFont('helvetica', 'bold');
           pdf.setTextColor(185, 28, 28);
           pdf.text(wrappedPsychLines, rightBriefX + 3, psychY);
@@ -1978,9 +1983,9 @@
 
         y += calBoxH + 5;
 
-        /* 3. CHRONOLOGICAL NOTES TABLE */
+        /* 3. CHRONOLOGICAL NOTES TABLE (wide DATE column so dates stay on 1 line) */
         const notesEntries = [...monthEntries].reverse().filter(isFlaggedEntry);
-        const colDateW = 28, colStateW = 36, colSleepW = 23, colNoteW = contentW - colDateW - colStateW - colSleepW;
+        const colDateW = 30, colStateW = 36, colSleepW = 23, colNoteW = contentW - colDateW - colStateW - colSleepW;
 
         function drawNotesSectionHeader(currentY, isContinuation) {
           pdf.setFont('helvetica', 'bold');
@@ -2087,7 +2092,7 @@
 
         let y = drawPrintHeader(pdf, `Psych Log · ${targetYr} Annual Clinical Report`, `${stats.totalLogged}/${totalYearDays} Logged (${pct}%)`, margin, contentW);
 
-        /* 3 KPI cards across top: Stable, Episodes & Length, Psychotic Symptoms */
+        /* 3 KPI cards across top: Stable, Episodes & Length, Psychotic Symptoms (with Mood ++) */
         const kpiGap = 3.5, kpiW = (contentW - kpiGap * 2) / 3, kpiH = 21;
         [
           {
@@ -2247,11 +2252,12 @@
           pdf.setTextColor(113, 113, 122);
           pdf.text(`No qualifying episodes logged in ${targetYr}.`, margin, y + 4);
         } else {
+          const epLineH = ptToMm(9.5) * 1.28;
           stats.episodes.forEach((ep, idx) => {
             const peakStr = formatPeakDatesList(ep.peaks);
             const line = `Episode ${idx + 1}: Start ${formatBritishFull(ep.start)}${peakStr ? ' -> Peak ' + peakStr : ''}${ep.end ? ' -> End ' + formatBritishFull(ep.end) : ' -> Ongoing'}  |  ${ep.states.join(' / ')} (${ep.dayCount}d)`;
             const wrapped = pdf.splitTextToSize(pdfSafeText(line), contentW - 6);
-            const rowH = pdf.getTextDimensions(wrapped, { fontSize: 9.5 }).h + 5;
+            const rowH = Math.max(1, wrapped.length) * epLineH + 5;
             if (y + rowH > pageH - margin) {
               pdf.addPage();
               y = drawPrintHeader(pdf, `Psych Log · ${targetYr} Annual Episodes (Continued)`, '', margin, contentW);
