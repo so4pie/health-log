@@ -12,6 +12,8 @@
   <link id="faviconIconLink" rel="icon" type="image/jpeg" href="icon.jpg" />
 
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <style>
     :root {
       --bg-canvas: #F7F7F5;
@@ -30,25 +32,30 @@
       --state-existing-tint: #F2F2F7;
       --state-existing-border: rgba(142, 142, 147, 0.32);
 
+      /* Sky / Cerulean Blue */
       --state-depressed: #3B82F6;
-      --state-depressed-tint: rgba(59, 130, 246, 0.14);
-      --state-depressed-border: rgba(59, 130, 246, 0.36);
+      --state-depressed-tint: rgba(59, 130, 246, 0.12);
+      --state-depressed-border: rgba(59, 130, 246, 0.34);
 
-      --state-very-depressed: #1D4ED8;
-      --state-very-depressed-tint: rgba(29, 78, 216, 0.16);
-      --state-very-depressed-border: rgba(29, 78, 216, 0.42);
+      /* Deep Midnight Cobalt (distinctly deeper than Depressed) */
+      --state-very-depressed: #1E3A8A;
+      --state-very-depressed-tint: rgba(30, 58, 138, 0.22);
+      --state-very-depressed-border: rgba(30, 58, 138, 0.52);
 
-      --state-mixed: #8B5CF6;
-      --state-mixed-tint: rgba(139, 92, 246, 0.15);
-      --state-mixed-border: rgba(139, 92, 246, 0.38);
+      /* Cool Violet */
+      --state-mixed: #7C3AED;
+      --state-mixed-tint: rgba(124, 58, 237, 0.14);
+      --state-mixed-border: rgba(124, 58, 237, 0.36);
 
+      /* Cool Teal */
       --state-hypomania: #0D9488;
-      --state-hypomania-tint: rgba(13, 148, 136, 0.15);
-      --state-hypomania-border: rgba(13, 148, 136, 0.44);
+      --state-hypomania-tint: rgba(13, 148, 136, 0.14);
+      --state-hypomania-border: rgba(13, 148, 136, 0.42);
 
-      --state-mania: #EA580C;
-      --state-mania-tint: rgba(234, 88, 12, 0.15);
-      --state-mania-border: rgba(234, 88, 12, 0.40);
+      /* Cool Electric Magenta / Berry (cool-toned, zero orange/yellow) */
+      --state-mania: #C026D3;
+      --state-mania-tint: rgba(192, 38, 211, 0.14);
+      --state-mania-border: rgba(192, 38, 211, 0.40);
 
       --psychotic-crimson: #DC2626;
       --psychotic-crimson-tint: rgba(220, 38, 38, 0.12);
@@ -71,25 +78,30 @@
       --state-existing-tint: rgba(145, 150, 158, 0.16);
       --state-existing-border: rgba(145, 150, 158, 0.32);
 
-      --state-depressed: #5B9BF8;
-      --state-depressed-tint: rgba(91, 155, 248, 0.20);
-      --state-depressed-border: rgba(91, 155, 248, 0.44);
+      /* Crisp Sky Blue */
+      --state-depressed: #7DD3FC;
+      --state-depressed-tint: rgba(125, 211, 252, 0.16);
+      --state-depressed-border: rgba(125, 211, 252, 0.38);
 
-      --state-very-depressed: #3B6EF6;
-      --state-very-depressed-tint: rgba(59, 110, 246, 0.24);
-      --state-very-depressed-border: rgba(59, 110, 246, 0.48);
+      /* Deep Royal Cobalt (visibly deeper fill & border than Depressed) */
+      --state-very-depressed: #4F7DF9;
+      --state-very-depressed-tint: rgba(37, 99, 235, 0.32);
+      --state-very-depressed-border: rgba(79, 125, 249, 0.58);
 
-      --state-mixed: #A485F8;
-      --state-mixed-tint: rgba(164, 133, 248, 0.22);
-      --state-mixed-border: rgba(164, 133, 248, 0.46);
+      /* Cool Violet */
+      --state-mixed: #A78BFA;
+      --state-mixed-tint: rgba(167, 139, 250, 0.22);
+      --state-mixed-border: rgba(167, 139, 250, 0.46);
 
+      /* Cool Teal */
       --state-hypomania: #2DD4BF;
       --state-hypomania-tint: rgba(45, 212, 191, 0.20);
       --state-hypomania-border: rgba(45, 212, 191, 0.48);
 
-      --state-mania: #F58232;
-      --state-mania-tint: rgba(245, 130, 50, 0.22);
-      --state-mania-border: rgba(245, 130, 50, 0.46);
+      /* Cool Electric Magenta / Fuchsia */
+      --state-mania: #E879F9;
+      --state-mania-tint: rgba(232, 121, 249, 0.22);
+      --state-mania-border: rgba(232, 121, 249, 0.48);
 
       --psychotic-crimson: #F06060;
       --psychotic-crimson-tint: rgba(240, 96, 96, 0.20);
@@ -109,10 +121,11 @@
       overflow-x: hidden;
     }
 
+    /* 3-Mode Segmented Control (Weekly / Monthly / Annual) */
     .ios-seg-track {
       position: relative;
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: repeat(3, 1fr);
       padding: 2px;
       border-radius: 12px;
       background-color: var(--bg-subtle);
@@ -123,7 +136,7 @@
       top: 2px;
       bottom: 2px;
       left: 2px;
-      width: calc(50% - 2px);
+      width: calc((100% - 4px) / 3);
       border-radius: 10px;
       background-color: var(--bg-card);
       box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 1px rgba(0, 0, 0, 0.04);
@@ -131,11 +144,13 @@
       pointer-events: none;
     }
     html.dark .ios-seg-thumb { box-shadow: 0 1px 4px rgba(0, 0, 0, 0.45); }
+    .ios-seg-track[data-mode="weekly"] .ios-seg-thumb { transform: translateX(0%); }
     .ios-seg-track[data-mode="monthly"] .ios-seg-thumb { transform: translateX(100%); }
+    .ios-seg-track[data-mode="annual"] .ios-seg-thumb { transform: translateX(200%); }
     .ios-seg-btn {
       position: relative;
       z-index: 1;
-      padding: 6px 10px;
+      padding: 6px 8px;
       font-size: 12px;
       font-weight: 600;
       letter-spacing: -0.01em;
@@ -176,51 +191,49 @@
     }
     .pulse-update { animation: briefFlash 0.32s ease; }
 
-    .safe-top { padding-top: max(12px, env(safe-area-inset-top)); }
-    .safe-bottom { padding-bottom: max(16px, env(safe-area-inset-bottom)); }
+    /* Optimized for iPhone 16 / 16 Pro / 16 Pro Max and newer Dynamic Island safe area */
+    .safe-top {
+      padding-top: calc(env(safe-area-inset-top, 0px) + 12px);
+    }
+    .safe-bottom {
+      padding-bottom: max(16px, env(safe-area-inset-bottom, 0px));
+    }
 
     ::-webkit-scrollbar { width: 4px; height: 4px; }
     ::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 999px; }
-
-    @media print {
-      body { background: #FFFFFF !important; color: #141413 !important; padding: 0 !important; }
-      .no-print { display: none !important; }
-      .editorial-card { box-shadow: none !important; border: 1px solid #D4D4D8 !important; break-inside: avoid; }
-      main { max-width: 100% !important; padding: 0 !important; }
-    }
   </style>
 </head>
 <body class="min-h-screen pb-14">
 
-  <!-- STICKY HEADER -->
-  <header class="sticky top-0 z-30 safe-top backdrop-blur-xl hairline-b no-print"
-    style="background-color: color-mix(in srgb, var(--bg-canvas) 84%, transparent);">
-    <div class="max-w-[480px] mx-auto px-4 py-3 flex items-center justify-between gap-2">
-      <div class="min-w-0">
-        <div class="flex items-center gap-2">
-          <h1 class="text-[17px] font-semibold tracking-tight leading-none truncate">Psych Log</h1>
-          <span id="headerSpanBadge" class="text-[11px] font-medium tabular px-2 py-0.5 rounded-full hairline shrink-0"
+  <!-- STICKY HEADER (iPhone 16+ Dynamic Island Safe) -->
+  <header class="sticky top-0 z-30 safe-top backdrop-blur-xl hairline-b"
+    style="background-color: color-mix(in srgb, var(--bg-canvas) 86%, transparent);">
+    <div class="max-w-[480px] mx-auto px-4 pb-2.5 flex items-center justify-between gap-2.5">
+      <div class="min-w-0 flex-1">
+        <div class="flex items-center gap-2 flex-nowrap">
+          <h1 class="text-[17px] font-semibold tracking-tight leading-none shrink-0">Psych Log</h1>
+          <span id="headerSpanBadge" class="text-[11px] font-medium tabular px-2 py-0.5 rounded-full hairline truncate"
             style="background-color: var(--bg-card); color: var(--text-secondary);">
-            26 Nov 2026
+            —
           </span>
         </div>
         <div class="flex items-center gap-1.5 mt-1">
           <span id="headerSyncDot" class="w-1.5 h-1.5 rounded-full shrink-0" style="background-color: var(--state-existing);"></span>
-          <p id="headerSyncText" class="text-[11px] tracking-wide truncate" style="color: var(--text-muted);">
+          <p id="headerSyncText" class="text-[11px] leading-none tracking-wide truncate" style="color: var(--text-muted);">
             Local only
           </p>
         </div>
       </div>
 
-      <div class="relative flex items-center gap-1.5 shrink-0">
+      <div class="relative flex items-center gap-2 shrink-0">
         <button id="themeToggleBtn" type="button" aria-label="Toggle Dark or Light Mode"
-          class="w-9 h-9 rounded-xl hairline flex items-center justify-center text-[15px] transition active:scale-95"
+          class="w-[38px] h-[38px] rounded-xl hairline flex items-center justify-center text-[15px] transition active:scale-95"
           style="background-color: var(--bg-card); color: var(--text-secondary);">
           <span id="themeGlyph">☾</span>
         </button>
 
         <button id="headerMenuBtn" type="button" aria-label="Open Tracker Options" aria-expanded="false"
-          class="w-9 h-9 rounded-xl hairline flex items-center justify-center text-[16px] font-bold transition active:scale-95"
+          class="w-[38px] h-[38px] rounded-xl hairline flex items-center justify-center text-[16px] font-bold transition active:scale-95"
           style="background-color: var(--bg-card); color: var(--text-secondary);">
           ⋯
         </button>
@@ -274,7 +287,7 @@
   <main class="max-w-[480px] mx-auto px-4 pt-3.5 space-y-3.5">
 
     <!-- 1. LOG TODAY / LOG PREVIOUS -->
-    <section class="grid grid-cols-2 gap-2 no-print" aria-label="Quick Check-In Actions">
+    <section class="grid grid-cols-2 gap-2" aria-label="Quick Check-In Actions">
       <button id="logTodayBtn" type="button"
         class="editorial-card px-3.5 py-3 text-left flex items-center justify-between gap-2 transition active:scale-[0.98]"
         style="background-color: var(--bg-card);">
@@ -298,33 +311,23 @@
 
     <!-- 2. CLINICAL BRIEF -->
     <section id="clinicalBriefCard" class="editorial-card p-4 space-y-3.5" aria-label="Auto-Generated Clinical Brief">
-      <div class="flex flex-wrap items-start justify-between gap-2">
-        <div>
+      <div class="flex items-start justify-between gap-2">
+        <div class="min-w-0">
           <h2 class="text-[15px] font-semibold tracking-tight">Clinical Brief</h2>
-          <p id="briefDateRangeText" class="text-[11px] tabular mt-0.5" style="color: var(--text-muted);">—</p>
+          <p id="briefDateRangeText" class="text-[11px] tabular mt-0.5 truncate" style="color: var(--text-muted);">—</p>
         </div>
 
-        <div class="flex items-center gap-1.5 no-print">
-          <button id="copyBriefBtn" type="button"
-            class="px-3 py-1.5 rounded-xl text-[12px] font-medium hairline transition active:scale-95 flex items-center gap-1.5"
-            style="background-color: var(--bg-subtle); color: var(--text-primary);">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-            </svg>
-            <span>Copy Brief</span>
-          </button>
-
-          <button id="doctorViewBtn" type="button"
-            class="px-3 py-1.5 rounded-xl text-[12px] font-semibold transition active:scale-95 flex items-center gap-1.5"
-            style="background-color: #91969e; color: #181A1F;">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M15 3h6v6"></path><path d="M9 21H3v-6"></path>
-              <path d="M21 3l-7 7"></path><path d="M3 21l7-7"></path>
-            </svg>
-            <span>Doctor View</span>
-          </button>
-        </div>
+        <button id="exportPdfBtn" type="button"
+          class="px-3.5 py-1.5 rounded-xl text-[12px] font-semibold transition active:scale-95 flex items-center gap-1.5 shrink-0"
+          style="background-color: var(--text-primary); color: var(--bg-canvas);">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+            <polyline points="14 2 14 8 20 8"></polyline>
+            <line x1="12" y1="18" x2="12" y2="12"></line>
+            <polyline points="9 15 12 18 15 15"></polyline>
+          </svg>
+          <span id="exportPdfLabel">PDF</span>
+        </button>
       </div>
 
       <div class="p-3 rounded-2xl hairline space-y-1.5" style="background-color: var(--bg-subtle);">
@@ -350,13 +353,14 @@
       </div>
     </section>
 
-    <!-- 3. WEEKLY / MONTHLY OVERVIEW -->
-    <section class="editorial-card p-4 space-y-3" aria-label="Weekly or Monthly Overview">
-      <div class="space-y-2 no-print">
-        <div id="viewModeTrack" class="ios-seg-track" data-mode="weekly" role="tablist" aria-label="Weekly or Monthly View">
+    <!-- 3. WEEKLY / MONTHLY / ANNUAL OVERVIEW -->
+    <section class="editorial-card p-4 space-y-3" aria-label="Weekly, Monthly, or Annual Overview">
+      <div class="space-y-2">
+        <div id="viewModeTrack" class="ios-seg-track" data-mode="weekly" role="tablist" aria-label="Timeframe View">
           <div class="ios-seg-thumb" aria-hidden="true"></div>
           <button type="button" id="segWeeklyBtn" data-view-mode="weekly" role="tab" aria-selected="true" class="ios-seg-btn">Weekly</button>
           <button type="button" id="segMonthlyBtn" data-view-mode="monthly" role="tab" aria-selected="false" class="ios-seg-btn">Monthly</button>
+          <button type="button" id="segAnnualBtn" data-view-mode="annual" role="tab" aria-selected="false" class="ios-seg-btn">Annual</button>
         </div>
 
         <div class="flex items-center justify-between gap-2">
@@ -365,7 +369,7 @@
             style="background-color: var(--bg-subtle); color: var(--text-primary);">‹</button>
 
           <div class="flex items-center justify-center gap-2 min-w-0 flex-1">
-            <span id="periodLabelText" class="text-[13px] font-semibold tracking-tight tabular truncate">23 Nov – 29 Nov 2026</span>
+            <span id="periodLabelText" class="text-[13px] font-semibold tracking-tight tabular truncate">—</span>
             <button id="periodTodayBtn" type="button"
               class="hidden px-2.5 py-0.5 rounded-full text-[11px] font-semibold hairline transition active:scale-95 shrink-0"
               style="background-color: var(--text-primary); color: var(--bg-canvas);">Today</button>
@@ -395,7 +399,7 @@
       </div>
     </section>
 
-    <!-- 4. FREQUENCY -->
+    <!-- 4. FREQUENCY (Shown in Weekly & Monthly views) -->
     <section id="frequencyCard" class="editorial-card p-4 space-y-3" aria-label="Frequency by Mood">
       <div class="flex items-center justify-between gap-2">
         <h2 class="text-[15px] font-semibold tracking-tight">Frequency</h2>
@@ -410,7 +414,7 @@
       <div class="flex items-center justify-between gap-2">
         <h2 class="text-[15px] font-semibold tracking-tight">Key</h2>
         <button id="toggleBriefKeyBtn" type="button" aria-expanded="true"
-          class="px-2.5 py-1 rounded-lg text-[11px] font-medium hairline transition active:scale-95 no-print"
+          class="px-2.5 py-1 rounded-lg text-[11px] font-medium hairline transition active:scale-95"
           style="background-color: var(--bg-subtle); color: var(--text-secondary);">Hide</button>
       </div>
 
@@ -440,7 +444,7 @@
     <section class="editorial-card p-4 space-y-3" aria-label="Notes Feed">
       <div class="flex items-center justify-between gap-2">
         <h2 class="text-[15px] font-semibold tracking-tight">Notes</h2>
-        <div class="inline-flex p-0.5 rounded-xl hairline no-print" style="background-color: var(--bg-subtle);">
+        <div class="inline-flex p-0.5 rounded-xl hairline" style="background-color: var(--bg-subtle);">
           <button type="button" data-feed="flagged" class="feed-pill px-2.5 py-1 rounded-[10px] text-[11px] font-semibold transition">Notes &amp; Flags</button>
           <button type="button" data-feed="all" class="feed-pill px-2.5 py-1 rounded-[10px] text-[11px] font-semibold transition">All Days</button>
         </div>
@@ -448,13 +452,13 @@
       <div id="notesFeedContainer" class="space-y-2"></div>
     </section>
 
-    <footer class="pt-1 pb-6 px-1 flex items-center justify-between gap-2 text-[11px] no-print" style="color: var(--text-muted);">
+    <footer class="pt-1 pb-6 px-1 flex items-center justify-between gap-2 text-[11px]" style="color: var(--text-muted);">
       <div id="footerSyncNote">Stored locally on this device · Enable Cloud Sync in ⋯</div>
     </footer>
   </main>
 
   <!-- CHECK-IN & BACKLOG BOTTOM SHEET -->
-  <div id="checkInBackdrop" class="modal-backdrop fixed inset-0 z-50 flex items-end sm:items-center justify-center no-print"
+  <div id="checkInBackdrop" class="modal-backdrop fixed inset-0 z-50 flex items-end sm:items-center justify-center"
     style="background-color: rgba(0, 0, 0, 0.45); backdrop-filter: blur(4px);">
     <div class="sheet-surface w-full max-w-lg max-h-[92vh] flex flex-col rounded-t-3xl sm:rounded-3xl hairline overflow-hidden"
       style="background-color: var(--bg-card);" role="dialog" aria-modal="true" aria-labelledby="sheetHeading">
@@ -497,7 +501,7 @@
               <div class="relative flex-1">
                 <div id="britishDateLabel" class="w-full h-11 px-3 rounded-xl hairline text-[14px] font-semibold tabular flex items-center justify-center gap-2 cursor-pointer" style="background-color: var(--bg-subtle);">
                   <span>📅</span>
-                  <span id="britishDateText">26 Nov 2026</span>
+                  <span id="britishDateText">—</span>
                 </div>
                 <input id="nativeDatePicker" type="date" aria-label="Choose date" class="absolute inset-0 opacity-0 w-full h-full cursor-pointer" />
               </div>
@@ -601,7 +605,7 @@
   </div>
 
   <!-- CLOUD SYNC SETTINGS MODAL -->
-  <div id="syncSettingsBackdrop" class="modal-backdrop fixed inset-0 z-50 flex items-end sm:items-center justify-center no-print"
+  <div id="syncSettingsBackdrop" class="modal-backdrop fixed inset-0 z-50 flex items-end sm:items-center justify-center"
     style="background-color: rgba(0, 0, 0, 0.45); backdrop-filter: blur(4px);">
     <div class="sheet-surface w-full max-w-md flex flex-col rounded-t-3xl sm:rounded-3xl hairline overflow-hidden"
       style="background-color: var(--bg-card);" role="dialog" aria-modal="true" aria-labelledby="syncModalHeading">
@@ -645,27 +649,9 @@
     </div>
   </div>
 
-  <!-- DOCTOR VIEW MODAL -->
-  <div id="doctorViewModal" class="hidden fixed inset-0 z-50 overflow-y-auto" style="background-color: var(--bg-canvas);">
-    <div class="max-w-3xl mx-auto px-4 py-4 safe-top safe-bottom space-y-4">
-      <div class="flex items-center justify-between gap-2 pb-3 hairline-b no-print">
-        <div>
-          <span class="text-[10px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-full"
-            style="background-color: var(--state-existing-tint); color: var(--text-secondary);">Psychiatry Consultation Summary</span>
-          <h2 id="docViewTitle" class="text-[18px] font-semibold tracking-tight mt-1">Psych Log Clinical Overview</h2>
-        </div>
-        <div class="flex items-center gap-2">
-          <button id="docPrintBtn" type="button" class="px-3 py-2 rounded-xl text-[12px] font-medium hairline" style="background-color: var(--bg-card); color: var(--text-primary);">Print / PDF</button>
-          <button id="closeDoctorViewBtn" type="button" class="px-3.5 py-2 rounded-xl text-[12px] font-semibold" style="background-color: var(--text-primary); color: var(--bg-canvas);">Done</button>
-        </div>
-      </div>
-      <div id="doctorViewContent" class="space-y-4"></div>
-    </div>
-  </div>
-
   <!-- TOAST -->
   <div id="toastPill"
-    class="fixed top-16 left-1/2 -translate-x-1/2 z-[60] pointer-events-none opacity-0 transition-opacity duration-200 px-4 py-2 rounded-full text-[12px] font-semibold shadow-lg hairline no-print"
+    class="fixed top-20 left-1/2 -translate-x-1/2 z-[60] pointer-events-none opacity-0 transition-opacity duration-200 px-4 py-2 rounded-full text-[12px] font-semibold shadow-lg hairline"
     style="background-color: var(--text-primary); color: var(--bg-canvas);">Saved</div>
 
   <script>
@@ -785,6 +771,13 @@
         for (let d = 1; d <= total; d++) list.push(`${yearMonth}-${String(d).padStart(2, '0')}`);
         return list;
       }
+      function getDaysInYear(yearStr) {
+        const list = [];
+        for (let m = 1; m <= 12; m++) {
+          list.push(...getDaysInMonth(`${yearStr}-${String(m).padStart(2, '0')}`));
+        }
+        return list;
+      }
       function formatSleepNum(val) {
         return Number(val).toFixed(1).replace(/\.0$/, '');
       }
@@ -797,6 +790,7 @@
         viewMode: 'weekly',
         weekMondayIso: getMondayISO(TODAY_ISO),
         monthIso: TODAY_ISO.slice(0, 7),
+        yearIso: TODAY_ISO.slice(0, 4),
         feedFilter: 'flagged',
         selectedDate: TODAY_ISO,
         keyExpanded: true
@@ -1134,6 +1128,7 @@
         appState.selectedDate = clean.date;
         appState.weekMondayIso = getMondayISO(clean.date);
         appState.monthIso = clean.date.slice(0, 7);
+        appState.yearIso = clean.date.slice(0, 4);
         persistToStorage();
         if (!skipCloudPush && isSyncConfigured()) pushLocalToCloud();
       }
@@ -1177,15 +1172,27 @@
             isCurrent: TODAY_ISO >= startIso && TODAY_ISO <= endIso
           };
         }
-        const ym = appState.monthIso;
-        const allDates = getDaysInMonth(ym);
+        if (appState.viewMode === 'monthly') {
+          const ym = appState.monthIso;
+          const allDates = getDaysInMonth(ym);
+          return {
+            mode: 'monthly',
+            startIso: allDates[0],
+            endIso: allDates[allDates.length - 1],
+            allDates,
+            label: formatMonthYear(ym),
+            isCurrent: TODAY_ISO.slice(0, 7) === ym
+          };
+        }
+        const yr = appState.yearIso;
+        const allDates = getDaysInYear(yr);
         return {
-          mode: 'monthly',
-          startIso: allDates[0],
-          endIso: allDates[allDates.length - 1],
+          mode: 'annual',
+          startIso: `${yr}-01-01`,
+          endIso: `${yr}-12-31`,
           allDates,
-          label: formatMonthYear(ym),
-          isCurrent: TODAY_ISO.slice(0, 7) === ym
+          label: yr,
+          isCurrent: TODAY_ISO.slice(0, 4) === yr
         };
       }
 
@@ -1209,7 +1216,7 @@
         el.textContent = msg;
         el.style.opacity = '1';
         clearTimeout(showToast._t);
-        showToast._t = setTimeout(() => { el.style.opacity = '0'; }, 2100);
+        showToast._t = setTimeout(() => { el.style.opacity = '0'; }, 2200);
       }
 
       function pulseBriefCard() {
@@ -1284,9 +1291,11 @@
           const stateSet = new Set();
           cluster.entries.forEach(e => getEpisodeStates(e.states).forEach(s => stateSet.add(s)));
           episodes.push({
+            family: cluster.family,
             start: cluster.entries[0].date,
             peaks: cluster.entries.filter(e => e.phase === 'peak').map(e => e.date),
             end: isEnded ? lastEntry.date : null,
+            lastDate: lastEntry.date,
             dayCount,
             states: Array.from(stateSet)
           });
@@ -1326,28 +1335,20 @@
         };
       }
 
-      function renderClinicalBrief() {
-        const win = getPeriodWindow();
-        const data = computeBriefData(getPeriodEntries());
-
-        document.getElementById('briefDateRangeText').textContent = win.label;
-        document.getElementById('headerSpanBadge').textContent = formatBritishFull(TODAY_ISO);
-
-        const barEl = document.getElementById('briefStateBar');
-        barEl.innerHTML = (data.count === 0 || data.totalStateOccurrences === 0)
+      function buildBriefInnerHtml(data) {
+        const barHtml = (data.count === 0 || data.totalStateOccurrences === 0)
           ? ''
           : CLINICAL_STATES.filter(s => data.stateCounts[s.id] > 0).map(s =>
-              `<div style="width:${((data.stateCounts[s.id] / data.totalStateOccurrences) * 100).toFixed(2)}%; background-color:var(${s.colorVar});"></div>`
+              `<div style="width:${((data.stateCounts[s.id] / data.totalStateOccurrences) * 100).toFixed(2)}%; background-color:${cssVar(s.colorVar)};"></div>`
             ).join('');
-        document.getElementById('briefStateText').textContent = data.stateSummaryText;
 
-        const arcsEl = document.getElementById('briefEpisodeArcs');
+        let arcsHtml = '';
         if (data.count === 0) {
-          arcsEl.innerHTML = `<div style="color: var(--text-muted);">—</div>`;
+          arcsHtml = `<div style="color: var(--text-muted);">—</div>`;
         } else if (data.arcs.length === 0) {
-          arcsEl.innerHTML = `<div style="color: var(--text-muted);">No episodes (4+ consecutive days or marked) in this period.</div>`;
+          arcsHtml = `<div style="color: var(--text-muted);">No episodes (4+ consecutive days or marked) in this period.</div>`;
         } else {
-          arcsEl.innerHTML = data.arcs.map((arc, idx) => {
+          arcsHtml = data.arcs.map((arc, idx) => {
             const peakFormatted = formatPeakDatesList(arc.peaks);
             return `
               <div class="flex flex-wrap items-center gap-1.5">
@@ -1361,6 +1362,34 @@
           }).join('');
         }
 
+        const psychHtml = data.psychoticList.length === 0
+          ? ''
+          : `
+            <div class="pt-2 hairline-t">
+              <div class="text-[10px] font-semibold uppercase tracking-wider mb-0.5" style="color: var(--psychotic-crimson);">
+                Psychotic Symptoms Logged
+              </div>
+              <div class="text-[12px] font-medium tabular" style="color: var(--psychotic-crimson);">
+                ${data.psychoticList.map(i => `${i.symptom}: ${i.datesText}`).join(' · ')}
+              </div>
+            </div>
+          `;
+
+        return { barHtml, arcsHtml, psychHtml };
+      }
+
+      function renderClinicalBrief() {
+        const win = getPeriodWindow();
+        const data = computeBriefData(getPeriodEntries());
+        const rendered = buildBriefInnerHtml(data);
+
+        document.getElementById('briefDateRangeText').textContent = win.mode === 'annual' ? `Jan – Dec ${win.label}` : win.label;
+        document.getElementById('headerSpanBadge').textContent = formatBritishFull(TODAY_ISO);
+
+        document.getElementById('briefStateBar').innerHTML = rendered.barHtml;
+        document.getElementById('briefStateText').textContent = data.stateSummaryText;
+        document.getElementById('briefEpisodeArcs').innerHTML = rendered.arcsHtml;
+
         const psychWrap = document.getElementById('briefPsychoticWrap');
         if (data.psychoticList.length === 0) {
           psychWrap.classList.add('hidden');
@@ -1370,45 +1399,7 @@
         }
       }
 
-      function buildPlainTextBrief() {
-        const win = getPeriodWindow();
-        const visible = getPeriodEntries();
-        const data = computeBriefData(visible);
-        if (visible.length === 0) return `Psych Log Clinical Brief (${win.label}): No entries logged.`;
-
-        const lines = [
-          `PSYCH LOG CLINICAL BRIEF (${win.label} · ${data.count} days logged)`,
-          `• States: ${data.stateSummaryText}`
-        ];
-        data.arcs.forEach((arc, i) => {
-          const peakFormatted = formatPeakDatesList(arc.peaks);
-          lines.push(`• Episode ${i + 1}: Start ${formatBritishShort(arc.start)}${peakFormatted ? ` → Peak ${peakFormatted}` : ''}${arc.end ? ` → End ${formatBritishShort(arc.end)}` : ' → Ongoing'} (${arc.states.join(' / ')}, ${arc.dayCount}d)`);
-        });
-        if (data.psychoticList.length > 0) {
-          lines.push(`• Psychotic symptoms: ${data.psychoticList.map(x => `${x.symptom} [${x.datesText}]`).join('; ')}`);
-        }
-        const flaggedNotes = visible.filter(e => e.notes && e.notes.trim().length > 0);
-        if (flaggedNotes.length > 0) {
-          lines.push('', 'KEY NOTES:');
-          flaggedNotes.forEach(e => lines.push(`- ${formatBritishFull(e.date)} (${formatSleepNum(e.sleep)}h, ${e.mood}, ${formatEntryStatesLabel(e)}): ${e.notes}`));
-        }
-        return lines.join('\n');
-      }
-
-      function copyBriefToClipboard() {
-        const ta = document.createElement('textarea');
-        ta.value = buildPlainTextBrief();
-        ta.style.position = 'fixed';
-        ta.style.opacity = '0';
-        document.body.appendChild(ta);
-        ta.focus();
-        ta.select();
-        try { document.execCommand('copy'); showToast('Clinical brief copied'); }
-        catch (err) { showToast('Unable to copy brief'); }
-        document.body.removeChild(ta);
-      }
-
-      /* WEEKLY / MONTHLY GRID & FREQUENCY */
+      /* WEEKLY / MONTHLY / ANNUAL GRIDS & STATS */
       function buildDayCardHtml(iso, entry, isOutsideMonth, isWeekly, extraClass, isInteractive) {
         const isSelected = isInteractive && iso === appState.selectedDate;
         const dayNum = parseInt(iso.slice(8, 10), 10);
@@ -1457,34 +1448,287 @@
         `;
       }
 
-      function renderTimesheetGrid(targetEl, allowMonthlyInteractive) {
-        const win = getPeriodWindow();
+      function buildMonthlyGridMarkup(ym, allowInteractive) {
+        const allDates = getDaysInMonth(ym);
         const entryMap = new Map(appState.entries.map(e => [e.date, e]));
-        const canInteract = Boolean(allowMonthlyInteractive && win.mode === 'monthly');
         const headerCols = MON_TO_SUN_LABELS.map(lbl => `<div class="text-center text-[10px] font-semibold uppercase tracking-wider pb-1" style="color: var(--text-muted);">${lbl}</div>`).join('');
-
-        if (win.mode === 'weekly') {
-          const cellsHtml = win.allDates.map(iso => buildDayCardHtml(iso, entryMap.get(iso) || null, false, true, '', false)).join('');
-          targetEl.innerHTML = `<div class="space-y-1"><div class="grid grid-cols-7 gap-1">${headerCols}</div><div class="grid grid-cols-7 gap-1">${cellsHtml}</div></div>`;
-        } else {
-          const firstMon = getMondayISO(win.startIso);
-          const lastDow = parseISO(win.endIso).getDay();
-          const finalSun = addDays(win.endIso, lastDow === 0 ? 0 : 7 - lastDow);
-          const weeks = [];
-          let cursorMon = firstMon;
-          while (cursorMon <= finalSun) {
-            const weekCells = [];
-            for (let i = 0; i < 7; i++) {
-              const iso = addDays(cursorMon, i);
-              weekCells.push(buildDayCardHtml(iso, entryMap.get(iso) || null, iso.slice(0, 7) !== appState.monthIso, false, '', canInteract));
-            }
-            weeks.push(`<div class="grid grid-cols-7 gap-1">${weekCells.join('')}</div>`);
-            cursorMon = addDays(cursorMon, 7);
+        const firstMon = getMondayISO(allDates[0]);
+        const lastIso = allDates[allDates.length - 1];
+        const lastDow = parseISO(lastIso).getDay();
+        const finalSun = addDays(lastIso, lastDow === 0 ? 0 : 7 - lastDow);
+        const weeks = [];
+        let cursorMon = firstMon;
+        while (cursorMon <= finalSun) {
+          const weekCells = [];
+          for (let i = 0; i < 7; i++) {
+            const iso = addDays(cursorMon, i);
+            weekCells.push(buildDayCardHtml(iso, entryMap.get(iso) || null, iso.slice(0, 7) !== ym, false, '', allowInteractive));
           }
-          targetEl.innerHTML = `<div class="space-y-1"><div class="grid grid-cols-7 gap-1">${headerCols}</div><div class="space-y-1">${weeks.join('')}</div></div>`;
+          weeks.push(`<div class="grid grid-cols-7 gap-1">${weekCells.join('')}</div>`);
+          cursorMon = addDays(cursorMon, 7);
+        }
+        return `<div class="space-y-1"><div class="grid grid-cols-7 gap-1">${headerCols}</div><div class="space-y-1">${weeks.join('')}</div></div>`;
+      }
+
+      function computeAnnualAnalytics(yr) {
+        const yearEntries = appState.entries.filter(e => e.date.startsWith(`${yr}-`)).sort((a, b) => a.date.localeCompare(b.date));
+        const entryMap = new Map(yearEntries.map(e => [e.date, e]));
+        const totalLogged = yearEntries.length;
+
+        // Baseline stability
+        const anyExistingDays = yearEntries.filter(e => Array.isArray(e.states) && e.states.includes('existing')).length;
+        const pureExistingDays = yearEntries.filter(e => getPrimaryState(e.states) === 'existing').length;
+        const stabilityPct = totalLogged > 0 ? Math.round((pureExistingDays / totalLogged) * 100) : 0;
+
+        // Episodes
+        const episodes = detectClinicalEpisodes(yearEntries);
+        const avgEpisodeDays = episodes.length > 0
+          ? (episodes.reduce((sum, ep) => sum + ep.dayCount, 0) / episodes.length).toFixed(1)
+          : '0';
+        const longestEpisode = episodes.reduce((best, ep) => (!best || ep.dayCount > best.dayCount ? ep : best), null);
+        const familyCounts = {};
+        episodes.forEach(ep => { familyCounts[ep.family] = (familyCounts[ep.family] || 0) + 1; });
+
+        // Sleep by state
+        const overallSleep = totalLogged > 0
+          ? (yearEntries.reduce((s, e) => s + e.sleep, 0) / totalLogged).toFixed(1)
+          : '—';
+        const sleepByState = CLINICAL_STATES.map(st => {
+          const matching = yearEntries.filter(e => Array.isArray(e.states) && e.states.includes(st.id));
+          if (matching.length === 0) return null;
+          const avg = (matching.reduce((s, e) => s + e.sleep, 0) / matching.length).toFixed(1);
+          return { id: st.id, colorVar: st.colorVar, days: matching.length, avg };
+        }).filter(Boolean);
+
+        // Mood & Psychotic totals
+        const moodCounts = MOOD_Y_AXIS_DESC.map(m => ({
+          glyph: m.glyph,
+          label: m.label,
+          days: yearEntries.filter(e => e.mood === m.id).length
+        }));
+        const psychEntries = yearEntries.filter(e => e.psychotic !== 'none');
+        const psychBreakdown = {};
+        psychEntries.forEach(e => {
+          const code = getPsychMeta(e.psychotic).shortCode || e.psychotic;
+          psychBreakdown[code] = (psychBreakdown[code] || 0) + 1;
+        });
+
+        // Monthly stats (Jan - Dec)
+        const months = [];
+        for (let m = 1; m <= 12; m++) {
+          const ym = `${yr}-${String(m).padStart(2, '0')}`;
+          const daysInM = getDaysInMonth(ym);
+          const mEntries = yearEntries.filter(e => e.date.startsWith(`${ym}-`));
+          const mEps = detectClinicalEpisodes(mEntries);
+          const mAvgSleep = mEntries.length > 0
+            ? (mEntries.reduce((s, e) => s + e.sleep, 0) / mEntries.length).toFixed(1)
+            : '—';
+          const mPureBaseline = mEntries.filter(e => getPrimaryState(e.states) === 'existing').length;
+          const mStabilityRatio = mEntries.length > 0 ? mPureBaseline / mEntries.length : -1;
+
+          const stateCounts = {};
+          let occ = 0;
+          CLINICAL_STATES.forEach(s => { stateCounts[s.id] = 0; });
+          mEntries.forEach(e => {
+            e.states.forEach(st => { stateCounts[st] = (stateCounts[st] || 0) + 1; occ += 1; });
+          });
+
+          months.push({
+            ym,
+            shortName: MONTHS_SHORT[m - 1],
+            fullName: MONTHS_FULL[m - 1],
+            totalDaysInMonth: daysInM.length,
+            loggedCount: mEntries.length,
+            avgSleep: mAvgSleep,
+            episodeCount: mEps.length,
+            stabilityRatio: mStabilityRatio,
+            stateCounts,
+            totalOcc: occ
+          });
         }
 
-        if (canInteract) {
+        const loggedMonths = months.filter(m => m.loggedCount > 0);
+        const mostStableMonth = loggedMonths.reduce((best, m) => (!best || m.stabilityRatio > best.stabilityRatio ? m : best), null);
+
+        return {
+          yr,
+          totalLogged,
+          entryMap,
+          pureExistingDays,
+          anyExistingDays,
+          stabilityPct,
+          mostStableMonth,
+          episodes,
+          avgEpisodeDays,
+          longestEpisode,
+          familyCounts,
+          overallSleep,
+          sleepByState,
+          moodCounts,
+          psychTotalDays: psychEntries.length,
+          psychBreakdown,
+          months
+        };
+      }
+
+      function buildAnnualOverviewMarkup(yr, interactive) {
+        const stats = computeAnnualAnalytics(yr);
+
+        // 1. 12-Month Heatmap Grid
+        const heatmapRowsHtml = stats.months.map(m => {
+          const cells = [];
+          for (let d = 1; d <= 31; d++) {
+            if (d > m.totalDaysInMonth) {
+              cells.push(`<span class="h-[9px] rounded-[2px] opacity-0"></span>`);
+              continue;
+            }
+            const iso = `${m.ym}-${String(d).padStart(2, '0')}`;
+            const entry = stats.entryMap.get(iso);
+            if (!entry) {
+              cells.push(`<span class="h-[9px] rounded-[2px]" style="background-color: var(--bg-well);"></span>`);
+            } else {
+              const stMeta = getStateMeta(getPrimaryState(entry.states));
+              const hasPsych = entry.psychotic !== 'none';
+              cells.push(`<span class="h-[9px] rounded-[2px]" style="background-color: ${cssVar(stMeta.colorVar)}; ${hasPsych ? 'outline: 1px solid var(--psychotic-crimson);' : ''}"></span>`);
+            }
+          }
+          const rowTag = interactive ? 'button' : 'div';
+          const rowAttr = interactive ? `type="button" data-jump-month="${m.ym}"` : '';
+          return `
+            <${rowTag} ${rowAttr} class="w-full flex items-center gap-1.5 py-[2px] text-left ${interactive ? 'annual-month-jump hover:opacity-80 transition cursor-pointer' : ''}">
+              <span class="w-7 text-[9.5px] font-semibold tabular shrink-0" style="color: var(--text-secondary);">${m.shortName}</span>
+              <div class="flex-1 grid gap-[2px]" style="grid-template-columns: repeat(31, minmax(0, 1fr));">
+                ${cells.join('')}
+              </div>
+            </${rowTag}>
+          `;
+        }).join('');
+
+        // 2. 2x2 Summary Stat Cards
+        const familyBreakdownText = Object.keys(stats.familyCounts).length === 0
+          ? 'None logged'
+          : Object.entries(stats.familyCounts).map(([fam, cnt]) => `${cnt} ${fam}`).join(' · ');
+
+        const longestText = stats.longestEpisode
+          ? `${stats.longestEpisode.dayCount}d (${formatBritishShort(stats.longestEpisode.start)}–${formatBritishShort(stats.longestEpisode.lastDate)})`
+          : '—';
+
+        const sleepRowsHtml = stats.sleepByState.length === 0
+          ? `<div class="text-[11px]" style="color: var(--text-muted);">No sleep data yet</div>`
+          : stats.sleepByState.slice(0, 5).map(s => `
+              <div class="flex items-center justify-between text-[11px] tabular">
+                <span class="inline-flex items-center gap-1.5 truncate">
+                  <i class="w-2 h-2 rounded-full shrink-0" style="background-color: ${cssVar(s.colorVar)};"></i>
+                  <span class="truncate">${s.id}</span>
+                </span>
+                <span class="font-semibold shrink-0">${s.avg}h</span>
+              </div>
+            `).join('');
+
+        const moodDistText = stats.moodCounts.map(m => `${m.glyph} ${m.days}d`).join(' · ');
+        const psychDistText = stats.psychTotalDays === 0
+          ? '0 days'
+          : `${stats.psychTotalDays}d (${Object.entries(stats.psychBreakdown).map(([k, v]) => `${k}: ${v}`).join(', ')})`;
+
+        const statCardsHtml = `
+          <div class="grid grid-cols-2 gap-2">
+            <div class="p-3 rounded-2xl hairline space-y-1.5" style="background-color: var(--bg-subtle);">
+              <div class="text-[10px] font-semibold uppercase tracking-wider" style="color: var(--text-muted);">Baseline Stability</div>
+              <div class="text-[18px] font-semibold tabular leading-tight">${stats.stabilityPct}%</div>
+              <div class="text-[11px] leading-snug tabular" style="color: var(--text-secondary);">
+                ${stats.pureExistingDays}d pure baseline (${stats.anyExistingDays}d incl. paired)<br/>
+                Most stable: <strong>${stats.mostStableMonth ? stats.mostStableMonth.shortName : '—'}</strong>
+              </div>
+            </div>
+
+            <div class="p-3 rounded-2xl hairline space-y-1.5" style="background-color: var(--bg-subtle);">
+              <div class="text-[10px] font-semibold uppercase tracking-wider" style="color: var(--text-muted);">Episodes &amp; Length</div>
+              <div class="text-[18px] font-semibold tabular leading-tight">${stats.episodes.length} <span class="text-[11px] font-normal" style="color: var(--text-secondary);">(${stats.avgEpisodeDays}d avg)</span></div>
+              <div class="text-[11px] leading-snug tabular" style="color: var(--text-secondary);">
+                ${familyBreakdownText}<br/>
+                Longest: <strong>${longestText}</strong>
+              </div>
+            </div>
+
+            <div class="p-3 rounded-2xl hairline space-y-1.5" style="background-color: var(--bg-subtle);">
+              <div class="text-[10px] font-semibold uppercase tracking-wider" style="color: var(--text-muted);">Sleep by State (${stats.overallSleep}h avg)</div>
+              <div class="space-y-0.5 pt-0.5">
+                ${sleepRowsHtml}
+              </div>
+            </div>
+
+            <div class="p-3 rounded-2xl hairline space-y-1.5" style="background-color: var(--bg-subtle);">
+              <div class="text-[10px] font-semibold uppercase tracking-wider" style="color: var(--text-muted);">Mood &amp; Psychosis</div>
+              <div class="text-[11px] leading-snug tabular" style="color: var(--text-primary);">
+                ${moodDistText}
+              </div>
+              <div class="pt-1 hairline-t text-[11px] tabular" style="color: ${stats.psychTotalDays > 0 ? 'var(--psychotic-crimson)' : 'var(--text-secondary)'};">
+                <strong>Psychotic:</strong> ${psychDistText}
+              </div>
+            </div>
+          </div>
+        `;
+
+        // 3. 12-Month Breakdown List
+        const monthRowsHtml = stats.months.map(m => {
+          const barSegments = m.totalOcc === 0
+            ? ''
+            : CLINICAL_STATES.filter(s => m.stateCounts[s.id] > 0).map(s =>
+                `<div style="width:${((m.stateCounts[s.id] / m.totalOcc) * 100).toFixed(2)}%; background-color:${cssVar(s.colorVar)};"></div>`
+              ).join('');
+          const tag = interactive ? 'button' : 'div';
+          const attr = interactive ? `type="button" data-jump-month="${m.ym}"` : '';
+          return `
+            <${tag} ${attr} class="w-full py-2 px-2.5 rounded-xl hairline flex items-center justify-between gap-2 text-left tabular ${interactive ? 'annual-month-jump transition active:scale-[0.99] cursor-pointer' : ''}"
+              style="background-color: var(--bg-subtle);">
+              <div class="w-16 shrink-0">
+                <div class="text-[12px] font-semibold leading-tight">${m.shortName}</div>
+                <div class="text-[10px]" style="color: var(--text-muted);">${m.loggedCount}/${m.totalDaysInMonth}d</div>
+              </div>
+              <div class="flex-1 h-2 rounded-full overflow-hidden flex gap-[1px]" style="background-color: var(--bg-well);">
+                ${barSegments}
+              </div>
+              <div class="flex items-center gap-1.5 shrink-0 text-[11px]">
+                <span style="color: var(--text-secondary);">${m.avgSleep === '—' ? '—' : `${m.avgSleep}h`}</span>
+                ${m.episodeCount > 0 ? `<span class="px-1.5 py-0.5 rounded-md text-[10px] font-semibold" style="background-color: var(--bg-card); border: 1px solid var(--border-hairline);">${m.episodeCount} ep</span>` : ''}
+              </div>
+            </${tag}>
+          `;
+        }).join('');
+
+        return `
+          <div class="space-y-3.5">
+            <div class="p-3 rounded-2xl hairline space-y-1" style="background-color: var(--bg-subtle);">
+              <div class="flex items-center justify-between pb-1">
+                <span class="text-[10px] font-semibold uppercase tracking-wider" style="color: var(--text-muted);">12-Month Heatmap (Days 1–31)</span>
+                ${interactive ? `<span class="text-[10px]" style="color: var(--text-muted);">Tap month to inspect</span>` : ''}
+              </div>
+              <div class="space-y-[2px]">${heatmapRowsHtml}</div>
+            </div>
+
+            ${statCardsHtml}
+
+            <div class="space-y-1.5">
+              <div class="text-[10px] font-semibold uppercase tracking-wider px-0.5" style="color: var(--text-muted);">Monthly Breakdown</div>
+              <div class="space-y-1.5">${monthRowsHtml}</div>
+            </div>
+          </div>
+        `;
+      }
+
+      function renderTimesheetGrid(targetEl) {
+        const win = getPeriodWindow();
+        const entryMap = new Map(appState.entries.map(e => [e.date, e]));
+
+        if (win.mode === 'weekly') {
+          const headerCols = MON_TO_SUN_LABELS.map(lbl => `<div class="text-center text-[10px] font-semibold uppercase tracking-wider pb-1" style="color: var(--text-muted);">${lbl}</div>`).join('');
+          const cellsHtml = win.allDates.map(iso => buildDayCardHtml(iso, entryMap.get(iso) || null, false, true, '', false)).join('');
+          targetEl.innerHTML = `<div class="space-y-1"><div class="grid grid-cols-7 gap-1">${headerCols}</div><div class="grid grid-cols-7 gap-1">${cellsHtml}</div></div>`;
+          return;
+        }
+
+        if (win.mode === 'monthly') {
+          targetEl.innerHTML = buildMonthlyGridMarkup(appState.monthIso, true);
           targetEl.querySelectorAll('.ts-cell').forEach(btn => {
             btn.addEventListener('click', () => {
               const iso = btn.getAttribute('data-cell-date');
@@ -1492,13 +1736,26 @@
               openCheckInSheet('tap', iso, true);
             });
           });
+          return;
         }
+
+        // Annual mode
+        targetEl.innerHTML = buildAnnualOverviewMarkup(appState.yearIso, true);
+        targetEl.querySelectorAll('.annual-month-jump').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const targetYm = btn.getAttribute('data-jump-month');
+            if (!targetYm) return;
+            appState.monthIso = targetYm;
+            appState.selectedDate = `${targetYm}-01`;
+            appState.viewMode = 'monthly';
+            renderAllViews();
+          });
+        });
       }
 
-      function renderFrequencyCardDeck(targetEl) {
-        const visible = getPeriodEntries();
-        targetEl.innerHTML = MOOD_Y_AXIS_DESC.map(moodObj => {
-          const suitEntries = visible.filter(e => e.mood === moodObj.id).sort((a, b) => a.date.localeCompare(b.date));
+      function buildFrequencyDeckMarkup(entriesList) {
+        return MOOD_Y_AXIS_DESC.map(moodObj => {
+          const suitEntries = entriesList.filter(e => e.mood === moodObj.id).sort((a, b) => a.date.localeCompare(b.date));
           const cardsHtml = suitEntries.length === 0
             ? `<span class="text-[11px] py-2" style="color: var(--text-muted);">—</span>`
             : suitEntries.map(entry => buildDayCardHtml(entry.date, entry, false, false, 'w-[50px] shrink-0', false)).join('');
@@ -1514,22 +1771,19 @@
         }).join('');
       }
 
+      function renderFrequencyCardDeck(targetEl) {
+        targetEl.innerHTML = buildFrequencyDeckMarkup(getPeriodEntries());
+      }
+
       function escapeHtml(str) {
         return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
       }
 
-      function renderNotesFeed(targetEl) {
-        const win = getPeriodWindow();
-        const visible = getPeriodEntries();
-        const reversed = [...visible].reverse();
-        const list = appState.feedFilter === 'flagged' ? reversed.filter(isFlaggedEntry) : reversed;
-
-        if (list.length === 0) {
-          targetEl.innerHTML = `<div class="p-4 rounded-2xl text-center text-[12px]" style="background-color: var(--bg-subtle); color: var(--text-muted);">${visible.length === 0 ? 'No notes logged yet.' : `No flagged notes in ${win.label}.`}</div>`;
-          return;
+      function buildNotesListMarkup(entriesList, emptyText) {
+        if (entriesList.length === 0) {
+          return `<div class="p-4 rounded-2xl text-center text-[12px]" style="background-color: var(--bg-subtle); color: var(--text-muted);">${escapeHtml(emptyText)}</div>`;
         }
-
-        targetEl.innerHTML = list.map(entry => {
+        return entriesList.map(entry => {
           const stateList = Array.isArray(entry.states) && entry.states.length > 0 ? entry.states : [entry.state || 'existing'];
           const phaseMeta = getPhaseMeta(entry.phase);
           const psychMeta = getPsychMeta(entry.psychotic);
@@ -1551,6 +1805,247 @@
             </article>
           `;
         }).join('');
+      }
+
+      function renderNotesFeed(targetEl) {
+        const win = getPeriodWindow();
+        const visible = getPeriodEntries();
+        const reversed = [...visible].reverse();
+        const list = appState.feedFilter === 'flagged' ? reversed.filter(isFlaggedEntry) : reversed;
+        const emptyMsg = visible.length === 0 ? 'No notes logged yet.' : `No flagged notes in ${win.label}.`;
+        targetEl.innerHTML = buildNotesListMarkup(list, emptyMsg);
+      }
+
+      /* VISUAL SCREENSHOT-STYLE PDF EXPORT */
+      async function exportVisualPdf() {
+        if (typeof window.html2canvas !== 'function' || !window.jspdf || !window.jspdf.jsPDF) {
+          showToast('PDF library still loading — try again in a second');
+          return;
+        }
+
+        const btn = document.getElementById('exportPdfBtn');
+        const btnLabel = document.getElementById('exportPdfLabel');
+        if (btn.disabled) return;
+        btn.disabled = true;
+        btnLabel.textContent = 'Exporting…';
+        showToast('Generating visual PDF…');
+
+        const isAnnualExport = appState.viewMode === 'annual';
+        const targetYm = appState.viewMode === 'monthly'
+          ? appState.monthIso
+          : appState.weekMondayIso.slice(0, 7);
+        const targetYr = appState.yearIso;
+
+        const exportEntries = isAnnualExport
+          ? appState.entries.filter(e => e.date.startsWith(`${targetYr}-`))
+          : appState.entries.filter(e => e.date.startsWith(`${targetYm}-`));
+
+        const totalPossibleDays = isAnnualExport
+          ? getDaysInYear(targetYr).length
+          : getDaysInMonth(targetYm).length;
+
+        const titleLabel = isAnnualExport ? `${targetYr} Annual Summary` : formatMonthYear(targetYm);
+        const briefData = computeBriefData(exportEntries);
+        const briefInner = buildBriefInnerHtml(briefData);
+
+        const legendHtml = `
+          <div class="pt-2 hairline-t flex flex-wrap items-center gap-x-3 gap-y-1.5 text-[11px]" style="color: var(--text-secondary);">
+            <span class="inline-flex items-center gap-1.5"><i class="w-2.5 h-2.5 rounded-[3px] inline-block" style="background: var(--state-existing);"></i>Existing</span>
+            <span class="inline-flex items-center gap-1.5"><i class="w-2.5 h-2.5 rounded-[3px] inline-block" style="background: var(--state-depressed);"></i>Depressed</span>
+            <span class="inline-flex items-center gap-1.5"><i class="w-2.5 h-2.5 rounded-[3px] inline-block" style="background: var(--state-very-depressed);"></i>Very Depressed</span>
+            <span class="inline-flex items-center gap-1.5"><i class="w-2.5 h-2.5 rounded-[3px] inline-block" style="background: var(--state-mixed);"></i>Mixed</span>
+            <span class="inline-flex items-center gap-1.5"><i class="w-2.5 h-2.5 rounded-[3px] inline-block" style="background: var(--state-hypomania);"></i>Hypomania</span>
+            <span class="inline-flex items-center gap-1.5"><i class="w-2.5 h-2.5 rounded-[3px] inline-block" style="background: var(--state-mania);"></i>Mania</span>
+          </div>
+        `;
+
+        const keyCardHtml = `
+          <section class="pdf-snap-card editorial-card p-4 space-y-2.5">
+            <h2 class="text-[15px] font-semibold tracking-tight">Key</h2>
+            <div class="grid grid-cols-2 gap-2 text-[11.5px]">
+              <div class="p-2.5 rounded-xl hairline space-y-1" style="background-color: var(--bg-subtle);">
+                <div class="text-[10px] font-semibold uppercase tracking-wider" style="color: var(--text-muted);">Sleep &amp; Mood</div>
+                <div class="tabular leading-relaxed" style="color: var(--text-primary);">
+                  <strong>7.5</strong> = hours slept<br/>
+                  <strong>--</strong> very low · <strong>-</strong> low · <strong>=</strong> neutral · <strong>+</strong> high · <strong>++</strong> very high
+                </div>
+              </div>
+              <div class="p-2.5 rounded-xl hairline space-y-1" style="background-color: var(--bg-subtle);">
+                <div class="text-[10px] font-semibold uppercase tracking-wider" style="color: var(--text-muted);">Flags</div>
+                <div class="tabular leading-relaxed" style="color: var(--text-primary);">
+                  <strong>md / mh / mm</strong> mixed · <strong>hypo</strong> hypomania · <strong>ex</strong> existing<br/>
+                  <strong>S</strong> start · <strong>P</strong> peak · <strong>E</strong> end · <strong>*</strong> has note below<br/>
+                  <span style="color: var(--psychotic-crimson);" class="font-semibold">/D</span> delusions · <span style="color: var(--psychotic-crimson);" class="font-semibold">/DP</span> depersonalisation · <span style="color: var(--psychotic-crimson);" class="font-semibold">/H</span> hallucinations · <span style="color: var(--psychotic-crimson);" class="font-semibold">/DS</span> dissociation
+                </div>
+              </div>
+            </div>
+          </section>
+        `;
+
+        const flaggedNotes = [...exportEntries].reverse().filter(isFlaggedEntry);
+        const notesCardHtml = `
+          <section class="pdf-snap-card editorial-card p-4 space-y-3">
+            <div class="flex items-center justify-between gap-2">
+              <h2 class="text-[15px] font-semibold tracking-tight">Notes</h2>
+              <span class="text-[11px] font-medium tabular px-2 py-0.5 rounded-full hairline"
+                style="background-color: var(--bg-subtle); color: var(--text-secondary);">${flaggedNotes.length} flagged</span>
+            </div>
+            <div class="space-y-2">
+              ${buildNotesListMarkup(flaggedNotes, `No flagged notes in ${titleLabel}.`)}
+            </div>
+          </section>
+        `;
+
+        const middleCardsHtml = isAnnualExport
+          ? `
+            <section class="pdf-snap-card editorial-card p-4 space-y-3">
+              <div class="flex items-center justify-between gap-2">
+                <h2 class="text-[15px] font-semibold tracking-tight">Annual Overview · ${targetYr}</h2>
+                <span class="text-[11px] font-medium tabular px-2 py-0.5 rounded-full hairline"
+                  style="background-color: var(--bg-subtle); color: var(--text-secondary);">${exportEntries.length}/${totalPossibleDays} logged</span>
+              </div>
+              ${buildAnnualOverviewMarkup(targetYr, false)}
+              ${legendHtml}
+            </section>
+          `
+          : `
+            <section class="pdf-snap-card editorial-card p-4 space-y-3">
+              <div class="flex items-center justify-between gap-2">
+                <h2 class="text-[15px] font-semibold tracking-tight">Monthly Overview · ${titleLabel}</h2>
+                <span class="text-[11px] font-medium tabular px-2 py-0.5 rounded-full hairline"
+                  style="background-color: var(--bg-subtle); color: var(--text-secondary);">${exportEntries.length}/${totalPossibleDays} logged</span>
+              </div>
+              ${buildMonthlyGridMarkup(targetYm, false)}
+              ${legendHtml}
+            </section>
+
+            <section class="pdf-snap-card editorial-card p-4 space-y-3">
+              <div class="flex items-center justify-between gap-2">
+                <h2 class="text-[15px] font-semibold tracking-tight">Frequency</h2>
+                <span class="text-[11px] font-medium tabular px-2 py-0.5 rounded-full hairline"
+                  style="background-color: var(--bg-subtle); color: var(--text-secondary);">${exportEntries.length} ${exportEntries.length === 1 ? 'card' : 'cards'}</span>
+              </div>
+              <div class="divide-y" style="border-color: var(--border-hairline);">
+                ${buildFrequencyDeckMarkup(exportEntries)}
+              </div>
+            </section>
+          `;
+
+        const stage = document.createElement('div');
+        stage.setAttribute('aria-hidden', 'true');
+        stage.style.cssText = `
+          position: fixed;
+          left: -10000px;
+          top: 0;
+          width: 448px;
+          padding: 16px;
+          background-color: var(--bg-canvas);
+          color: var(--text-primary);
+          z-index: -1;
+        `;
+
+        stage.innerHTML = `
+          <div class="space-y-3.5">
+            <section class="pdf-snap-card editorial-card p-4 flex items-center justify-between gap-2">
+              <div>
+                <div class="text-[10.5px] font-semibold uppercase tracking-widest" style="color: var(--text-muted);">Psych Log</div>
+                <h1 class="text-[19px] font-semibold tracking-tight mt-0.5">${escapeHtml(titleLabel)}</h1>
+              </div>
+              <span class="text-[11.5px] font-semibold tabular px-2.5 py-1 rounded-full hairline"
+                style="background-color: var(--bg-subtle); color: var(--text-secondary);">
+                ${exportEntries.length}/${totalPossibleDays} logged
+              </span>
+            </section>
+
+            <section class="pdf-snap-card editorial-card p-4 space-y-3">
+              <div>
+                <h2 class="text-[15px] font-semibold tracking-tight">Clinical Brief</h2>
+                <p class="text-[11px] tabular mt-0.5" style="color: var(--text-muted);">${escapeHtml(titleLabel)}</p>
+              </div>
+              <div class="p-3 rounded-2xl hairline space-y-1.5" style="background-color: var(--bg-subtle);">
+                <div class="text-[10px] font-semibold uppercase tracking-wider" style="color: var(--text-muted);">States</div>
+                <div class="w-full h-2 rounded-full overflow-hidden flex gap-[1.5px]" style="background-color: var(--bg-well);">${briefInner.barHtml}</div>
+                <div class="text-[12px] leading-snug tabular" style="color: var(--text-secondary);">${escapeHtml(briefData.stateSummaryText)}</div>
+              </div>
+              <div class="p-3 rounded-2xl hairline space-y-2" style="background-color: var(--bg-subtle);">
+                <div>
+                  <div class="text-[10px] font-semibold uppercase tracking-wider mb-1" style="color: var(--text-muted);">Episodes (≥ 4 Consecutive Days or Marked)</div>
+                  <div class="space-y-1.5 text-[12px] leading-relaxed tabular">${briefInner.arcsHtml}</div>
+                </div>
+                ${briefInner.psychHtml}
+              </div>
+            </section>
+
+            ${middleCardsHtml}
+            ${keyCardHtml}
+            ${notesCardHtml}
+          </div>
+        `;
+
+        document.body.appendChild(stage);
+
+        try {
+          await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
+          const canvasBg = cssVar('--bg-canvas') || '#F7F7F5';
+          const { jsPDF } = window.jspdf;
+          const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+          const pageW = pdf.internal.pageSize.getWidth();
+          const pageH = pdf.internal.pageSize.getHeight();
+          const margin = 10;
+          const gap = 3.5;
+          const targetCardW = pageW - margin * 2;
+
+          function paintPageCanvasBg() {
+            pdf.setFillColor(canvasBg);
+            pdf.rect(0, 0, pageW, pageH, 'F');
+          }
+
+          paintPageCanvasBg();
+          let cursorY = margin;
+
+          const cards = Array.from(stage.querySelectorAll('.pdf-snap-card'));
+          for (let i = 0; i < cards.length; i++) {
+            const cardEl = cards[i];
+            const canvas = await window.html2canvas(cardEl, {
+              scale: 2,
+              backgroundColor: null,
+              useCORS: true,
+              logging: false
+            });
+
+            const imgData = canvas.toDataURL('image/png');
+            let renderW = targetCardW;
+            let renderH = (canvas.height * renderW) / canvas.width;
+
+            // Scale down proportionally only if a single card is taller than one full A4 page
+            const maxCardH = pageH - margin * 2;
+            if (renderH > maxCardH) {
+              const ratio = maxCardH / renderH;
+              renderH = maxCardH;
+              renderW = renderW * ratio;
+            }
+
+            if (cursorY + renderH > pageH - margin && cursorY > margin) {
+              pdf.addPage();
+              paintPageCanvasBg();
+              cursorY = margin;
+            }
+
+            const offsetX = margin + (targetCardW - renderW) / 2;
+            pdf.addImage(imgData, 'PNG', offsetX, cursorY, renderW, renderH, undefined, 'FAST');
+            cursorY += renderH + gap;
+          }
+
+          const filename = isAnnualExport ? `psych-log-${targetYr}-annual.pdf` : `psych-log-${targetYm}.pdf`;
+          pdf.save(filename);
+          showToast(`Saved ${filename}`);
+        } catch (err) {
+          showToast('Could not generate PDF');
+        } finally {
+          document.body.removeChild(stage);
+          btn.disabled = false;
+          btnLabel.textContent = 'PDF';
+        }
       }
 
       /* CHECK-IN SHEET */
@@ -1782,7 +2277,7 @@
           : parsed.map(p => `<div class="flex items-center justify-between gap-2 py-0.5"><span class="font-semibold shrink-0">${formatBritishFull(p.date)}</span><span class="truncate">${formatSleepNum(p.sleep)}h · ${p.mood} · ${formatEntryStatesLabel(p)}${p.phase !== 'none' ? ` [${p.phase}]` : ''}${p.psychotic !== 'none' ? ` (${p.psychotic})` : ''}</span></div>`).join('');
       }
 
-      /* SYNC MODAL & DOCTOR VIEW */
+      /* SYNC MODAL */
       function openSyncSettingsModal() {
         document.getElementById('syncDbUrlInput').value = syncState.dbUrl || '';
         document.getElementById('syncKeyInput').value = syncState.syncKey || '';
@@ -1795,45 +2290,6 @@
         document.getElementById('syncSettingsBackdrop').classList.remove('open');
       }
 
-      function openDoctorView() {
-        const win = getPeriodWindow();
-        const data = computeBriefData(getPeriodEntries());
-        document.getElementById('docViewTitle').textContent = `Psych Log Clinical Summary (${win.label})`;
-        document.getElementById('doctorViewContent').innerHTML = `
-          <div class="editorial-card p-4 space-y-3">
-            <div class="p-3 rounded-2xl hairline" style="background-color: var(--bg-subtle);">
-              <div class="text-[10px] font-semibold uppercase tracking-wider" style="color: var(--text-muted);">States (${data.count} Days)</div>
-              <div class="text-[13px] font-medium tabular mt-1">${data.stateSummaryText}</div>
-            </div>
-            <div class="p-3 rounded-2xl hairline space-y-1" style="background-color: var(--bg-subtle);">
-              <div class="text-[10px] font-semibold uppercase tracking-wider" style="color: var(--text-muted);">Episodes (≥ 4 Consecutive Days or Marked)</div>
-              <div class="text-[12px] tabular space-y-1">
-                ${data.arcs.length === 0 ? 'No episodes (4+ consecutive days or marked) in this period.' : data.arcs.map((a, i) => {
-                  const peakFormatted = formatPeakDatesList(a.peaks);
-                  return `<div><strong>Episode ${i + 1}:</strong> Start ${formatBritishShort(a.start)}${peakFormatted ? ' → Peak ' + peakFormatted : ''}${a.end ? ' → End ' + formatBritishShort(a.end) : ' → Ongoing'} · <span class="font-semibold">${a.states.join(' / ')} (${a.dayCount}d)</span></div>`;
-                }).join('')}
-              </div>
-              ${data.psychoticList.length > 0 ? `<div class="pt-1.5 mt-1.5 hairline-t text-[12px] font-semibold" style="color: var(--psychotic-crimson);">Psychotic Symptoms: ${data.psychoticList.map(p => `${p.symptom} (${p.datesText})`).join(' · ')}</div>` : ''}
-            </div>
-          </div>
-          <div class="editorial-card p-4 space-y-2"><div class="text-[12px] font-semibold">${win.mode === 'weekly' ? 'Weekly Overview' : 'Monthly Overview'}</div><div id="docTimesheetWrap"></div></div>
-          <div class="editorial-card p-4 space-y-2"><div class="text-[12px] font-semibold">Frequency</div><div id="docFrequencyWrap" class="divide-y" style="border-color: var(--border-hairline);"></div></div>
-          <div class="editorial-card p-4 space-y-1.5 text-[11px]" style="color: var(--text-secondary);">
-            <div class="text-[11px] font-semibold" style="color: var(--text-primary);">Key</div>
-            <div><strong>Sleep &amp; Mood:</strong> Sleep hrs + Mood (-- very low, - low, = neutral, + high, ++ very high)</div>
-            <div><strong>Flags:</strong> md / mh / mm mixed · hypo hypomania · ex existing · S start, P peak, E end, * has note below · /D delusions, /DP depersonalisation, /H hallucinations, /DS dissociation</div>
-          </div>
-          <div class="editorial-card p-4 space-y-2"><div class="text-[12px] font-semibold">Notes</div><div id="docFeedWrap" class="space-y-2"></div></div>
-        `;
-        document.getElementById('doctorViewModal').classList.remove('hidden');
-        renderTimesheetGrid(document.getElementById('docTimesheetWrap'), false);
-        renderFrequencyCardDeck(document.getElementById('docFrequencyWrap'));
-        const prevFilter = appState.feedFilter;
-        appState.feedFilter = 'flagged';
-        renderNotesFeed(document.getElementById('docFeedWrap'));
-        appState.feedFilter = prevFilter;
-      }
-
       /* MASTER RENDER & EVENTS */
       function renderAllViews() {
         const win = getPeriodWindow();
@@ -1843,18 +2299,25 @@
         document.getElementById('toggleDemoDataLabel').textContent = appState.isSample ? 'Clear Demo Data' : 'Load Demo Data';
         document.getElementById('demoStatusDot').style.backgroundColor = appState.isSample ? 'var(--state-mania)' : 'var(--state-existing)';
 
-        const isWeekly = appState.viewMode === 'weekly';
-        document.getElementById('viewModeTrack').setAttribute('data-mode', appState.viewMode);
-        const wBtn = document.getElementById('segWeeklyBtn'), mBtn = document.getElementById('segMonthlyBtn');
-        wBtn.setAttribute('aria-selected', String(isWeekly));
-        mBtn.setAttribute('aria-selected', String(!isWeekly));
-        wBtn.style.color = isWeekly ? 'var(--text-primary)' : 'var(--text-secondary)';
-        mBtn.style.color = !isWeekly ? 'var(--text-primary)' : 'var(--text-secondary)';
+        const mode = appState.viewMode;
+        document.getElementById('viewModeTrack').setAttribute('data-mode', mode);
+        const wBtn = document.getElementById('segWeeklyBtn');
+        const mBtn = document.getElementById('segMonthlyBtn');
+        const aBtn = document.getElementById('segAnnualBtn');
+        wBtn.setAttribute('aria-selected', String(mode === 'weekly'));
+        mBtn.setAttribute('aria-selected', String(mode === 'monthly'));
+        aBtn.setAttribute('aria-selected', String(mode === 'annual'));
+        wBtn.style.color = mode === 'weekly' ? 'var(--text-primary)' : 'var(--text-secondary)';
+        mBtn.style.color = mode === 'monthly' ? 'var(--text-primary)' : 'var(--text-secondary)';
+        aBtn.style.color = mode === 'annual' ? 'var(--text-primary)' : 'var(--text-secondary)';
 
         document.getElementById('periodLabelText').textContent = win.label;
         document.getElementById('periodTodayBtn').classList.toggle('hidden', win.isCurrent);
-        document.getElementById('gridCardTitle').textContent = isWeekly ? 'Weekly Overview' : 'Monthly Overview';
+        document.getElementById('gridCardTitle').textContent = mode === 'weekly' ? 'Weekly Overview' : mode === 'monthly' ? 'Monthly Overview' : `Annual Overview · ${win.label}`;
         document.getElementById('overviewLoggedBadge').textContent = `${visible.length}/${win.allDates.length} logged`;
+
+        // Frequency deck is shown in Weekly & Monthly views (replaced by Annual stats in Annual view)
+        document.getElementById('frequencyCard').classList.toggle('hidden', mode === 'annual');
         document.getElementById('frequencyCountBadge').textContent = `${visible.length} ${visible.length === 1 ? 'card' : 'cards'}`;
 
         document.getElementById('briefKeyBody').classList.toggle('hidden', !appState.keyExpanded);
@@ -1870,8 +2333,10 @@
         });
 
         renderClinicalBrief();
-        renderTimesheetGrid(document.getElementById('timesheetGridContainer'), true);
-        renderFrequencyCardDeck(document.getElementById('frequencyRowsContainer'));
+        renderTimesheetGrid(document.getElementById('timesheetGridContainer'));
+        if (mode !== 'annual') {
+          renderFrequencyCardDeck(document.getElementById('frequencyRowsContainer'));
+        }
         renderNotesFeed(document.getElementById('notesFeedContainer'));
       }
 
@@ -1932,6 +2397,7 @@
             appState.selectedDate = TODAY_ISO;
             appState.weekMondayIso = getMondayISO(TODAY_ISO);
             appState.monthIso = TODAY_ISO.slice(0, 7);
+            appState.yearIso = TODAY_ISO.slice(0, 4);
             persistToStorage();
             renderAllViews();
             showToast('Loaded demo dataset');
@@ -1945,36 +2411,51 @@
           appState.viewMode = nextMode;
           const anchor = appState.selectedDate || TODAY_ISO;
           if (nextMode === 'weekly') appState.weekMondayIso = getMondayISO(anchor);
-          else appState.monthIso = anchor.slice(0, 7);
+          else if (nextMode === 'monthly') appState.monthIso = anchor.slice(0, 7);
+          else appState.yearIso = anchor.slice(0, 4);
           renderAllViews();
         }
         document.getElementById('segWeeklyBtn').addEventListener('click', () => switchViewMode('weekly'));
         document.getElementById('segMonthlyBtn').addEventListener('click', () => switchViewMode('monthly'));
+        document.getElementById('segAnnualBtn').addEventListener('click', () => switchViewMode('annual'));
 
         document.getElementById('periodPrevBtn').addEventListener('click', () => {
-          if (appState.viewMode === 'weekly') { appState.weekMondayIso = addDays(appState.weekMondayIso, -7); appState.selectedDate = appState.weekMondayIso; }
-          else { appState.monthIso = addMonthsYM(appState.monthIso, -1); appState.selectedDate = `${appState.monthIso}-01`; }
+          if (appState.viewMode === 'weekly') {
+            appState.weekMondayIso = addDays(appState.weekMondayIso, -7);
+            appState.selectedDate = appState.weekMondayIso;
+          } else if (appState.viewMode === 'monthly') {
+            appState.monthIso = addMonthsYM(appState.monthIso, -1);
+            appState.selectedDate = `${appState.monthIso}-01`;
+          } else {
+            appState.yearIso = String(Number(appState.yearIso) - 1);
+            appState.selectedDate = `${appState.yearIso}-01-01`;
+          }
           renderAllViews();
         });
         document.getElementById('periodNextBtn').addEventListener('click', () => {
-          if (appState.viewMode === 'weekly') { appState.weekMondayIso = addDays(appState.weekMondayIso, 7); appState.selectedDate = appState.weekMondayIso; }
-          else { appState.monthIso = addMonthsYM(appState.monthIso, 1); appState.selectedDate = `${appState.monthIso}-01`; }
+          if (appState.viewMode === 'weekly') {
+            appState.weekMondayIso = addDays(appState.weekMondayIso, 7);
+            appState.selectedDate = appState.weekMondayIso;
+          } else if (appState.viewMode === 'monthly') {
+            appState.monthIso = addMonthsYM(appState.monthIso, 1);
+            appState.selectedDate = `${appState.monthIso}-01`;
+          } else {
+            appState.yearIso = String(Number(appState.yearIso) + 1);
+            appState.selectedDate = `${appState.yearIso}-01-01`;
+          }
           renderAllViews();
         });
         document.getElementById('periodTodayBtn').addEventListener('click', () => {
           appState.selectedDate = TODAY_ISO;
           appState.weekMondayIso = getMondayISO(TODAY_ISO);
           appState.monthIso = TODAY_ISO.slice(0, 7);
+          appState.yearIso = TODAY_ISO.slice(0, 4);
           renderAllViews();
         });
 
         document.getElementById('logTodayBtn').addEventListener('click', () => openCheckInSheet('tap', TODAY_ISO, false));
         document.getElementById('logPreviousBtn').addEventListener('click', () => openCheckInSheet('tap', addDays(TODAY_ISO, -1), true));
-
-        document.getElementById('copyBriefBtn').addEventListener('click', copyBriefToClipboard);
-        document.getElementById('doctorViewBtn').addEventListener('click', openDoctorView);
-        document.getElementById('closeDoctorViewBtn').addEventListener('click', () => document.getElementById('doctorViewModal').classList.add('hidden'));
-        document.getElementById('docPrintBtn').addEventListener('click', () => window.print());
+        document.getElementById('exportPdfBtn').addEventListener('click', exportVisualPdf);
 
         document.querySelectorAll('.feed-pill').forEach(btn => btn.addEventListener('click', () => { appState.feedFilter = btn.getAttribute('data-feed'); renderAllViews(); }));
 
