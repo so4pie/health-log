@@ -1,281 +1,231 @@
 <!DOCTYPE html>
-<html lang="en-GB">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <meta name="apple-mobile-web-app-title" content="Psych Log" />
   <title>Psych Log</title>
-
-  <link id="appleTouchIconLink" rel="apple-touch-icon" sizes="180x180" href="icon.jpg" />
-  <link id="faviconIconLink" rel="icon" type="image/jpeg" href="icon.jpg" />
-
   <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <style>
     :root {
-      --bg-canvas: #F7F7F5;
+      --bg-canvas: #F9F8F6;
       --bg-card: #FFFFFF;
-      --bg-subtle: #F2F2F0;
-      --bg-well: #ECECE8;
+      --bg-subtle: #F2F0EC;
+      --bg-well: #E8E5DF;
       --text-primary: #141413;
       --text-secondary: #575652;
-      --text-muted: #8E8E93;
-      --border-hairline: rgba(0, 0, 0, 0.07);
-      --border-strong: rgba(0, 0, 0, 0.16);
-      --card-shadow: 0 1px 2px rgba(0, 0, 0, 0.03), 0 4px 12px rgba(0, 0, 0, 0.015);
-      --sheet-shadow: 0 -10px 36px rgba(0, 0, 0, 0.14);
+      --text-muted: #8C8A84;
+      --border-hairline: rgba(20, 20, 19, 0.09);
+      --border-strong: rgba(20, 20, 19, 0.18);
 
-      --state-existing: #8E8E93;
-      --state-existing-tint: #F2F2F7;
-      --state-existing-border: rgba(142, 142, 147, 0.32);
+      --state-existing: #64748B;
+      --state-existing-tint: rgba(100, 116, 139, 0.10);
+      --state-existing-border: rgba(100, 116, 139, 0.28);
 
-      /* Sky / Cerulean Blue */
       --state-depressed: #3B82F6;
       --state-depressed-tint: rgba(59, 130, 246, 0.12);
       --state-depressed-border: rgba(59, 130, 246, 0.34);
 
-      /* Deep Midnight Cobalt (distinctly deeper than Depressed) */
       --state-very-depressed: #1E3A8A;
-      --state-very-depressed-tint: rgba(30, 58, 138, 0.22);
-      --state-very-depressed-border: rgba(30, 58, 138, 0.52);
+      --state-very-depressed-tint: rgba(30, 58, 138, 0.16);
+      --state-very-depressed-border: rgba(30, 58, 138, 0.44);
 
-      /* Cool Violet */
       --state-mixed: #7C3AED;
-      --state-mixed-tint: rgba(124, 58, 237, 0.14);
-      --state-mixed-border: rgba(124, 58, 237, 0.36);
+      --state-mixed-tint: rgba(124, 58, 237, 0.12);
+      --state-mixed-border: rgba(124, 58, 237, 0.34);
 
-      /* Cool Teal */
       --state-hypomania: #0D9488;
-      --state-hypomania-tint: rgba(13, 148, 136, 0.14);
-      --state-hypomania-border: rgba(13, 148, 136, 0.42);
+      --state-hypomania-tint: rgba(13, 148, 136, 0.12);
+      --state-hypomania-border: rgba(13, 148, 136, 0.34);
 
-      /* Cool Electric Magenta / Berry (cool-toned, zero orange/yellow) */
       --state-mania: #C026D3;
-      --state-mania-tint: rgba(192, 38, 211, 0.14);
-      --state-mania-border: rgba(192, 38, 211, 0.40);
+      --state-mania-tint: rgba(192, 38, 211, 0.12);
+      --state-mania-border: rgba(192, 38, 211, 0.36);
 
       --psychotic-crimson: #DC2626;
       --psychotic-crimson-tint: rgba(220, 38, 38, 0.12);
     }
 
     html.dark {
-      --bg-canvas: #181A1F;
-      --bg-card: #21242B;
-      --bg-subtle: #2A2E37;
-      --bg-well: #343944;
-      --text-primary: #ECEEF2;
-      --text-secondary: #A6ACB8;
-      --text-muted: #787F8D;
-      --border-hairline: rgba(255, 255, 255, 0.08);
-      --border-strong: rgba(255, 255, 255, 0.16);
-      --card-shadow: 0 1px 3px rgba(0, 0, 0, 0.35);
-      --sheet-shadow: 0 -12px 44px rgba(0, 0, 0, 0.55);
+      --bg-canvas: #0E0E10;
+      --bg-card: #161619;
+      --bg-subtle: #1F1F23;
+      --bg-well: #2A2A30;
+      --text-primary: #F4F4F2;
+      --text-secondary: #A1A09A;
+      --text-muted: #6E6D68;
+      --border-hairline: rgba(255, 255, 255, 0.09);
+      --border-strong: rgba(255, 255, 255, 0.18);
 
-      --state-existing: #91969E;
-      --state-existing-tint: rgba(145, 150, 158, 0.16);
-      --state-existing-border: rgba(145, 150, 158, 0.32);
+      --state-existing: #94A3B8;
+      --state-existing-tint: rgba(148, 163, 184, 0.14);
+      --state-existing-border: rgba(148, 163, 184, 0.32);
 
-      /* Crisp Sky Blue */
       --state-depressed: #7DD3FC;
-      --state-depressed-tint: rgba(125, 211, 252, 0.16);
+      --state-depressed-tint: rgba(125, 211, 252, 0.15);
       --state-depressed-border: rgba(125, 211, 252, 0.38);
 
-      /* Deep Royal Cobalt (visibly deeper fill & border than Depressed) */
       --state-very-depressed: #4F7DF9;
-      --state-very-depressed-tint: rgba(37, 99, 235, 0.32);
-      --state-very-depressed-border: rgba(79, 125, 249, 0.58);
+      --state-very-depressed-tint: rgba(79, 125, 249, 0.22);
+      --state-very-depressed-border: rgba(79, 125, 249, 0.50);
 
-      /* Cool Violet */
       --state-mixed: #A78BFA;
-      --state-mixed-tint: rgba(167, 139, 250, 0.22);
-      --state-mixed-border: rgba(167, 139, 250, 0.46);
+      --state-mixed-tint: rgba(167, 139, 250, 0.16);
+      --state-mixed-border: rgba(167, 139, 250, 0.40);
 
-      /* Cool Teal */
       --state-hypomania: #2DD4BF;
-      --state-hypomania-tint: rgba(45, 212, 191, 0.20);
-      --state-hypomania-border: rgba(45, 212, 191, 0.48);
+      --state-hypomania-tint: rgba(45, 212, 191, 0.16);
+      --state-hypomania-border: rgba(45, 212, 191, 0.40);
 
-      /* Cool Electric Magenta / Fuchsia */
       --state-mania: #E879F9;
-      --state-mania-tint: rgba(232, 121, 249, 0.22);
-      --state-mania-border: rgba(232, 121, 249, 0.48);
+      --state-mania-tint: rgba(232, 121, 249, 0.17);
+      --state-mania-border: rgba(232, 121, 249, 0.42);
 
-      --psychotic-crimson: #F06060;
-      --psychotic-crimson-tint: rgba(240, 96, 96, 0.20);
+      --psychotic-crimson: #F87171;
+      --psychotic-crimson-tint: rgba(248, 113, 113, 0.16);
     }
 
-    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-
+    * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; }
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", system-ui, sans-serif;
       background-color: var(--bg-canvas);
       color: var(--text-primary);
-      margin: 0;
-      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", system-ui, sans-serif;
       -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
-      transition: background-color 0.22s ease, color 0.22s ease;
-      overflow-x: hidden;
+      margin: 0;
     }
 
-    /* 3-Mode Segmented Control (Weekly / Monthly / Annual) */
+    .tabular { font-variant-numeric: tabular-nums; }
+    .hairline { border: 1px solid var(--border-hairline); }
+    .hairline-t { border-top: 1px solid var(--border-hairline); }
+    .hairline-b { border-bottom: 1px solid var(--border-hairline); }
+
+    .editorial-card {
+      background-color: var(--bg-card);
+      border: 1px solid var(--border-hairline);
+      border-radius: 22px;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+    }
+
+    .app-header {
+      padding-top: calc(env(safe-area-inset-top, 0px) + 12px);
+      background-color: color-mix(in srgb, var(--bg-canvas) 88%, transparent);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+    }
+
+    .safe-bottom { padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 14px); }
+
     .ios-seg-track {
       position: relative;
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      padding: 2px;
-      border-radius: 12px;
+      padding: 3px;
+      border-radius: 13px;
       background-color: var(--bg-subtle);
       border: 1px solid var(--border-hairline);
     }
     .ios-seg-thumb {
       position: absolute;
-      top: 2px;
-      bottom: 2px;
-      left: 2px;
-      width: calc((100% - 4px) / 3);
+      top: 3px;
+      bottom: 3px;
+      left: 3px;
+      width: calc((100% - 6px) / 3);
       border-radius: 10px;
       background-color: var(--bg-card);
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 1px rgba(0, 0, 0, 0.04);
-      transition: transform 0.26s cubic-bezier(0.25, 1, 0.5, 1);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.10);
+      transition: transform 0.22s cubic-bezier(0.22, 1, 0.36, 1);
       pointer-events: none;
     }
-    html.dark .ios-seg-thumb { box-shadow: 0 1px 4px rgba(0, 0, 0, 0.45); }
     .ios-seg-track[data-mode="weekly"] .ios-seg-thumb { transform: translateX(0%); }
     .ios-seg-track[data-mode="monthly"] .ios-seg-thumb { transform: translateX(100%); }
     .ios-seg-track[data-mode="annual"] .ios-seg-thumb { transform: translateX(200%); }
     .ios-seg-btn {
       position: relative;
       z-index: 1;
-      padding: 6px 8px;
+      padding: 6px 4px;
       font-size: 12px;
       font-weight: 600;
-      letter-spacing: -0.01em;
       text-align: center;
-      transition: color 0.2s ease;
-    }
-
-    .tabular { font-variant-numeric: tabular-nums; }
-    .hairline { border: 1px solid var(--border-hairline); }
-    .hairline-b { border-bottom: 1px solid var(--border-hairline); }
-    .hairline-t { border-top: 1px solid var(--border-hairline); }
-
-    .editorial-card {
-      background-color: var(--bg-card);
-      border: 1px solid var(--border-hairline);
-      box-shadow: var(--card-shadow);
-      border-radius: 18px;
-      transition: background-color 0.22s ease, border-color 0.22s ease;
+      transition: color 0.18s ease;
     }
 
     .modal-backdrop {
       opacity: 0;
       pointer-events: none;
-      transition: opacity 0.22s ease;
+      transition: opacity 0.2s ease;
     }
-    .modal-backdrop.open { opacity: 1; pointer-events: auto; }
+    .modal-backdrop.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
     .sheet-surface {
-      transform: translateY(100%);
-      transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
-      box-shadow: var(--sheet-shadow);
+      transform: translateY(16px);
+      transition: transform 0.24s cubic-bezier(0.22, 1, 0.36, 1);
     }
-    .modal-backdrop.open .sheet-surface { transform: translateY(0); }
-
-    @keyframes briefFlash {
-      0% { transform: scale(1); }
-      40% { transform: scale(1.012); }
-      100% { transform: scale(1); }
-    }
-    .pulse-update { animation: briefFlash 0.32s ease; }
-
-    /* Optimized for iPhone 16 / 16 Pro / 16 Pro Max and newer Dynamic Island safe area */
-    .safe-top {
-      padding-top: calc(env(safe-area-inset-top, 0px) + 12px);
-    }
-    .safe-bottom {
-      padding-bottom: max(16px, env(safe-area-inset-bottom, 0px));
+    .modal-backdrop.open .sheet-surface {
+      transform: translateY(0);
     }
 
-    ::-webkit-scrollbar { width: 4px; height: 4px; }
-    ::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 999px; }
+    @keyframes briefPulse {
+      0% { box-shadow: 0 0 0 0 rgba(124, 58, 237, 0.25); }
+      100% { box-shadow: 0 0 0 8px rgba(124, 58, 237, 0); }
+    }
+    .pulse-update { animation: briefPulse 0.6s ease-out; }
   </style>
 </head>
-<body class="min-h-screen pb-14">
+<body class="min-h-screen">
 
   <!-- STICKY HEADER (iPhone 16+ Dynamic Island Safe) -->
-  <header class="sticky top-0 z-30 safe-top backdrop-blur-xl hairline-b"
-    style="background-color: color-mix(in srgb, var(--bg-canvas) 86%, transparent);">
-    <div class="max-w-[480px] mx-auto px-4 pb-2.5 flex items-center justify-between gap-2.5">
-      <div class="min-w-0 flex-1">
-        <div class="flex items-center gap-2 flex-nowrap">
-          <h1 class="text-[17px] font-semibold tracking-tight leading-none shrink-0">Psych Log</h1>
-          <span id="headerSpanBadge" class="text-[11px] font-medium tabular px-2 py-0.5 rounded-full hairline truncate"
-            style="background-color: var(--bg-card); color: var(--text-secondary);">
-            —
-          </span>
+  <header class="app-header sticky top-0 z-30 hairline-b">
+    <div class="max-w-lg mx-auto px-4 pb-3 flex items-center justify-between gap-2">
+      <div class="min-w-0">
+        <div class="flex items-center gap-2">
+          <h1 class="text-[17px] font-semibold tracking-tight leading-none">Psych Log</h1>
+          <span id="headerSpanBadge" class="text-[11px] font-medium tabular px-2 py-0.5 rounded-full hairline"
+            style="background-color: var(--bg-subtle); color: var(--text-secondary);">—</span>
         </div>
-        <div class="flex items-center gap-1.5 mt-1">
-          <span id="headerSyncDot" class="w-1.5 h-1.5 rounded-full shrink-0" style="background-color: var(--state-existing);"></span>
-          <p id="headerSyncText" class="text-[11px] leading-none tracking-wide truncate" style="color: var(--text-muted);">
-            Local only
-          </p>
+        <div class="flex items-center gap-1.5 mt-1.5 text-[11px]" style="color: var(--text-muted);">
+          <span id="headerSyncDot" class="w-1.5 h-1.5 rounded-full inline-block" style="background-color: var(--state-existing);"></span>
+          <span id="headerSyncText" class="truncate">Local only</span>
         </div>
       </div>
 
-      <div class="relative flex items-center gap-2 shrink-0">
-        <button id="themeToggleBtn" type="button" aria-label="Toggle Dark or Light Mode"
-          class="w-[38px] h-[38px] rounded-xl hairline flex items-center justify-center text-[15px] transition active:scale-95"
-          style="background-color: var(--bg-card); color: var(--text-secondary);">
+      <div class="flex items-center gap-1.5 shrink-0 relative">
+        <button id="themeToggleBtn" type="button" aria-label="Toggle color theme"
+          class="w-9 h-9 rounded-full hairline flex items-center justify-center text-[15px] transition active:scale-95"
+          style="background-color: var(--bg-card); color: var(--text-primary);">
           <span id="themeGlyph">☾</span>
         </button>
 
-        <button id="headerMenuBtn" type="button" aria-label="Open Tracker Options" aria-expanded="false"
-          class="w-[38px] h-[38px] rounded-xl hairline flex items-center justify-center text-[16px] font-bold transition active:scale-95"
-          style="background-color: var(--bg-card); color: var(--text-secondary);">
-          ⋯
-        </button>
+        <button id="headerMenuBtn" type="button" aria-label="More options" aria-expanded="false"
+          class="w-9 h-9 rounded-full hairline flex items-center justify-center text-[16px] font-bold transition active:scale-95"
+          style="background-color: var(--bg-card); color: var(--text-primary);">⋯</button>
 
         <div id="headerMenuPopover"
-          class="hidden absolute right-0 top-11 w-56 rounded-2xl hairline p-1.5 z-40 space-y-0.5"
-          style="background-color: var(--bg-card); box-shadow: 0 10px 30px rgba(0,0,0,0.16);">
+          class="hidden absolute right-0 top-11 w-56 rounded-2xl hairline shadow-xl p-1.5 z-40 text-[12.5px]"
+          style="background-color: var(--bg-card);">
           <button id="openSyncSettingsBtn" type="button"
-            class="w-full px-3 py-2 rounded-xl text-left text-[12px] font-medium flex items-center justify-between transition hover:opacity-80"
-            style="color: var(--text-primary);">
-            <span>Cloud Sync</span>
-            <span id="menuSyncBadge" class="text-[10.5px] font-semibold px-1.5 py-0.5 rounded-md"
-              style="background-color: var(--bg-subtle); color: var(--text-muted);">Off</span>
+            class="w-full px-3 py-2 rounded-xl flex items-center justify-between text-left hover:opacity-80">
+            <span>Cloud Sync (Firebase)</span>
+            <span id="menuSyncBadge" class="text-[11px] font-semibold" style="color: var(--text-muted);">Off</span>
           </button>
-
           <button id="syncNowMenuBtn" type="button"
-            class="hidden w-full px-3 py-2 rounded-xl text-left text-[12px] font-medium flex items-center justify-between transition hover:opacity-80"
-            style="color: var(--text-primary);">
-            <span>Sync Now</span>
-            <span class="text-[11px]" style="color: var(--text-muted);">↻</span>
+            class="hidden w-full px-3 py-2 rounded-xl text-left hover:opacity-80">
+            Sync Now
           </button>
-
           <div class="my-1 hairline-t"></div>
-
           <button id="toggleDemoDataBtn" type="button"
-            class="w-full px-3 py-2 rounded-xl text-left text-[12px] font-medium flex items-center justify-between transition hover:opacity-80"
-            style="color: var(--text-primary);">
+            class="w-full px-3 py-2 rounded-xl flex items-center justify-between text-left hover:opacity-80">
             <span id="toggleDemoDataLabel">Load Demo Data</span>
             <span id="demoStatusDot" class="w-2 h-2 rounded-full" style="background-color: var(--state-existing);"></span>
           </button>
-
+          <div class="my-1 hairline-t"></div>
           <button id="exportJsonBtn" type="button"
-            class="w-full px-3 py-2 rounded-xl text-left text-[12px] font-medium flex items-center justify-between transition hover:opacity-80"
-            style="color: var(--text-primary);">
-            <span>Export JSON</span>
-            <span class="text-[11px]" style="color: var(--text-muted);">↓</span>
+            class="w-full px-3 py-2 rounded-xl text-left hover:opacity-80">
+            Export JSON Backup
           </button>
-
-          <label class="w-full px-3 py-2 rounded-xl text-left text-[12px] font-medium flex items-center justify-between transition hover:opacity-80 cursor-pointer"
-            style="color: var(--text-primary);">
-            <span>Import JSON</span>
-            <span class="text-[11px]" style="color: var(--text-muted);">↑</span>
+          <label class="w-full px-3 py-2 rounded-xl flex items-center justify-between cursor-pointer hover:opacity-80">
+            <span>Import JSON Backup</span>
             <input id="importJsonInput" type="file" accept=".json,application/json" class="hidden" />
           </label>
         </div>
@@ -283,29 +233,20 @@
     </div>
   </header>
 
-  <!-- MAIN CONTENT STREAM -->
-  <main class="max-w-[480px] mx-auto px-4 pt-3.5 space-y-3.5">
+  <!-- MAIN CONTENT -->
+  <main class="max-w-lg mx-auto px-4 pt-3.5 pb-12 space-y-3.5">
 
-    <!-- 1. LOG TODAY / LOG PREVIOUS -->
-    <section class="grid grid-cols-2 gap-2" aria-label="Quick Check-In Actions">
+    <!-- 1. QUICK CHECK-IN -->
+    <section class="editorial-card p-3.5 flex items-center gap-2" aria-label="Quick Check-In">
       <button id="logTodayBtn" type="button"
-        class="editorial-card px-3.5 py-3 text-left flex items-center justify-between gap-2 transition active:scale-[0.98]"
-        style="background-color: var(--bg-card);">
-        <div class="min-w-0">
-          <div class="text-[13px] font-semibold tracking-tight truncate">Log Today</div>
-        </div>
-        <span class="w-7 h-7 rounded-full flex items-center justify-center shrink-0 text-[13px] font-semibold"
-          style="background-color: var(--state-existing-tint); color: var(--text-primary);">✓</span>
+        class="flex-1 py-2.5 px-3 rounded-xl text-[13px] font-semibold transition active:scale-[0.98]"
+        style="background-color: var(--text-primary); color: var(--bg-canvas);">
+        + Log Today
       </button>
-
       <button id="logPreviousBtn" type="button"
-        class="px-3.5 py-3 rounded-[18px] text-left flex items-center justify-between gap-2 transition active:scale-[0.98]"
-        style="background-color: #5574a6; color: #FFFFFF; box-shadow: var(--card-shadow);">
-        <div class="min-w-0">
-          <div class="text-[13px] font-semibold tracking-tight truncate">Log Previous</div>
-        </div>
-        <span class="w-7 h-7 rounded-full flex items-center justify-center shrink-0 text-[16px] font-medium"
-          style="background-color: rgba(255, 255, 255, 0.18); color: #FFFFFF;">+</span>
+        class="flex-1 py-2.5 px-3 rounded-xl text-[13px] font-semibold hairline transition active:scale-[0.98]"
+        style="background-color: var(--bg-subtle); color: var(--text-primary);">
+        Previous / Backlog
       </button>
     </section>
 
@@ -399,7 +340,7 @@
       </div>
     </section>
 
-    <!-- 4. FREQUENCY (Shown in Weekly & Monthly views) -->
+    <!-- 4. FREQUENCY (Weekly & Monthly views) -->
     <section id="frequencyCard" class="editorial-card p-4 space-y-3" aria-label="Frequency by Mood">
       <div class="flex items-center justify-between gap-2">
         <h2 class="text-[15px] font-semibold tracking-tight">Frequency</h2>
@@ -710,6 +651,18 @@
 
       const SLEEP_PRESETS = [3.5, 5, 6.5, 7.5, 8.5, 10];
 
+      /* Print-first white A4 vector palette */
+      const PRINT_STATE_PALETTE = {
+        'existing':       { fill: [248, 250, 252], border: [203, 213, 225], accent: [71, 85, 105] },
+        'depressed':      { fill: [239, 246, 255], border: [147, 197, 253], accent: [37, 99, 235] },
+        'very depressed': { fill: [219, 234, 254], border: [59, 130, 246],  accent: [30, 58, 138] },
+        'mixed (d)':      { fill: [245, 243, 255], border: [196, 181, 253], accent: [109, 40, 217] },
+        'mixed (h)':      { fill: [245, 243, 255], border: [196, 181, 253], accent: [109, 40, 217] },
+        'mixed (m)':      { fill: [245, 243, 255], border: [196, 181, 253], accent: [109, 40, 217] },
+        'hypomania':      { fill: [240, 253, 250], border: [94, 234, 212],  accent: [13, 148, 136] },
+        'mania':          { fill: [253, 244, 255], border: [240, 171, 252], accent: [162, 28, 175] }
+      };
+
       function buildSampleBacklogShorthand() {
         const d = (offset) => formatBritishShort(addDays(TODAY_ISO, offset));
         return [
@@ -773,9 +726,7 @@
       }
       function getDaysInYear(yearStr) {
         const list = [];
-        for (let m = 1; m <= 12; m++) {
-          list.push(...getDaysInMonth(`${yearStr}-${String(m).padStart(2, '0')}`));
-        }
+        for (let m = 1; m <= 12; m++) list.push(...getDaysInMonth(`${yearStr}-${String(m).padStart(2, '0')}`));
         return list;
       }
       function formatSleepNum(val) {
@@ -1036,11 +987,8 @@
           const remote = await res.json();
 
           if (!remote || typeof remote !== 'object') {
-            if (!appState.isSample && appState.entries.length > 0) {
-              await pushLocalToCloud();
-            } else {
-              setSyncStatus('synced', `Synced · ${formatNowHHMM()}`);
-            }
+            if (!appState.isSample && appState.entries.length > 0) await pushLocalToCloud();
+            else setSyncStatus('synced', `Synced · ${formatNowHHMM()}`);
             return true;
           }
 
@@ -1048,9 +996,7 @@
           const remoteTombstones = (remote.tombstones && typeof remote.tombstones === 'object') ? remote.tombstones : {};
 
           const localEntriesMap = {};
-          if (!appState.isSample) {
-            appState.entries.forEach(e => { localEntriesMap[e.date] = e; });
-          }
+          if (!appState.isSample) appState.entries.forEach(e => { localEntriesMap[e.date] = e; });
           const localTombstones = appState.isSample ? {} : (appState.tombstones || {});
 
           const allDates = new Set([
@@ -1100,11 +1046,8 @@
             renderAllViews();
           }
 
-          if (localNeedsPush) {
-            await pushLocalToCloud();
-          } else {
-            setSyncStatus('synced', `Synced · ${formatNowHHMM()}`);
-          }
+          if (localNeedsPush) await pushLocalToCloud();
+          else setSyncStatus('synced', `Synced · ${formatNowHHMM()}`);
 
           if (!silent) showToast('Cloud sync complete');
           return true;
@@ -1335,20 +1278,28 @@
         };
       }
 
-      function buildBriefInnerHtml(data) {
-        const barHtml = (data.count === 0 || data.totalStateOccurrences === 0)
+      function renderClinicalBrief() {
+        const win = getPeriodWindow();
+        const data = computeBriefData(getPeriodEntries());
+
+        document.getElementById('briefDateRangeText').textContent = win.mode === 'annual' ? `Jan – Dec ${win.label}` : win.label;
+        document.getElementById('headerSpanBadge').textContent = formatBritishFull(TODAY_ISO);
+
+        const barEl = document.getElementById('briefStateBar');
+        barEl.innerHTML = (data.count === 0 || data.totalStateOccurrences === 0)
           ? ''
           : CLINICAL_STATES.filter(s => data.stateCounts[s.id] > 0).map(s =>
               `<div style="width:${((data.stateCounts[s.id] / data.totalStateOccurrences) * 100).toFixed(2)}%; background-color:${cssVar(s.colorVar)};"></div>`
             ).join('');
+        document.getElementById('briefStateText').textContent = data.stateSummaryText;
 
-        let arcsHtml = '';
+        const arcsEl = document.getElementById('briefEpisodeArcs');
         if (data.count === 0) {
-          arcsHtml = `<div style="color: var(--text-muted);">—</div>`;
+          arcsEl.innerHTML = `<div style="color: var(--text-muted);">—</div>`;
         } else if (data.arcs.length === 0) {
-          arcsHtml = `<div style="color: var(--text-muted);">No episodes (4+ consecutive days or marked) in this period.</div>`;
+          arcsEl.innerHTML = `<div style="color: var(--text-muted);">No episodes (4+ consecutive days or marked) in this period.</div>`;
         } else {
-          arcsHtml = data.arcs.map((arc, idx) => {
+          arcsEl.innerHTML = data.arcs.map((arc, idx) => {
             const peakFormatted = formatPeakDatesList(arc.peaks);
             return `
               <div class="flex flex-wrap items-center gap-1.5">
@@ -1362,34 +1313,6 @@
           }).join('');
         }
 
-        const psychHtml = data.psychoticList.length === 0
-          ? ''
-          : `
-            <div class="pt-2 hairline-t">
-              <div class="text-[10px] font-semibold uppercase tracking-wider mb-0.5" style="color: var(--psychotic-crimson);">
-                Psychotic Symptoms Logged
-              </div>
-              <div class="text-[12px] font-medium tabular" style="color: var(--psychotic-crimson);">
-                ${data.psychoticList.map(i => `${i.symptom}: ${i.datesText}`).join(' · ')}
-              </div>
-            </div>
-          `;
-
-        return { barHtml, arcsHtml, psychHtml };
-      }
-
-      function renderClinicalBrief() {
-        const win = getPeriodWindow();
-        const data = computeBriefData(getPeriodEntries());
-        const rendered = buildBriefInnerHtml(data);
-
-        document.getElementById('briefDateRangeText').textContent = win.mode === 'annual' ? `Jan – Dec ${win.label}` : win.label;
-        document.getElementById('headerSpanBadge').textContent = formatBritishFull(TODAY_ISO);
-
-        document.getElementById('briefStateBar').innerHTML = rendered.barHtml;
-        document.getElementById('briefStateText').textContent = data.stateSummaryText;
-        document.getElementById('briefEpisodeArcs').innerHTML = rendered.arcsHtml;
-
         const psychWrap = document.getElementById('briefPsychoticWrap');
         if (data.psychoticList.length === 0) {
           psychWrap.classList.add('hidden');
@@ -1400,6 +1323,19 @@
       }
 
       /* WEEKLY / MONTHLY / ANNUAL GRIDS & STATS */
+      function getDayCardTokens(entry) {
+        const primaryState = getPrimaryState(entry.states);
+        const stMeta = getStateMeta(primaryState);
+        const line1 = `${formatSleepNum(entry.sleep)} ${getMoodMeta(entry.mood).glyph}`;
+        const stateCode = (primaryState.startsWith('mixed') || primaryState === 'hypomania') ? stMeta.shortCode : '';
+        const exCode = (primaryState !== 'existing' && Array.isArray(entry.states) && entry.states.includes('existing')) ? 'ex' : '';
+        const phaseCode = getPhaseMeta(entry.phase).code;
+        const psychCode = getPsychMeta(entry.psychotic).shortCode;
+        const noteStar = entry.notes && entry.notes.trim().length > 0 ? '*' : '';
+        const line2 = [stateCode, exCode, phaseCode, psychCode, noteStar].filter(Boolean).join(' ');
+        return { primaryState, stMeta, line1, line2, hasPsych: Boolean(psychCode) };
+      }
+
       function buildDayCardHtml(iso, entry, isOutsideMonth, isWeekly, extraClass, isInteractive) {
         const isSelected = isInteractive && iso === appState.selectedDate;
         const dayNum = parseInt(iso.slice(8, 10), 10);
@@ -1420,16 +1356,7 @@
           `;
         }
 
-        const primaryState = getPrimaryState(entry.states);
-        const stMeta = getStateMeta(primaryState);
-        const line1 = `${formatSleepNum(entry.sleep)} ${getMoodMeta(entry.mood).glyph}`;
-        const stateCode = (primaryState.startsWith('mixed') || primaryState === 'hypomania') ? stMeta.shortCode : '';
-        const exCode = (primaryState !== 'existing' && Array.isArray(entry.states) && entry.states.includes('existing')) ? 'ex' : '';
-        const phaseCode = getPhaseMeta(entry.phase).code;
-        const psychCode = getPsychMeta(entry.psychotic).shortCode;
-        const noteStar = entry.notes && entry.notes.trim().length > 0 ? '*' : '';
-        const line2Tokens = [stateCode, exCode, phaseCode, psychCode, noteStar].filter(Boolean);
-
+        const { primaryState, stMeta, line1, line2, hasPsych } = getDayCardTokens(entry);
         const isPureExisting = primaryState === 'existing';
         const bgFill = isPureExisting ? 'var(--bg-card)' : cssVar(stMeta.tintVar);
         const borderCol = isSelected ? 'var(--text-primary)' : isPureExisting ? 'var(--border-hairline)' : cssVar(stMeta.borderVar);
@@ -1442,32 +1369,10 @@
             <div class="flex flex-col items-center justify-center my-auto w-full">
               <span class="${isWeekly ? 'text-[11px]' : 'text-[10px]'} font-semibold tracking-tight" style="color: var(--text-primary);">${line1}</span>
               <span class="${isWeekly ? 'text-[9px]' : 'text-[8px]'} font-bold mt-0.5 min-h-[10px] leading-tight text-center break-words w-full"
-                style="color: ${psychCode ? 'var(--psychotic-crimson)' : cssVar(stMeta.colorVar)};">${line2Tokens.join(' ')}</span>
+                style="color: ${hasPsych ? 'var(--psychotic-crimson)' : cssVar(stMeta.colorVar)};">${line2}</span>
             </div>
           </${tag}>
         `;
-      }
-
-      function buildMonthlyGridMarkup(ym, allowInteractive) {
-        const allDates = getDaysInMonth(ym);
-        const entryMap = new Map(appState.entries.map(e => [e.date, e]));
-        const headerCols = MON_TO_SUN_LABELS.map(lbl => `<div class="text-center text-[10px] font-semibold uppercase tracking-wider pb-1" style="color: var(--text-muted);">${lbl}</div>`).join('');
-        const firstMon = getMondayISO(allDates[0]);
-        const lastIso = allDates[allDates.length - 1];
-        const lastDow = parseISO(lastIso).getDay();
-        const finalSun = addDays(lastIso, lastDow === 0 ? 0 : 7 - lastDow);
-        const weeks = [];
-        let cursorMon = firstMon;
-        while (cursorMon <= finalSun) {
-          const weekCells = [];
-          for (let i = 0; i < 7; i++) {
-            const iso = addDays(cursorMon, i);
-            weekCells.push(buildDayCardHtml(iso, entryMap.get(iso) || null, iso.slice(0, 7) !== ym, false, '', allowInteractive));
-          }
-          weeks.push(`<div class="grid grid-cols-7 gap-1">${weekCells.join('')}</div>`);
-          cursorMon = addDays(cursorMon, 7);
-        }
-        return `<div class="space-y-1"><div class="grid grid-cols-7 gap-1">${headerCols}</div><div class="space-y-1">${weeks.join('')}</div></div>`;
       }
 
       function computeAnnualAnalytics(yr) {
@@ -1475,12 +1380,10 @@
         const entryMap = new Map(yearEntries.map(e => [e.date, e]));
         const totalLogged = yearEntries.length;
 
-        // Baseline stability
         const anyExistingDays = yearEntries.filter(e => Array.isArray(e.states) && e.states.includes('existing')).length;
         const pureExistingDays = yearEntries.filter(e => getPrimaryState(e.states) === 'existing').length;
         const stabilityPct = totalLogged > 0 ? Math.round((pureExistingDays / totalLogged) * 100) : 0;
 
-        // Episodes
         const episodes = detectClinicalEpisodes(yearEntries);
         const avgEpisodeDays = episodes.length > 0
           ? (episodes.reduce((sum, ep) => sum + ep.dayCount, 0) / episodes.length).toFixed(1)
@@ -1489,7 +1392,6 @@
         const familyCounts = {};
         episodes.forEach(ep => { familyCounts[ep.family] = (familyCounts[ep.family] || 0) + 1; });
 
-        // Sleep by state
         const overallSleep = totalLogged > 0
           ? (yearEntries.reduce((s, e) => s + e.sleep, 0) / totalLogged).toFixed(1)
           : '—';
@@ -1500,7 +1402,6 @@
           return { id: st.id, colorVar: st.colorVar, days: matching.length, avg };
         }).filter(Boolean);
 
-        // Mood & Psychotic totals
         const moodCounts = MOOD_Y_AXIS_DESC.map(m => ({
           glyph: m.glyph,
           label: m.label,
@@ -1513,7 +1414,6 @@
           psychBreakdown[code] = (psychBreakdown[code] || 0) + 1;
         });
 
-        // Monthly stats (Jan - Dec)
         const months = [];
         for (let m = 1; m <= 12; m++) {
           const ym = `${yr}-${String(m).padStart(2, '0')}`;
@@ -1571,10 +1471,9 @@
         };
       }
 
-      function buildAnnualOverviewMarkup(yr, interactive) {
+      function buildAnnualOverviewMarkup(yr) {
         const stats = computeAnnualAnalytics(yr);
 
-        // 1. 12-Month Heatmap Grid
         const heatmapRowsHtml = stats.months.map(m => {
           const cells = [];
           for (let d = 1; d <= 31; d++) {
@@ -1592,19 +1491,16 @@
               cells.push(`<span class="h-[9px] rounded-[2px]" style="background-color: ${cssVar(stMeta.colorVar)}; ${hasPsych ? 'outline: 1px solid var(--psychotic-crimson);' : ''}"></span>`);
             }
           }
-          const rowTag = interactive ? 'button' : 'div';
-          const rowAttr = interactive ? `type="button" data-jump-month="${m.ym}"` : '';
           return `
-            <${rowTag} ${rowAttr} class="w-full flex items-center gap-1.5 py-[2px] text-left ${interactive ? 'annual-month-jump hover:opacity-80 transition cursor-pointer' : ''}">
+            <button type="button" data-jump-month="${m.ym}" class="annual-month-jump w-full flex items-center gap-1.5 py-[2px] text-left hover:opacity-80 transition cursor-pointer">
               <span class="w-7 text-[9.5px] font-semibold tabular shrink-0" style="color: var(--text-secondary);">${m.shortName}</span>
               <div class="flex-1 grid gap-[2px]" style="grid-template-columns: repeat(31, minmax(0, 1fr));">
                 ${cells.join('')}
               </div>
-            </${rowTag}>
+            </button>
           `;
         }).join('');
 
-        // 2. 2x2 Summary Stat Cards
         const familyBreakdownText = Object.keys(stats.familyCounts).length === 0
           ? 'None logged'
           : Object.entries(stats.familyCounts).map(([fam, cnt]) => `${cnt} ${fam}`).join(' · ');
@@ -1669,17 +1565,14 @@
           </div>
         `;
 
-        // 3. 12-Month Breakdown List
         const monthRowsHtml = stats.months.map(m => {
           const barSegments = m.totalOcc === 0
             ? ''
             : CLINICAL_STATES.filter(s => m.stateCounts[s.id] > 0).map(s =>
                 `<div style="width:${((m.stateCounts[s.id] / m.totalOcc) * 100).toFixed(2)}%; background-color:${cssVar(s.colorVar)};"></div>`
               ).join('');
-          const tag = interactive ? 'button' : 'div';
-          const attr = interactive ? `type="button" data-jump-month="${m.ym}"` : '';
           return `
-            <${tag} ${attr} class="w-full py-2 px-2.5 rounded-xl hairline flex items-center justify-between gap-2 text-left tabular ${interactive ? 'annual-month-jump transition active:scale-[0.99] cursor-pointer' : ''}"
+            <button type="button" data-jump-month="${m.ym}" class="annual-month-jump w-full py-2 px-2.5 rounded-xl hairline flex items-center justify-between gap-2 text-left tabular transition active:scale-[0.99] cursor-pointer"
               style="background-color: var(--bg-subtle);">
               <div class="w-16 shrink-0">
                 <div class="text-[12px] font-semibold leading-tight">${m.shortName}</div>
@@ -1692,7 +1585,7 @@
                 <span style="color: var(--text-secondary);">${m.avgSleep === '—' ? '—' : `${m.avgSleep}h`}</span>
                 ${m.episodeCount > 0 ? `<span class="px-1.5 py-0.5 rounded-md text-[10px] font-semibold" style="background-color: var(--bg-card); border: 1px solid var(--border-hairline);">${m.episodeCount} ep</span>` : ''}
               </div>
-            </${tag}>
+            </button>
           `;
         }).join('');
 
@@ -1701,7 +1594,7 @@
             <div class="p-3 rounded-2xl hairline space-y-1" style="background-color: var(--bg-subtle);">
               <div class="flex items-center justify-between pb-1">
                 <span class="text-[10px] font-semibold uppercase tracking-wider" style="color: var(--text-muted);">12-Month Heatmap (Days 1–31)</span>
-                ${interactive ? `<span class="text-[10px]" style="color: var(--text-muted);">Tap month to inspect</span>` : ''}
+                <span class="text-[10px]" style="color: var(--text-muted);">Tap month to inspect</span>
               </div>
               <div class="space-y-[2px]">${heatmapRowsHtml}</div>
             </div>
@@ -1728,7 +1621,22 @@
         }
 
         if (win.mode === 'monthly') {
-          targetEl.innerHTML = buildMonthlyGridMarkup(appState.monthIso, true);
+          const headerCols = MON_TO_SUN_LABELS.map(lbl => `<div class="text-center text-[10px] font-semibold uppercase tracking-wider pb-1" style="color: var(--text-muted);">${lbl}</div>`).join('');
+          const firstMon = getMondayISO(win.startIso);
+          const lastDow = parseISO(win.endIso).getDay();
+          const finalSun = addDays(win.endIso, lastDow === 0 ? 0 : 7 - lastDow);
+          const weeks = [];
+          let cursorMon = firstMon;
+          while (cursorMon <= finalSun) {
+            const weekCells = [];
+            for (let i = 0; i < 7; i++) {
+              const iso = addDays(cursorMon, i);
+              weekCells.push(buildDayCardHtml(iso, entryMap.get(iso) || null, iso.slice(0, 7) !== appState.monthIso, false, '', true));
+            }
+            weeks.push(`<div class="grid grid-cols-7 gap-1">${weekCells.join('')}</div>`);
+            cursorMon = addDays(cursorMon, 7);
+          }
+          targetEl.innerHTML = `<div class="space-y-1"><div class="grid grid-cols-7 gap-1">${headerCols}</div><div class="space-y-1">${weeks.join('')}</div></div>`;
           targetEl.querySelectorAll('.ts-cell').forEach(btn => {
             btn.addEventListener('click', () => {
               const iso = btn.getAttribute('data-cell-date');
@@ -1739,8 +1647,7 @@
           return;
         }
 
-        // Annual mode
-        targetEl.innerHTML = buildAnnualOverviewMarkup(appState.yearIso, true);
+        targetEl.innerHTML = buildAnnualOverviewMarkup(appState.yearIso);
         targetEl.querySelectorAll('.annual-month-jump').forEach(btn => {
           btn.addEventListener('click', () => {
             const targetYm = btn.getAttribute('data-jump-month');
@@ -1753,9 +1660,10 @@
         });
       }
 
-      function buildFrequencyDeckMarkup(entriesList) {
-        return MOOD_Y_AXIS_DESC.map(moodObj => {
-          const suitEntries = entriesList.filter(e => e.mood === moodObj.id).sort((a, b) => a.date.localeCompare(b.date));
+      function renderFrequencyCardDeck(targetEl) {
+        const visible = getPeriodEntries();
+        targetEl.innerHTML = MOOD_Y_AXIS_DESC.map(moodObj => {
+          const suitEntries = visible.filter(e => e.mood === moodObj.id).sort((a, b) => a.date.localeCompare(b.date));
           const cardsHtml = suitEntries.length === 0
             ? `<span class="text-[11px] py-2" style="color: var(--text-muted);">—</span>`
             : suitEntries.map(entry => buildDayCardHtml(entry.date, entry, false, false, 'w-[50px] shrink-0', false)).join('');
@@ -1771,19 +1679,22 @@
         }).join('');
       }
 
-      function renderFrequencyCardDeck(targetEl) {
-        targetEl.innerHTML = buildFrequencyDeckMarkup(getPeriodEntries());
-      }
-
       function escapeHtml(str) {
         return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
       }
 
-      function buildNotesListMarkup(entriesList, emptyText) {
-        if (entriesList.length === 0) {
-          return `<div class="p-4 rounded-2xl text-center text-[12px]" style="background-color: var(--bg-subtle); color: var(--text-muted);">${escapeHtml(emptyText)}</div>`;
+      function renderNotesFeed(targetEl) {
+        const win = getPeriodWindow();
+        const visible = getPeriodEntries();
+        const reversed = [...visible].reverse();
+        const list = appState.feedFilter === 'flagged' ? reversed.filter(isFlaggedEntry) : reversed;
+
+        if (list.length === 0) {
+          targetEl.innerHTML = `<div class="p-4 rounded-2xl text-center text-[12px]" style="background-color: var(--bg-subtle); color: var(--text-muted);">${visible.length === 0 ? 'No notes logged yet.' : `No flagged notes in ${win.label}.`}</div>`;
+          return;
         }
-        return entriesList.map(entry => {
+
+        targetEl.innerHTML = list.map(entry => {
           const stateList = Array.isArray(entry.states) && entry.states.length > 0 ? entry.states : [entry.state || 'existing'];
           const phaseMeta = getPhaseMeta(entry.phase);
           const psychMeta = getPsychMeta(entry.psychotic);
@@ -1807,242 +1718,603 @@
         }).join('');
       }
 
-      function renderNotesFeed(targetEl) {
-        const win = getPeriodWindow();
-        const visible = getPeriodEntries();
-        const reversed = [...visible].reverse();
-        const list = appState.feedFilter === 'flagged' ? reversed.filter(isFlaggedEntry) : reversed;
-        const emptyMsg = visible.length === 0 ? 'No notes logged yet.' : `No flagged notes in ${win.label}.`;
-        targetEl.innerHTML = buildNotesListMarkup(list, emptyMsg);
+      /* PRINT-FIRST WHITE A4 VECTOR INFOGRAPHIC PDF GENERATOR (jsPDF) */
+      function pdfSafeText(str) {
+        return String(str || '').replace(/→/g, '->').replace(/≥/g, '>=').replace(/≤/g, '<=').replace(/●/g, '-');
+      }
+      function ptToMm(pt) { return pt * 0.352778; }
+
+      function drawPrintHeader(pdf, titleLeft, subtitleRight, margin, contentW) {
+        let y = margin;
+        pdf.setFont('helvetica', 'bold');
+        pdf.setFontSize(12);
+        pdf.setTextColor(20, 20, 19);
+        pdf.text(pdfSafeText(titleLeft), margin, y + 4);
+
+        pdf.setFont('helvetica', 'normal');
+        pdf.setFontSize(9.5);
+        pdf.setTextColor(87, 86, 82);
+        pdf.text(pdfSafeText(subtitleRight), margin + contentW, y + 4, { align: 'right' });
+
+        y += 6.5;
+        pdf.setDrawColor(212, 212, 216);
+        pdf.setLineWidth(0.3);
+        pdf.line(margin, y, margin + contentW, y);
+        return y + 4;
       }
 
-      /* VISUAL SCREENSHOT-STYLE PDF EXPORT */
-      async function exportVisualPdf() {
-        if (typeof window.html2canvas !== 'function' || !window.jspdf || !window.jspdf.jsPDF) {
+      function generateMonthlyVectorPdf(targetYm) {
+        const { jsPDF } = window.jspdf;
+        const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+        const pageW = 210, pageH = 297, margin = 12, contentW = pageW - margin * 2;
+
+        const allDates = getDaysInMonth(targetYm);
+        const totalDays = allDates.length;
+        const monthEntries = appState.entries.filter(e => e.date.startsWith(`${targetYm}-`)).sort((a, b) => a.date.localeCompare(b.date));
+        const entryMap = new Map(monthEntries.map(e => [e.date, e]));
+        const brief = computeBriefData(monthEntries);
+        const monthTitle = formatMonthYear(targetYm);
+        const pct = totalDays > 0 ? Math.round((monthEntries.length / totalDays) * 100) : 0;
+
+        let y = drawPrintHeader(pdf, `Psych Log · ${monthTitle}`, `${monthEntries.length}/${totalDays} Logged (${pct}%)`, margin, contentW);
+
+        /* 1. CLINICAL BRIEF (2-Column Compact Box) */
+        const colGap = 4, leftBriefW = 86, rightBriefW = contentW - leftBriefW - colGap;
+        pdf.setFont('helvetica', 'normal');
+        pdf.setFontSize(9.5);
+        const stateTextLines = pdf.splitTextToSize(pdfSafeText(brief.stateSummaryText), leftBriefW - 6);
+
+        const epLinesList = brief.arcs.length === 0
+          ? ['No episodes (>= 4 consecutive days or marked) in this period.']
+          : brief.arcs.map((arc, i) => {
+              const peakStr = formatPeakDatesList(arc.peaks);
+              return `Ep ${i + 1}: ${formatBritishShort(arc.start)}${peakStr ? ' -> Peak ' + peakStr : ''}${arc.end ? ' -> End ' + formatBritishShort(arc.end) : ' -> Ongoing'} [${arc.states.join(' / ')}, ${arc.dayCount}d]`;
+            });
+        const wrappedEpLines = [];
+        epLinesList.forEach(line => wrappedEpLines.push(...pdf.splitTextToSize(pdfSafeText(line), rightBriefW - 6)));
+
+        const psychLineStr = brief.psychoticList.length > 0
+          ? 'Psychotic: ' + brief.psychoticList.map(p => `${p.symptom} (${p.datesText})`).join(' · ')
+          : '';
+        const wrappedPsychLines = psychLineStr ? pdf.splitTextToSize(pdfSafeText(psychLineStr), rightBriefW - 6) : [];
+
+        const lineH95 = ptToMm(9.5) * 1.35;
+        const briefBoxH = Math.max(11 + stateTextLines.length * lineH95 + 3, 8 + wrappedEpLines.length * lineH95 + (wrappedPsychLines.length > 0 ? 3 + wrappedPsychLines.length * lineH95 : 0) + 3, 24);
+
+        pdf.setDrawColor(212, 212, 216);
+        pdf.setLineWidth(0.25);
+        pdf.roundedRect(margin, y, leftBriefW, briefBoxH, 2, 2, 'S');
+        pdf.setFont('helvetica', 'bold');
+        pdf.setFontSize(7.5);
+        pdf.setTextColor(113, 113, 122);
+        pdf.text('CLINICAL BRIEF · STATES', margin + 3, y + 4.5);
+
+        const barX = margin + 3, barY = y + 6.5, barW = leftBriefW - 6, barH = 2.6;
+        pdf.setFillColor(241, 245, 249);
+        pdf.rect(barX, barY, barW, barH, 'F');
+        if (brief.totalStateOccurrences > 0) {
+          let curBarX = barX;
+          CLINICAL_STATES.filter(s => brief.stateCounts[s.id] > 0).forEach(s => {
+            const segW = (brief.stateCounts[s.id] / brief.totalStateOccurrences) * barW;
+            const rgb = PRINT_STATE_PALETTE[s.id].accent;
+            pdf.setFillColor(rgb[0], rgb[1], rgb[2]);
+            pdf.rect(curBarX, barY, segW, barH, 'F');
+            curBarX += segW;
+          });
+        }
+        pdf.setFont('helvetica', 'normal');
+        pdf.setFontSize(9.5);
+        pdf.setTextColor(39, 39, 42);
+        pdf.text(stateTextLines, margin + 3, y + 13);
+
+        const rightBriefX = margin + leftBriefW + colGap;
+        pdf.setDrawColor(212, 212, 216);
+        pdf.roundedRect(rightBriefX, y, rightBriefW, briefBoxH, 2, 2, 'S');
+        pdf.setFont('helvetica', 'bold');
+        pdf.setFontSize(7.5);
+        pdf.setTextColor(113, 113, 122);
+        pdf.text('EPISODES (>= 4 CONSECUTIVE DAYS OR MARKED)', rightBriefX + 3, y + 4.5);
+
+        pdf.setFont('helvetica', 'normal');
+        pdf.setFontSize(9.5);
+        pdf.setTextColor(24, 24, 27);
+        let rTextY = y + 9;
+        pdf.text(wrappedEpLines, rightBriefX + 3, rTextY);
+        rTextY += wrappedEpLines.length * lineH95;
+        if (wrappedPsychLines.length > 0) {
+          rTextY += 1.5;
+          pdf.setFont('helvetica', 'bold');
+          pdf.setTextColor(185, 28, 28);
+          pdf.text(wrappedPsychLines, rightBriefX + 3, rTextY);
+        }
+
+        y += briefBoxH + 4;
+
+        /* 2. MONTHLY CALENDAR + MOOD FREQUENCY & SHORTHAND KEY */
+        const calBoxW = 114, sideBoxW = contentW - calBoxW - colGap;
+        const firstMon = getMondayISO(allDates[0]);
+        const lastIso = allDates[allDates.length - 1];
+        const lastDow = parseISO(lastIso).getDay();
+        const finalSun = addDays(lastIso, lastDow === 0 ? 0 : 7 - lastDow);
+        const weeksList = [];
+        let cursorMon = firstMon;
+        while (cursorMon <= finalSun) {
+          const row = [];
+          for (let i = 0; i < 7; i++) row.push(addDays(cursorMon, i));
+          weeksList.push(row);
+          cursorMon = addDays(cursorMon, 7);
+        }
+
+        const calPad = 3, cellGap = 1.2, cellW = (calBoxW - calPad * 2 - cellGap * 6) / 7, cellH = 11.2;
+        const calInnerTop = y + 9.5;
+        const calGridH = weeksList.length * (cellH + cellGap) - cellGap;
+        const calBoxH = 9.5 + calGridH + 9.5;
+
+        pdf.setDrawColor(212, 212, 216);
+        pdf.setLineWidth(0.25);
+        pdf.roundedRect(margin, y, calBoxW, calBoxH, 2, 2, 'S');
+
+        pdf.setFont('helvetica', 'bold');
+        pdf.setFontSize(8.5);
+        pdf.setTextColor(20, 20, 19);
+        pdf.text(`Monthly Overview · ${monthTitle}`, margin + calPad, y + 4.8);
+
+        pdf.setFontSize(7);
+        pdf.setTextColor(113, 113, 122);
+        MON_TO_SUN_LABELS.forEach((lbl, idx) => {
+          pdf.text(lbl, margin + calPad + idx * (cellW + cellGap) + cellW / 2, y + 8.2, { align: 'center' });
+        });
+
+        weeksList.forEach((weekRow, rIdx) => {
+          weekRow.forEach((iso, cIdx) => {
+            const cx = margin + calPad + cIdx * (cellW + cellGap);
+            const cy = calInnerTop + rIdx * (cellH + cellGap);
+            const isOutside = iso.slice(0, 7) !== targetYm;
+            const entry = entryMap.get(iso) || null;
+            const dayNum = String(parseInt(iso.slice(8, 10), 10));
+
+            if (!entry) {
+              pdf.setDrawColor(isOutside ? 238 : 220, isOutside ? 238 : 220, isOutside ? 240 : 224);
+              pdf.setLineWidth(0.2);
+              pdf.roundedRect(cx, cy, cellW, cellH, 1.2, 1.2, 'S');
+              pdf.setFont('helvetica', 'normal');
+              pdf.setFontSize(6.5);
+              pdf.setTextColor(isOutside ? 190 : 145, isOutside ? 190 : 145, isOutside ? 195 : 150);
+              pdf.text(dayNum, cx + 1.2, cy + 2.7);
+              if (!isOutside) pdf.text('-', cx + cellW / 2, cy + 7.2, { align: 'center' });
+            } else {
+              const { primaryState, line1, line2, hasPsych } = getDayCardTokens(entry);
+              const pal = PRINT_STATE_PALETTE[primaryState] || PRINT_STATE_PALETTE['existing'];
+              pdf.setFillColor(pal.fill[0], pal.fill[1], pal.fill[2]);
+              pdf.setDrawColor(pal.border[0], pal.border[1], pal.border[2]);
+              pdf.setLineWidth(0.25);
+              pdf.roundedRect(cx, cy, cellW, cellH, 1.2, 1.2, 'FD');
+
+              pdf.setFont('helvetica', 'normal');
+              pdf.setFontSize(6.5);
+              pdf.setTextColor(100, 100, 108);
+              pdf.text(dayNum, cx + 1.2, cy + 2.7);
+
+              pdf.setFont('helvetica', 'bold');
+              pdf.setFontSize(7.5);
+              pdf.setTextColor(20, 20, 19);
+              pdf.text(pdfSafeText(line1), cx + cellW / 2, cy + 6.4, { align: 'center' });
+
+              if (line2) {
+                pdf.setFont('helvetica', 'bold');
+                pdf.setFontSize(6);
+                if (hasPsych) pdf.setTextColor(185, 28, 28);
+                else pdf.setTextColor(pal.accent[0], pal.accent[1], pal.accent[2]);
+                pdf.text(pdfSafeText(line2), cx + cellW / 2, cy + 9.6, { align: 'center' });
+              }
+            }
+          });
+        });
+
+        const legendY = y + calBoxH - 3.2;
+        let legX = margin + calPad;
+        pdf.setFont('helvetica', 'normal');
+        pdf.setFontSize(6.5);
+        [
+          { label: 'Existing', id: 'existing' },
+          { label: 'Depr.', id: 'depressed' },
+          { label: 'Very Depr.', id: 'very depressed' },
+          { label: 'Mixed', id: 'mixed (d)' },
+          { label: 'Hypo', id: 'hypomania' },
+          { label: 'Mania', id: 'mania' }
+        ].forEach(item => {
+          const rgb = PRINT_STATE_PALETTE[item.id].accent;
+          pdf.setFillColor(rgb[0], rgb[1], rgb[2]);
+          pdf.rect(legX, legendY - 2, 2.2, 2.2, 'F');
+          pdf.setTextColor(82, 82, 91);
+          pdf.text(item.label, legX + 3, legendY);
+          legX += 3 + pdf.getTextWidth(item.label) + 2.8;
+        });
+
+        const sideX = margin + calBoxW + colGap;
+        const freqBoxH = calBoxH - 27;
+        pdf.setDrawColor(212, 212, 216);
+        pdf.setLineWidth(0.25);
+        pdf.roundedRect(sideX, y, sideBoxW, freqBoxH, 2, 2, 'S');
+        pdf.setFont('helvetica', 'bold');
+        pdf.setFontSize(8.5);
+        pdf.setTextColor(20, 20, 19);
+        pdf.text('Mood Frequency', sideX + 3, y + 4.8);
+
+        let freqY = y + 9;
+        const rowStep = (freqBoxH - 10) / 5;
+        MOOD_Y_AXIS_DESC.forEach((mObj, idx) => {
+          const mEntries = monthEntries.filter(e => e.mood === mObj.id);
+          if (idx > 0) {
+            pdf.setDrawColor(238, 238, 240);
+            pdf.line(sideX + 2.5, freqY - 2.3, sideX + sideBoxW - 2.5, freqY - 2.3);
+          }
+          pdf.setFont('helvetica', 'bold');
+          pdf.setFontSize(8);
+          pdf.setTextColor(20, 20, 19);
+          pdf.text(mObj.glyph, sideX + 4.5, freqY + 1.2, { align: 'center' });
+          pdf.setFont('helvetica', 'normal');
+          pdf.setFontSize(6.5);
+          pdf.setTextColor(113, 113, 122);
+          pdf.text(`${mEntries.length}d`, sideX + 4.5, freqY + 4.2, { align: 'center' });
+
+          let chipX = sideX + 9.5, chipY = freqY - 1.2;
+          mEntries.forEach(ent => {
+            const dStr = String(parseInt(ent.date.slice(8, 10), 10));
+            const chipW = 4.6;
+            if (chipX + chipW > sideX + sideBoxW - 2) { chipX = sideX + 9.5; chipY += 4.2; }
+            const pal = PRINT_STATE_PALETTE[getPrimaryState(ent.states)] || PRINT_STATE_PALETTE['existing'];
+            pdf.setFillColor(pal.fill[0], pal.fill[1], pal.fill[2]);
+            pdf.setDrawColor(pal.border[0], pal.border[1], pal.border[2]);
+            pdf.roundedRect(chipX, chipY, chipW, 3.6, 0.7, 0.7, 'FD');
+            pdf.setFont('helvetica', 'bold');
+            pdf.setFontSize(6);
+            pdf.setTextColor(24, 24, 27);
+            pdf.text(dStr, chipX + chipW / 2, chipY + 2.6, { align: 'center' });
+            chipX += chipW + 0.9;
+          });
+          if (mEntries.length === 0) {
+            pdf.setFontSize(7.5);
+            pdf.setTextColor(161, 161, 170);
+            pdf.text('-', sideX + 10.5, freqY + 1.5);
+          }
+          freqY += rowStep;
+        });
+
+        const keyY = y + freqBoxH + 2.5, keyH = calBoxH - freqBoxH - 2.5;
+        pdf.setDrawColor(212, 212, 216);
+        pdf.roundedRect(sideX, keyY, sideBoxW, keyH, 2, 2, 'S');
+        pdf.setFont('helvetica', 'bold');
+        pdf.setFontSize(8);
+        pdf.setTextColor(20, 20, 19);
+        pdf.text('Shorthand Key', sideX + 3, keyY + 4.3);
+        pdf.setFont('helvetica', 'normal');
+        pdf.setFontSize(7.2);
+        pdf.setTextColor(63, 63, 70);
+        pdf.text('7.5 = hrs slept  |  -- / - / = / + / ++ mood', sideX + 3, keyY + 8.3);
+        pdf.text('md/mh/mm mixed  |  hypo  |  ex existing', sideX + 3, keyY + 12.1);
+        pdf.text('S Start | P Peak | E End | * Note below', sideX + 3, keyY + 15.9);
+        pdf.setTextColor(185, 28, 28);
+        pdf.text('/D Delusions | /DP Depers. | /H Halluc. | /DS Dissoc.', sideX + 3, keyY + 19.7);
+
+        y += calBoxH + 5;
+
+        /* 3. CHRONOLOGICAL NOTES TABLE */
+        const notesEntries = [...monthEntries].reverse().filter(isFlaggedEntry);
+        const colDateW = 24, colStateW = 36, colSleepW = 24, colNoteW = contentW - colDateW - colStateW - colSleepW;
+
+        function drawNotesSectionHeader(currentY, isContinuation) {
+          pdf.setFont('helvetica', 'bold');
+          pdf.setFontSize(10.5);
+          pdf.setTextColor(20, 20, 19);
+          pdf.text(
+            isContinuation ? `Clinical Notes · ${monthTitle} (Continued)` : `Clinical Notes & Flags (${notesEntries.length} entries)`,
+            margin,
+            currentY + 3.5
+          );
+          const ty = currentY + 6;
+          pdf.setFillColor(244, 244, 245);
+          pdf.setDrawColor(212, 212, 216);
+          pdf.rect(margin, ty, contentW, 6, 'FD');
+          pdf.setFont('helvetica', 'bold');
+          pdf.setFontSize(8);
+          pdf.setTextColor(82, 82, 91);
+          pdf.text('DATE', margin + 2, ty + 4.1);
+          pdf.text('STATE & FLAGS', margin + colDateW + 2, ty + 4.1);
+          pdf.text('SLEEP / MOOD', margin + colDateW + colStateW + 2, ty + 4.1);
+          pdf.text('NOTES', margin + colDateW + colStateW + colSleepW + 2, ty + 4.1);
+          return ty + 6;
+        }
+
+        if (y + 22 > pageH - margin) {
+          pdf.addPage();
+          y = drawPrintHeader(pdf, `Psych Log · ${monthTitle}`, 'Clinical Notes', margin, contentW);
+        }
+        y = drawNotesSectionHeader(y, false);
+
+        if (notesEntries.length === 0) {
+          pdf.setDrawColor(212, 212, 216);
+          pdf.rect(margin, y, contentW, 10, 'S');
+          pdf.setFont('helvetica', 'normal');
+          pdf.setFontSize(9.5);
+          pdf.setTextColor(113, 113, 122);
+          pdf.text(`No flagged notes logged in ${monthTitle}.`, margin + 3, y + 6.3);
+        } else {
+          const noteLineH = ptToMm(9.5) * 1.35;
+          notesEntries.forEach(entry => {
+            const stateTokens = [
+              formatEntryStatesLabel(entry),
+              entry.phase !== 'none' ? `[${entry.phase.toUpperCase()}]` : '',
+              entry.psychotic !== 'none' ? getPsychMeta(entry.psychotic).label : ''
+            ].filter(Boolean).join(' · ');
+            const sleepMoodStr = `${formatSleepNum(entry.sleep)}h · ${entry.mood}`;
+            const noteBody = entry.notes && entry.notes.trim() ? entry.notes.trim() : '-';
+
+            pdf.setFont('helvetica', 'normal');
+            pdf.setFontSize(8.5);
+            const stateWrapped = pdf.splitTextToSize(pdfSafeText(stateTokens), colStateW - 3.5);
+            pdf.setFontSize(9.5);
+            const noteWrapped = pdf.splitTextToSize(pdfSafeText(noteBody), colNoteW - 4);
+            const rowH = Math.max(8.5, Math.max(stateWrapped.length, noteWrapped.length, 1) * noteLineH + 3.5);
+
+            if (y + rowH > pageH - margin) {
+              pdf.addPage();
+              y = drawPrintHeader(pdf, `Psych Log · ${monthTitle}`, 'Clinical Notes (Continued)', margin, contentW);
+              y = drawNotesSectionHeader(y, true);
+            }
+
+            pdf.setDrawColor(228, 228, 231);
+            pdf.setLineWidth(0.2);
+            pdf.rect(margin, y, contentW, rowH, 'S');
+
+            pdf.setFont('helvetica', 'bold');
+            pdf.setFontSize(9);
+            pdf.setTextColor(20, 20, 19);
+            pdf.text(formatBritishFull(entry.date), margin + 2, y + 4.8);
+
+            const primaryPal = PRINT_STATE_PALETTE[getPrimaryState(entry.states)] || PRINT_STATE_PALETTE['existing'];
+            pdf.setFont('helvetica', 'bold');
+            pdf.setFontSize(8.5);
+            if (entry.psychotic !== 'none') pdf.setTextColor(185, 28, 28);
+            else pdf.setTextColor(primaryPal.accent[0], primaryPal.accent[1], primaryPal.accent[2]);
+            pdf.text(stateWrapped, margin + colDateW + 2, y + 4.8);
+
+            pdf.setFont('helvetica', 'normal');
+            pdf.setFontSize(8.5);
+            pdf.setTextColor(82, 82, 91);
+            pdf.text(pdfSafeText(sleepMoodStr), margin + colDateW + colStateW + 2, y + 4.8);
+
+            pdf.setFont('helvetica', 'normal');
+            pdf.setFontSize(9.5);
+            pdf.setTextColor(24, 24, 27);
+            pdf.text(noteWrapped, margin + colDateW + colStateW + colSleepW + 2, y + 4.8);
+
+            y += rowH;
+          });
+        }
+
+        const filename = `psych-log-${targetYm}.pdf`;
+        pdf.save(filename);
+        return filename;
+      }
+
+      function generateAnnualVectorPdf(targetYr) {
+        const { jsPDF } = window.jspdf;
+        const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+        const pageW = 210, pageH = 297, margin = 12, contentW = pageW - margin * 2;
+        const stats = computeAnnualAnalytics(targetYr);
+        const totalYearDays = getDaysInYear(targetYr).length;
+        const pct = totalYearDays > 0 ? Math.round((stats.totalLogged / totalYearDays) * 100) : 0;
+
+        let y = drawPrintHeader(pdf, `Psych Log · ${targetYr} Annual Clinical Report`, `${stats.totalLogged}/${totalYearDays} Logged (${pct}%)`, margin, contentW);
+
+        const kpiGap = 3, kpiW = (contentW - kpiGap * 3) / 4, kpiH = 21;
+        [
+          {
+            title: 'BASELINE STABILITY',
+            big: `${stats.stabilityPct}%`,
+            sub1: `${stats.pureExistingDays}d pure (${stats.anyExistingDays}d paired)`,
+            sub2: `Best: ${stats.mostStableMonth ? stats.mostStableMonth.shortName : '-'}`
+          },
+          {
+            title: 'EPISODES & LENGTH',
+            big: `${stats.episodes.length} episodes`,
+            sub1: `Avg duration: ${stats.avgEpisodeDays}d`,
+            sub2: stats.longestEpisode ? `Max: ${stats.longestEpisode.dayCount}d (${formatBritishShort(stats.longestEpisode.start)})` : 'Max: -'
+          },
+          {
+            title: 'SLEEP AVERAGE',
+            big: stats.overallSleep === '-' || stats.overallSleep === '—' ? '-' : `${stats.overallSleep}h / night`,
+            sub1: stats.sleepByState[0] ? `${stats.sleepByState[0].id}: ${stats.sleepByState[0].avg}h` : 'No sleep data',
+            sub2: stats.sleepByState[1] ? `${stats.sleepByState[1].id}: ${stats.sleepByState[1].avg}h` : ''
+          },
+          {
+            title: 'PSYCHOTIC SYMPTOMS',
+            big: `${stats.psychTotalDays} days`,
+            sub1: stats.psychTotalDays === 0 ? 'None logged' : Object.entries(stats.psychBreakdown).map(([k, v]) => `${k}: ${v}d`).join(' | '),
+            sub2: `Mood ++/+: ${stats.moodCounts[0].days + stats.moodCounts[1].days}d`
+          }
+        ].forEach((k, idx) => {
+          const kx = margin + idx * (kpiW + kpiGap);
+          pdf.setDrawColor(212, 212, 216);
+          pdf.setLineWidth(0.25);
+          pdf.roundedRect(kx, y, kpiW, kpiH, 2, 2, 'S');
+          pdf.setFont('helvetica', 'bold');
+          pdf.setFontSize(6.8);
+          pdf.setTextColor(113, 113, 122);
+          pdf.text(k.title, kx + 2.5, y + 4.2);
+          pdf.setFontSize(11);
+          pdf.setTextColor(20, 20, 19);
+          pdf.text(pdfSafeText(k.big), kx + 2.5, y + 9.5);
+          pdf.setFont('helvetica', 'normal');
+          pdf.setFontSize(7.5);
+          pdf.setTextColor(82, 82, 91);
+          pdf.text(pdfSafeText(k.sub1), kx + 2.5, y + 14.2);
+          if (k.sub2) pdf.text(pdfSafeText(k.sub2), kx + 2.5, y + 18.2);
+        });
+
+        y += kpiH + 4;
+
+        const hmH = 62;
+        pdf.setDrawColor(212, 212, 216);
+        pdf.roundedRect(margin, y, contentW, hmH, 2, 2, 'S');
+        pdf.setFont('helvetica', 'bold');
+        pdf.setFontSize(8.5);
+        pdf.setTextColor(20, 20, 19);
+        pdf.text(`Annual State Heatmap · ${targetYr} (Jan – Dec, Days 1–31)`, margin + 3, y + 4.8);
+
+        const labelColW = 11, gridAreaW = contentW - labelColW - 6, sqGap = 0.8, sqW = (gridAreaW - sqGap * 30) / 31, sqH = 3.2;
+        let hmY = y + 7.5;
+        stats.months.forEach(m => {
+          pdf.setFont('helvetica', 'bold');
+          pdf.setFontSize(7);
+          pdf.setTextColor(82, 82, 91);
+          pdf.text(m.shortName, margin + 3, hmY + 2.5);
+          for (let d = 1; d <= 31; d++) {
+            if (d > m.totalDaysInMonth) continue;
+            const sx = margin + 3 + labelColW + (d - 1) * (sqW + sqGap);
+            const ent = stats.entryMap.get(`${m.ym}-${String(d).padStart(2, '0')}`);
+            if (!ent) {
+              pdf.setFillColor(244, 244, 245);
+              pdf.setDrawColor(228, 228, 231);
+              pdf.setLineWidth(0.15);
+              pdf.rect(sx, hmY, sqW, sqH, 'FD');
+            } else {
+              const rgb = PRINT_STATE_PALETTE[getPrimaryState(ent.states)].accent;
+              pdf.setFillColor(rgb[0], rgb[1], rgb[2]);
+              pdf.rect(sx, hmY, sqW, sqH, 'F');
+            }
+          }
+          hmY += sqH + 0.8;
+        });
+
+        let legX = margin + 3;
+        const legY = y + hmH - 2.6;
+        pdf.setFont('helvetica', 'normal');
+        pdf.setFontSize(6.8);
+        [
+          { label: 'Existing', id: 'existing' },
+          { label: 'Depressed', id: 'depressed' },
+          { label: 'Very Depressed', id: 'very depressed' },
+          { label: 'Mixed', id: 'mixed (d)' },
+          { label: 'Hypomania', id: 'hypomania' },
+          { label: 'Mania', id: 'mania' }
+        ].forEach(item => {
+          const rgb = PRINT_STATE_PALETTE[item.id].accent;
+          pdf.setFillColor(rgb[0], rgb[1], rgb[2]);
+          pdf.rect(legX, legY - 2, 2.3, 2.3, 'F');
+          pdf.setTextColor(82, 82, 91);
+          pdf.text(item.label, legX + 3.2, legY);
+          legX += 3.2 + pdf.getTextWidth(item.label) + 4;
+        });
+
+        y += hmH + 4;
+
+        pdf.setFont('helvetica', 'bold');
+        pdf.setFontSize(9.5);
+        pdf.setTextColor(20, 20, 19);
+        pdf.text('Monthly Breakdown', margin, y + 3.5);
+        y += 5.5;
+
+        pdf.setFillColor(244, 244, 245);
+        pdf.setDrawColor(212, 212, 216);
+        pdf.rect(margin, y, contentW, 6, 'FD');
+        pdf.setFontSize(7.8);
+        pdf.setTextColor(82, 82, 91);
+        pdf.text('MONTH', margin + 2.5, y + 4.1);
+        pdf.text('LOGGED', margin + 28, y + 4.1);
+        pdf.text('STATE DISTRIBUTION', margin + 52, y + 4.1);
+        pdf.text('AVG SLEEP', margin + 144, y + 4.1);
+        pdf.text('EPISODES', margin + 168, y + 4.1);
+        y += 6;
+
+        stats.months.forEach(m => {
+          const rH = 6.2;
+          pdf.setDrawColor(228, 228, 231);
+          pdf.setLineWidth(0.2);
+          pdf.rect(margin, y, contentW, rH, 'S');
+          pdf.setFont('helvetica', 'bold');
+          pdf.setFontSize(8.5);
+          pdf.setTextColor(20, 20, 19);
+          pdf.text(m.fullName, margin + 2.5, y + 4.3);
+          pdf.setFont('helvetica', 'normal');
+          pdf.setTextColor(82, 82, 91);
+          pdf.text(`${m.loggedCount}/${m.totalDaysInMonth}d`, margin + 28, y + 4.3);
+
+          const bX = margin + 52, bY = y + 2, bW = 86, bH = 2.3;
+          pdf.setFillColor(244, 244, 245);
+          pdf.rect(bX, bY, bW, bH, 'F');
+          if (m.totalOcc > 0) {
+            let cx = bX;
+            CLINICAL_STATES.filter(s => m.stateCounts[s.id] > 0).forEach(s => {
+              const sw = (m.stateCounts[s.id] / m.totalOcc) * bW;
+              const rgb = PRINT_STATE_PALETTE[s.id].accent;
+              pdf.setFillColor(rgb[0], rgb[1], rgb[2]);
+              pdf.rect(cx, bY, sw, bH, 'F');
+              cx += sw;
+            });
+          }
+          pdf.text(m.avgSleep === '—' ? '-' : `${m.avgSleep}h`, margin + 144, y + 4.3);
+          pdf.text(m.episodeCount > 0 ? `${m.episodeCount}` : '-', margin + 168, y + 4.3);
+          y += rH;
+        });
+
+        pdf.addPage();
+        y = drawPrintHeader(pdf, `Psych Log · ${targetYr} Annual Episodes & Symptom Log`, `${stats.episodes.length} Episodes`, margin, contentW);
+        pdf.setFont('helvetica', 'bold');
+        pdf.setFontSize(10);
+        pdf.setTextColor(20, 20, 19);
+        pdf.text('Qualifying Episodes (>= 4 Consecutive Days or Marked)', margin, y + 3.5);
+        y += 6;
+
+        if (stats.episodes.length === 0) {
+          pdf.setFont('helvetica', 'normal');
+          pdf.setFontSize(9.5);
+          pdf.setTextColor(113, 113, 122);
+          pdf.text(`No qualifying episodes logged in ${targetYr}.`, margin, y + 4);
+        } else {
+          stats.episodes.forEach((ep, idx) => {
+            const peakStr = formatPeakDatesList(ep.peaks);
+            const line = `Episode ${idx + 1}: Start ${formatBritishFull(ep.start)}${peakStr ? ' -> Peak ' + peakStr : ''}${ep.end ? ' -> End ' + formatBritishFull(ep.end) : ' -> Ongoing'}  |  ${ep.states.join(' / ')} (${ep.dayCount}d)`;
+            const wrapped = pdf.splitTextToSize(pdfSafeText(line), contentW - 6);
+            const rowH = wrapped.length * ptToMm(9.5) * 1.35 + 4;
+            if (y + rowH > pageH - margin) {
+              pdf.addPage();
+              y = drawPrintHeader(pdf, `Psych Log · ${targetYr} Annual Episodes (Continued)`, '', margin, contentW);
+            }
+            pdf.setDrawColor(212, 212, 216);
+            pdf.roundedRect(margin, y, contentW, rowH, 1.5, 1.5, 'S');
+            pdf.setFont('helvetica', 'normal');
+            pdf.setFontSize(9.5);
+            pdf.setTextColor(24, 24, 27);
+            pdf.text(wrapped, margin + 3, y + 4.8);
+            y += rowH + 2;
+          });
+        }
+
+        const filename = `psych-log-${targetYr}-annual.pdf`;
+        pdf.save(filename);
+        return filename;
+      }
+
+      function exportVisualPdf() {
+        if (!window.jspdf || !window.jspdf.jsPDF) {
           showToast('PDF library still loading — try again in a second');
           return;
         }
-
         const btn = document.getElementById('exportPdfBtn');
         const btnLabel = document.getElementById('exportPdfLabel');
         if (btn.disabled) return;
         btn.disabled = true;
-        btnLabel.textContent = 'Exporting…';
-        showToast('Generating visual PDF…');
-
-        const isAnnualExport = appState.viewMode === 'annual';
-        const targetYm = appState.viewMode === 'monthly'
-          ? appState.monthIso
-          : appState.weekMondayIso.slice(0, 7);
-        const targetYr = appState.yearIso;
-
-        const exportEntries = isAnnualExport
-          ? appState.entries.filter(e => e.date.startsWith(`${targetYr}-`))
-          : appState.entries.filter(e => e.date.startsWith(`${targetYm}-`));
-
-        const totalPossibleDays = isAnnualExport
-          ? getDaysInYear(targetYr).length
-          : getDaysInMonth(targetYm).length;
-
-        const titleLabel = isAnnualExport ? `${targetYr} Annual Summary` : formatMonthYear(targetYm);
-        const briefData = computeBriefData(exportEntries);
-        const briefInner = buildBriefInnerHtml(briefData);
-
-        const legendHtml = `
-          <div class="pt-2 hairline-t flex flex-wrap items-center gap-x-3 gap-y-1.5 text-[11px]" style="color: var(--text-secondary);">
-            <span class="inline-flex items-center gap-1.5"><i class="w-2.5 h-2.5 rounded-[3px] inline-block" style="background: var(--state-existing);"></i>Existing</span>
-            <span class="inline-flex items-center gap-1.5"><i class="w-2.5 h-2.5 rounded-[3px] inline-block" style="background: var(--state-depressed);"></i>Depressed</span>
-            <span class="inline-flex items-center gap-1.5"><i class="w-2.5 h-2.5 rounded-[3px] inline-block" style="background: var(--state-very-depressed);"></i>Very Depressed</span>
-            <span class="inline-flex items-center gap-1.5"><i class="w-2.5 h-2.5 rounded-[3px] inline-block" style="background: var(--state-mixed);"></i>Mixed</span>
-            <span class="inline-flex items-center gap-1.5"><i class="w-2.5 h-2.5 rounded-[3px] inline-block" style="background: var(--state-hypomania);"></i>Hypomania</span>
-            <span class="inline-flex items-center gap-1.5"><i class="w-2.5 h-2.5 rounded-[3px] inline-block" style="background: var(--state-mania);"></i>Mania</span>
-          </div>
-        `;
-
-        const keyCardHtml = `
-          <section class="pdf-snap-card editorial-card p-4 space-y-2.5">
-            <h2 class="text-[15px] font-semibold tracking-tight">Key</h2>
-            <div class="grid grid-cols-2 gap-2 text-[11.5px]">
-              <div class="p-2.5 rounded-xl hairline space-y-1" style="background-color: var(--bg-subtle);">
-                <div class="text-[10px] font-semibold uppercase tracking-wider" style="color: var(--text-muted);">Sleep &amp; Mood</div>
-                <div class="tabular leading-relaxed" style="color: var(--text-primary);">
-                  <strong>7.5</strong> = hours slept<br/>
-                  <strong>--</strong> very low · <strong>-</strong> low · <strong>=</strong> neutral · <strong>+</strong> high · <strong>++</strong> very high
-                </div>
-              </div>
-              <div class="p-2.5 rounded-xl hairline space-y-1" style="background-color: var(--bg-subtle);">
-                <div class="text-[10px] font-semibold uppercase tracking-wider" style="color: var(--text-muted);">Flags</div>
-                <div class="tabular leading-relaxed" style="color: var(--text-primary);">
-                  <strong>md / mh / mm</strong> mixed · <strong>hypo</strong> hypomania · <strong>ex</strong> existing<br/>
-                  <strong>S</strong> start · <strong>P</strong> peak · <strong>E</strong> end · <strong>*</strong> has note below<br/>
-                  <span style="color: var(--psychotic-crimson);" class="font-semibold">/D</span> delusions · <span style="color: var(--psychotic-crimson);" class="font-semibold">/DP</span> depersonalisation · <span style="color: var(--psychotic-crimson);" class="font-semibold">/H</span> hallucinations · <span style="color: var(--psychotic-crimson);" class="font-semibold">/DS</span> dissociation
-                </div>
-              </div>
-            </div>
-          </section>
-        `;
-
-        const flaggedNotes = [...exportEntries].reverse().filter(isFlaggedEntry);
-        const notesCardHtml = `
-          <section class="pdf-snap-card editorial-card p-4 space-y-3">
-            <div class="flex items-center justify-between gap-2">
-              <h2 class="text-[15px] font-semibold tracking-tight">Notes</h2>
-              <span class="text-[11px] font-medium tabular px-2 py-0.5 rounded-full hairline"
-                style="background-color: var(--bg-subtle); color: var(--text-secondary);">${flaggedNotes.length} flagged</span>
-            </div>
-            <div class="space-y-2">
-              ${buildNotesListMarkup(flaggedNotes, `No flagged notes in ${titleLabel}.`)}
-            </div>
-          </section>
-        `;
-
-        const middleCardsHtml = isAnnualExport
-          ? `
-            <section class="pdf-snap-card editorial-card p-4 space-y-3">
-              <div class="flex items-center justify-between gap-2">
-                <h2 class="text-[15px] font-semibold tracking-tight">Annual Overview · ${targetYr}</h2>
-                <span class="text-[11px] font-medium tabular px-2 py-0.5 rounded-full hairline"
-                  style="background-color: var(--bg-subtle); color: var(--text-secondary);">${exportEntries.length}/${totalPossibleDays} logged</span>
-              </div>
-              ${buildAnnualOverviewMarkup(targetYr, false)}
-              ${legendHtml}
-            </section>
-          `
-          : `
-            <section class="pdf-snap-card editorial-card p-4 space-y-3">
-              <div class="flex items-center justify-between gap-2">
-                <h2 class="text-[15px] font-semibold tracking-tight">Monthly Overview · ${titleLabel}</h2>
-                <span class="text-[11px] font-medium tabular px-2 py-0.5 rounded-full hairline"
-                  style="background-color: var(--bg-subtle); color: var(--text-secondary);">${exportEntries.length}/${totalPossibleDays} logged</span>
-              </div>
-              ${buildMonthlyGridMarkup(targetYm, false)}
-              ${legendHtml}
-            </section>
-
-            <section class="pdf-snap-card editorial-card p-4 space-y-3">
-              <div class="flex items-center justify-between gap-2">
-                <h2 class="text-[15px] font-semibold tracking-tight">Frequency</h2>
-                <span class="text-[11px] font-medium tabular px-2 py-0.5 rounded-full hairline"
-                  style="background-color: var(--bg-subtle); color: var(--text-secondary);">${exportEntries.length} ${exportEntries.length === 1 ? 'card' : 'cards'}</span>
-              </div>
-              <div class="divide-y" style="border-color: var(--border-hairline);">
-                ${buildFrequencyDeckMarkup(exportEntries)}
-              </div>
-            </section>
-          `;
-
-        const stage = document.createElement('div');
-        stage.setAttribute('aria-hidden', 'true');
-        stage.style.cssText = `
-          position: fixed;
-          left: -10000px;
-          top: 0;
-          width: 448px;
-          padding: 16px;
-          background-color: var(--bg-canvas);
-          color: var(--text-primary);
-          z-index: -1;
-        `;
-
-        stage.innerHTML = `
-          <div class="space-y-3.5">
-            <section class="pdf-snap-card editorial-card p-4 flex items-center justify-between gap-2">
-              <div>
-                <div class="text-[10.5px] font-semibold uppercase tracking-widest" style="color: var(--text-muted);">Psych Log</div>
-                <h1 class="text-[19px] font-semibold tracking-tight mt-0.5">${escapeHtml(titleLabel)}</h1>
-              </div>
-              <span class="text-[11.5px] font-semibold tabular px-2.5 py-1 rounded-full hairline"
-                style="background-color: var(--bg-subtle); color: var(--text-secondary);">
-                ${exportEntries.length}/${totalPossibleDays} logged
-              </span>
-            </section>
-
-            <section class="pdf-snap-card editorial-card p-4 space-y-3">
-              <div>
-                <h2 class="text-[15px] font-semibold tracking-tight">Clinical Brief</h2>
-                <p class="text-[11px] tabular mt-0.5" style="color: var(--text-muted);">${escapeHtml(titleLabel)}</p>
-              </div>
-              <div class="p-3 rounded-2xl hairline space-y-1.5" style="background-color: var(--bg-subtle);">
-                <div class="text-[10px] font-semibold uppercase tracking-wider" style="color: var(--text-muted);">States</div>
-                <div class="w-full h-2 rounded-full overflow-hidden flex gap-[1.5px]" style="background-color: var(--bg-well);">${briefInner.barHtml}</div>
-                <div class="text-[12px] leading-snug tabular" style="color: var(--text-secondary);">${escapeHtml(briefData.stateSummaryText)}</div>
-              </div>
-              <div class="p-3 rounded-2xl hairline space-y-2" style="background-color: var(--bg-subtle);">
-                <div>
-                  <div class="text-[10px] font-semibold uppercase tracking-wider mb-1" style="color: var(--text-muted);">Episodes (≥ 4 Consecutive Days or Marked)</div>
-                  <div class="space-y-1.5 text-[12px] leading-relaxed tabular">${briefInner.arcsHtml}</div>
-                </div>
-                ${briefInner.psychHtml}
-              </div>
-            </section>
-
-            ${middleCardsHtml}
-            ${keyCardHtml}
-            ${notesCardHtml}
-          </div>
-        `;
-
-        document.body.appendChild(stage);
-
+        btnLabel.textContent = 'PDF…';
         try {
-          await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
-          const canvasBg = cssVar('--bg-canvas') || '#F7F7F5';
-          const { jsPDF } = window.jspdf;
-          const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
-          const pageW = pdf.internal.pageSize.getWidth();
-          const pageH = pdf.internal.pageSize.getHeight();
-          const margin = 10;
-          const gap = 3.5;
-          const targetCardW = pageW - margin * 2;
-
-          function paintPageCanvasBg() {
-            pdf.setFillColor(canvasBg);
-            pdf.rect(0, 0, pageW, pageH, 'F');
-          }
-
-          paintPageCanvasBg();
-          let cursorY = margin;
-
-          const cards = Array.from(stage.querySelectorAll('.pdf-snap-card'));
-          for (let i = 0; i < cards.length; i++) {
-            const cardEl = cards[i];
-            const canvas = await window.html2canvas(cardEl, {
-              scale: 2,
-              backgroundColor: null,
-              useCORS: true,
-              logging: false
-            });
-
-            const imgData = canvas.toDataURL('image/png');
-            let renderW = targetCardW;
-            let renderH = (canvas.height * renderW) / canvas.width;
-
-            // Scale down proportionally only if a single card is taller than one full A4 page
-            const maxCardH = pageH - margin * 2;
-            if (renderH > maxCardH) {
-              const ratio = maxCardH / renderH;
-              renderH = maxCardH;
-              renderW = renderW * ratio;
-            }
-
-            if (cursorY + renderH > pageH - margin && cursorY > margin) {
-              pdf.addPage();
-              paintPageCanvasBg();
-              cursorY = margin;
-            }
-
-            const offsetX = margin + (targetCardW - renderW) / 2;
-            pdf.addImage(imgData, 'PNG', offsetX, cursorY, renderW, renderH, undefined, 'FAST');
-            cursorY += renderH + gap;
-          }
-
-          const filename = isAnnualExport ? `psych-log-${targetYr}-annual.pdf` : `psych-log-${targetYm}.pdf`;
-          pdf.save(filename);
+          const filename = appState.viewMode === 'annual'
+            ? generateAnnualVectorPdf(appState.yearIso)
+            : generateMonthlyVectorPdf(appState.viewMode === 'monthly' ? appState.monthIso : appState.weekMondayIso.slice(0, 7));
           showToast(`Saved ${filename}`);
         } catch (err) {
           showToast('Could not generate PDF');
         } finally {
-          document.body.removeChild(stage);
           btn.disabled = false;
           btnLabel.textContent = 'PDF';
         }
@@ -2107,8 +2379,7 @@
         document.getElementById('notesTextarea').value = sheetDraft.notes || '';
 
         const relDiff = diffDaysBetween(TODAY_ISO, sheetDraft.date);
-        const relBadge = document.getElementById('dateRelativeBadge');
-        relBadge.textContent = relDiff === 0 ? 'Today' : relDiff === -1 ? 'Yesterday' : relDiff === 1 ? 'Tomorrow' : relDiff < 0 ? `${Math.abs(relDiff)} days ago` : `In ${relDiff} days`;
+        document.getElementById('dateRelativeBadge').textContent = relDiff === 0 ? 'Today' : relDiff === -1 ? 'Yesterday' : relDiff === 1 ? 'Tomorrow' : relDiff < 0 ? `${Math.abs(relDiff)} days ago` : `In ${relDiff} days`;
 
         const existing = appState.entries.find(e => e.date === sheetDraft.date);
         const statusEl = document.getElementById('editingStatusNote');
@@ -2316,7 +2587,6 @@
         document.getElementById('gridCardTitle').textContent = mode === 'weekly' ? 'Weekly Overview' : mode === 'monthly' ? 'Monthly Overview' : `Annual Overview · ${win.label}`;
         document.getElementById('overviewLoggedBadge').textContent = `${visible.length}/${win.allDates.length} logged`;
 
-        // Frequency deck is shown in Weekly & Monthly views (replaced by Annual stats in Annual view)
         document.getElementById('frequencyCard').classList.toggle('hidden', mode === 'annual');
         document.getElementById('frequencyCountBadge').textContent = `${visible.length} ${visible.length === 1 ? 'card' : 'cards'}`;
 
@@ -2334,9 +2604,7 @@
 
         renderClinicalBrief();
         renderTimesheetGrid(document.getElementById('timesheetGridContainer'));
-        if (mode !== 'annual') {
-          renderFrequencyCardDeck(document.getElementById('frequencyRowsContainer'));
-        }
+        if (mode !== 'annual') renderFrequencyCardDeck(document.getElementById('frequencyRowsContainer'));
         renderNotesFeed(document.getElementById('notesFeedContainer'));
       }
 
