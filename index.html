@@ -18,9 +18,9 @@
       --border-hairline: rgba(20, 20, 19, 0.09);
       --border-strong: rgba(20, 20, 19, 0.18);
 
-      --state-existing: #64748B;
-      --state-existing-tint: rgba(100, 116, 139, 0.10);
-      --state-existing-border: rgba(100, 116, 139, 0.28);
+      --state-existing: #9CA3AF;
+      --state-existing-tint: rgba(156, 163, 175, 0.08);
+      --state-existing-border: rgba(156, 163, 175, 0.24);
 
       --state-depressed: #3B82F6;
       --state-depressed-tint: rgba(59, 130, 246, 0.12);
@@ -30,17 +30,25 @@
       --state-very-depressed-tint: rgba(30, 58, 138, 0.16);
       --state-very-depressed-border: rgba(30, 58, 138, 0.44);
 
-      --state-mixed: #7C3AED;
-      --state-mixed-tint: rgba(124, 58, 237, 0.12);
-      --state-mixed-border: rgba(124, 58, 237, 0.34);
+      --state-mixed-d: #4F46E5;
+      --state-mixed-d-tint: rgba(79, 70, 229, 0.11);
+      --state-mixed-d-border: rgba(79, 70, 229, 0.34);
+
+      --state-mixed-h: #7C3AED;
+      --state-mixed-h-tint: rgba(124, 58, 237, 0.11);
+      --state-mixed-h-border: rgba(124, 58, 237, 0.34);
+
+      --state-mixed-m: #9333EA;
+      --state-mixed-m-tint: rgba(147, 51, 234, 0.12);
+      --state-mixed-m-border: rgba(147, 51, 234, 0.35);
 
       --state-hypomania: #0D9488;
       --state-hypomania-tint: rgba(13, 148, 136, 0.12);
       --state-hypomania-border: rgba(13, 148, 136, 0.34);
 
-      --state-mania: #C026D3;
-      --state-mania-tint: rgba(192, 38, 211, 0.12);
-      --state-mania-border: rgba(192, 38, 211, 0.36);
+      --state-mania: #DB2777;
+      --state-mania-tint: rgba(219, 39, 119, 0.12);
+      --state-mania-border: rgba(219, 39, 119, 0.36);
 
       --psychotic-crimson: #DC2626;
       --psychotic-crimson-tint: rgba(220, 38, 38, 0.12);
@@ -57,9 +65,9 @@
       --border-hairline: rgba(255, 255, 255, 0.09);
       --border-strong: rgba(255, 255, 255, 0.18);
 
-      --state-existing: #94A3B8;
-      --state-existing-tint: rgba(148, 163, 184, 0.14);
-      --state-existing-border: rgba(148, 163, 184, 0.32);
+      --state-existing: #71717A;
+      --state-existing-tint: rgba(113, 113, 122, 0.10);
+      --state-existing-border: rgba(113, 113, 122, 0.24);
 
       --state-depressed: #7DD3FC;
       --state-depressed-tint: rgba(125, 211, 252, 0.15);
@@ -69,17 +77,25 @@
       --state-very-depressed-tint: rgba(79, 125, 249, 0.22);
       --state-very-depressed-border: rgba(79, 125, 249, 0.50);
 
-      --state-mixed: #A78BFA;
-      --state-mixed-tint: rgba(167, 139, 250, 0.16);
-      --state-mixed-border: rgba(167, 139, 250, 0.40);
+      --state-mixed-d: #818CF8;
+      --state-mixed-d-tint: rgba(129, 140, 248, 0.16);
+      --state-mixed-d-border: rgba(129, 140, 248, 0.40);
+
+      --state-mixed-h: #A78BFA;
+      --state-mixed-h-tint: rgba(167, 139, 250, 0.16);
+      --state-mixed-h-border: rgba(167, 139, 250, 0.40);
+
+      --state-mixed-m: #C084FC;
+      --state-mixed-m-tint: rgba(192, 132, 252, 0.17);
+      --state-mixed-m-border: rgba(192, 132, 252, 0.42);
 
       --state-hypomania: #2DD4BF;
       --state-hypomania-tint: rgba(45, 212, 191, 0.16);
       --state-hypomania-border: rgba(45, 212, 191, 0.40);
 
-      --state-mania: #E879F9;
-      --state-mania-tint: rgba(232, 121, 249, 0.17);
-      --state-mania-border: rgba(232, 121, 249, 0.42);
+      --state-mania: #F472B6;
+      --state-mania-tint: rgba(244, 114, 182, 0.17);
+      --state-mania-border: rgba(244, 114, 182, 0.42);
 
       --psychotic-crimson: #F87171;
       --psychotic-crimson-tint: rgba(248, 113, 113, 0.16);
@@ -239,8 +255,8 @@
     <!-- 1. QUICK CHECK-IN -->
     <section class="editorial-card p-3.5 flex items-center gap-2" aria-label="Quick Check-In">
       <button id="logTodayBtn" type="button"
-        class="flex-1 py-2.5 px-3 rounded-xl text-[13px] font-semibold transition active:scale-[0.98]"
-        style="background-color: var(--text-primary); color: var(--bg-canvas);">
+        class="flex-1 py-2.5 px-3 rounded-xl text-[13px] font-semibold hairline transition active:scale-[0.98]"
+        style="background-color: var(--bg-well); color: var(--text-primary);">
         + Log Today
       </button>
       <button id="logPreviousBtn" type="button"
@@ -259,8 +275,8 @@
         </div>
 
         <button id="exportPdfBtn" type="button"
-          class="px-3.5 py-1.5 rounded-xl text-[12px] font-semibold transition active:scale-95 flex items-center gap-1.5 shrink-0"
-          style="background-color: var(--text-primary); color: var(--bg-canvas);">
+          class="px-3.5 py-1.5 rounded-xl text-[12px] font-semibold hairline transition active:scale-95 flex items-center gap-1.5 shrink-0"
+          style="background-color: var(--bg-subtle); color: var(--text-primary);">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
             <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
             <polyline points="14 2 14 8 20 8"></polyline>
@@ -313,7 +329,7 @@
             <span id="periodLabelText" class="text-[13px] font-semibold tracking-tight tabular truncate">—</span>
             <button id="periodTodayBtn" type="button"
               class="hidden px-2.5 py-0.5 rounded-full text-[11px] font-semibold hairline transition active:scale-95 shrink-0"
-              style="background-color: var(--text-primary); color: var(--bg-canvas);">Today</button>
+              style="background-color: var(--bg-well); color: var(--text-primary);">Today</button>
           </div>
 
           <button id="periodNextBtn" type="button" aria-label="Next Period"
@@ -331,10 +347,12 @@
       <div id="timesheetGridContainer"></div>
 
       <div class="pt-2 hairline-t flex flex-wrap items-center gap-x-3 gap-y-1.5 text-[11px]" style="color: var(--text-secondary);">
-        <span class="inline-flex items-center gap-1.5"><i class="w-2.5 h-2.5 rounded-[3px] inline-block" style="background: var(--state-existing);"></i>Existing</span>
+        <span class="inline-flex items-center gap-1.5"><i class="w-2.5 h-2.5 rounded-[3px] inline-block" style="background: var(--state-existing);"></i>Existing (ex)</span>
         <span class="inline-flex items-center gap-1.5"><i class="w-2.5 h-2.5 rounded-[3px] inline-block" style="background: var(--state-depressed);"></i>Depressed</span>
         <span class="inline-flex items-center gap-1.5"><i class="w-2.5 h-2.5 rounded-[3px] inline-block" style="background: var(--state-very-depressed);"></i>Very Depressed</span>
-        <span class="inline-flex items-center gap-1.5"><i class="w-2.5 h-2.5 rounded-[3px] inline-block" style="background: var(--state-mixed);"></i>Mixed</span>
+        <span class="inline-flex items-center gap-1.5"><i class="w-2.5 h-2.5 rounded-[3px] inline-block" style="background: var(--state-mixed-d);"></i>Mixed (d)</span>
+        <span class="inline-flex items-center gap-1.5"><i class="w-2.5 h-2.5 rounded-[3px] inline-block" style="background: var(--state-mixed-h);"></i>Mixed (h)</span>
+        <span class="inline-flex items-center gap-1.5"><i class="w-2.5 h-2.5 rounded-[3px] inline-block" style="background: var(--state-mixed-m);"></i>Mixed (m)</span>
         <span class="inline-flex items-center gap-1.5"><i class="w-2.5 h-2.5 rounded-[3px] inline-block" style="background: var(--state-hypomania);"></i>Hypomania</span>
         <span class="inline-flex items-center gap-1.5"><i class="w-2.5 h-2.5 rounded-[3px] inline-block" style="background: var(--state-mania);"></i>Mania</span>
       </div>
@@ -372,7 +390,8 @@
           <div class="p-2.5 rounded-xl hairline space-y-1" style="background-color: var(--bg-subtle);">
             <div class="text-[10px] font-semibold uppercase tracking-wider" style="color: var(--text-muted);">Flags</div>
             <div class="tabular leading-relaxed" style="color: var(--text-primary);">
-              <strong>md / mh / mm</strong> mixed · <strong>hypo</strong> hypomania · <strong>ex</strong> existing<br/>
+              <strong>md</strong> mixed (d) · <strong>mh</strong> mixed (h) · <strong>mm</strong> mixed (m)<br/>
+              <strong>hypo</strong> hypomania · <strong>ex</strong> existing<br/>
               <strong>S</strong> start · <strong>P</strong> peak · <strong>E</strong> end · <strong>*</strong> has note below<br/>
               <span style="color: var(--psychotic-crimson);" class="font-semibold">/D</span> delusions · <span style="color: var(--psychotic-crimson);" class="font-semibold">/DP</span> depersonalisation · <span style="color: var(--psychotic-crimson);" class="font-semibold">/H</span> hallucinations · <span style="color: var(--psychotic-crimson);" class="font-semibold">/DS</span> dissociation
             </div>
@@ -505,7 +524,7 @@
 
         <div class="px-5 py-3.5 hairline-t safe-bottom flex items-center justify-between gap-2 shrink-0" style="background-color: var(--bg-card);">
           <button id="saveCloseBtn" type="button" class="flex-1 py-3 rounded-xl text-[13px] font-semibold hairline transition active:scale-[0.98]" style="background-color: var(--bg-subtle); color: var(--text-primary);">Save</button>
-          <button id="saveNextDayBtn" type="button" class="flex-[1.35] py-3 rounded-xl text-[13px] font-semibold transition active:scale-[0.98]" style="background-color: var(--text-primary); color: var(--bg-canvas);">Save &amp; Next Day →</button>
+          <button id="saveNextDayBtn" type="button" class="flex-[1.35] py-3 rounded-xl text-[13px] font-semibold hairline transition active:scale-[0.98]" style="background-color: var(--bg-well); color: var(--text-primary);">Save &amp; Next Day →</button>
         </div>
       </div>
 
@@ -539,7 +558,7 @@
         </div>
 
         <div class="px-5 py-3.5 hairline-t safe-bottom shrink-0" style="background-color: var(--bg-card);">
-          <button id="parsePopulateBtn" type="button" class="w-full py-3 rounded-xl text-[13px] font-semibold transition active:scale-[0.98]" style="background-color: var(--text-primary); color: var(--bg-canvas);">Parse &amp; Populate Chart</button>
+          <button id="parsePopulateBtn" type="button" class="w-full py-3 rounded-xl text-[13px] font-semibold hairline transition active:scale-[0.98]" style="background-color: var(--bg-well); color: var(--text-primary);">Parse &amp; Populate Chart</button>
         </div>
       </div>
     </div>
@@ -585,7 +604,7 @@
 
       <div class="px-5 py-3.5 hairline-t safe-bottom flex items-center justify-between gap-2" style="background-color: var(--bg-card);">
         <button id="disconnectSyncBtn" type="button" class="hidden px-3.5 py-3 rounded-xl text-[12px] font-semibold hairline transition active:scale-[0.98]" style="background-color: var(--bg-subtle); color: var(--psychotic-crimson);">Disconnect</button>
-        <button id="saveSyncSettingsBtn" type="button" class="flex-1 py-3 rounded-xl text-[13px] font-semibold transition active:scale-[0.98]" style="background-color: var(--text-primary); color: var(--bg-canvas);">Save &amp; Sync</button>
+        <button id="saveSyncSettingsBtn" type="button" class="flex-1 py-3 rounded-xl text-[13px] font-semibold hairline transition active:scale-[0.98]" style="background-color: var(--bg-well); color: var(--text-primary);">Save &amp; Sync</button>
       </div>
     </div>
   </div>
@@ -593,7 +612,7 @@
   <!-- TOAST -->
   <div id="toastPill"
     class="fixed top-20 left-1/2 -translate-x-1/2 z-[60] pointer-events-none opacity-0 transition-opacity duration-200 px-4 py-2 rounded-full text-[12px] font-semibold shadow-lg hairline"
-    style="background-color: var(--text-primary); color: var(--bg-canvas);">Saved</div>
+    style="background-color: var(--bg-card); color: var(--text-primary);">Saved</div>
 
   <script>
     (function () {
@@ -626,9 +645,9 @@
         { id: 'very depressed', shortCode: '', family: 'depressive', colorVar: '--state-very-depressed', tintVar: '--state-very-depressed-tint', borderVar: '--state-very-depressed-border' },
         { id: 'depressed', shortCode: '', family: 'depressive', colorVar: '--state-depressed', tintVar: '--state-depressed-tint', borderVar: '--state-depressed-border' },
         { id: 'existing', shortCode: 'ex', family: 'baseline', colorVar: '--state-existing', tintVar: '--state-existing-tint', borderVar: '--state-existing-border' },
-        { id: 'mixed (d)', shortCode: 'md', family: 'mixed', colorVar: '--state-mixed', tintVar: '--state-mixed-tint', borderVar: '--state-mixed-border' },
-        { id: 'mixed (h)', shortCode: 'mh', family: 'mixed', colorVar: '--state-mixed', tintVar: '--state-mixed-tint', borderVar: '--state-mixed-border' },
-        { id: 'mixed (m)', shortCode: 'mm', family: 'mixed', colorVar: '--state-mixed', tintVar: '--state-mixed-tint', borderVar: '--state-mixed-border' },
+        { id: 'mixed (d)', shortCode: 'md', family: 'mixed', colorVar: '--state-mixed-d', tintVar: '--state-mixed-d-tint', borderVar: '--state-mixed-d-border' },
+        { id: 'mixed (h)', shortCode: 'mh', family: 'mixed', colorVar: '--state-mixed-h', tintVar: '--state-mixed-h-tint', borderVar: '--state-mixed-h-border' },
+        { id: 'mixed (m)', shortCode: 'mm', family: 'mixed', colorVar: '--state-mixed-m', tintVar: '--state-mixed-m-tint', borderVar: '--state-mixed-m-border' },
         { id: 'hypomania', shortCode: 'hypo', family: 'hypomania', colorVar: '--state-hypomania', tintVar: '--state-hypomania-tint', borderVar: '--state-hypomania-border' },
         { id: 'mania', shortCode: '', family: 'mania', colorVar: '--state-mania', tintVar: '--state-mania-tint', borderVar: '--state-mania-border' }
       ];
@@ -651,16 +670,16 @@
 
       const SLEEP_PRESETS = [3.5, 5, 6.5, 7.5, 8.5, 10];
 
-      /* Print-first white A4 vector palette */
+      /* Print-first white A4 vector palette with distinct mixed subtype shades & lighter existing */
       const PRINT_STATE_PALETTE = {
-        'existing':       { fill: [248, 250, 252], border: [203, 213, 225], accent: [71, 85, 105] },
+        'existing':       { fill: [250, 250, 251], border: [224, 226, 230], accent: [156, 163, 175] },
         'depressed':      { fill: [239, 246, 255], border: [147, 197, 253], accent: [37, 99, 235] },
         'very depressed': { fill: [219, 234, 254], border: [59, 130, 246],  accent: [30, 58, 138] },
-        'mixed (d)':      { fill: [245, 243, 255], border: [196, 181, 253], accent: [109, 40, 217] },
-        'mixed (h)':      { fill: [245, 243, 255], border: [196, 181, 253], accent: [109, 40, 217] },
-        'mixed (m)':      { fill: [245, 243, 255], border: [196, 181, 253], accent: [109, 40, 217] },
+        'mixed (d)':      { fill: [238, 242, 255], border: [165, 180, 252], accent: [79, 70, 229] },
+        'mixed (h)':      { fill: [245, 243, 255], border: [196, 181, 253], accent: [124, 58, 237] },
+        'mixed (m)':      { fill: [250, 245, 255], border: [216, 180, 254], accent: [147, 51, 234] },
         'hypomania':      { fill: [240, 253, 250], border: [94, 234, 212],  accent: [13, 148, 136] },
-        'mania':          { fill: [253, 244, 255], border: [240, 171, 252], accent: [162, 28, 175] }
+        'mania':          { fill: [253, 242, 248], border: [249, 168, 212], accent: [219, 39, 119] }
       };
 
       function buildSampleBacklogShorthand() {
@@ -1380,9 +1399,8 @@
         const entryMap = new Map(yearEntries.map(e => [e.date, e]));
         const totalLogged = yearEntries.length;
 
-        const anyExistingDays = yearEntries.filter(e => Array.isArray(e.states) && e.states.includes('existing')).length;
-        const pureExistingDays = yearEntries.filter(e => getPrimaryState(e.states) === 'existing').length;
-        const stabilityPct = totalLogged > 0 ? Math.round((pureExistingDays / totalLogged) * 100) : 0;
+        /* Days marked ONLY with 'existing' */
+        const stableDays = yearEntries.filter(e => Array.isArray(e.states) && e.states.length === 1 && e.states[0] === 'existing').length;
 
         const episodes = detectClinicalEpisodes(yearEntries);
         const avgEpisodeDays = episodes.length > 0
@@ -1392,21 +1410,7 @@
         const familyCounts = {};
         episodes.forEach(ep => { familyCounts[ep.family] = (familyCounts[ep.family] || 0) + 1; });
 
-        const overallSleep = totalLogged > 0
-          ? (yearEntries.reduce((s, e) => s + e.sleep, 0) / totalLogged).toFixed(1)
-          : '—';
-        const sleepByState = CLINICAL_STATES.map(st => {
-          const matching = yearEntries.filter(e => Array.isArray(e.states) && e.states.includes(st.id));
-          if (matching.length === 0) return null;
-          const avg = (matching.reduce((s, e) => s + e.sleep, 0) / matching.length).toFixed(1);
-          return { id: st.id, colorVar: st.colorVar, days: matching.length, avg };
-        }).filter(Boolean);
-
-        const moodCounts = MOOD_Y_AXIS_DESC.map(m => ({
-          glyph: m.glyph,
-          label: m.label,
-          days: yearEntries.filter(e => e.mood === m.id).length
-        }));
+        const veryHighMoodDays = yearEntries.filter(e => e.mood === 'very high').length;
         const psychEntries = yearEntries.filter(e => e.psychotic !== 'none');
         const psychBreakdown = {};
         psychEntries.forEach(e => {
@@ -1420,11 +1424,6 @@
           const daysInM = getDaysInMonth(ym);
           const mEntries = yearEntries.filter(e => e.date.startsWith(`${ym}-`));
           const mEps = detectClinicalEpisodes(mEntries);
-          const mAvgSleep = mEntries.length > 0
-            ? (mEntries.reduce((s, e) => s + e.sleep, 0) / mEntries.length).toFixed(1)
-            : '—';
-          const mPureBaseline = mEntries.filter(e => getPrimaryState(e.states) === 'existing').length;
-          const mStabilityRatio = mEntries.length > 0 ? mPureBaseline / mEntries.length : -1;
 
           const stateCounts = {};
           let occ = 0;
@@ -1439,32 +1438,22 @@
             fullName: MONTHS_FULL[m - 1],
             totalDaysInMonth: daysInM.length,
             loggedCount: mEntries.length,
-            avgSleep: mAvgSleep,
             episodeCount: mEps.length,
-            stabilityRatio: mStabilityRatio,
             stateCounts,
             totalOcc: occ
           });
         }
 
-        const loggedMonths = months.filter(m => m.loggedCount > 0);
-        const mostStableMonth = loggedMonths.reduce((best, m) => (!best || m.stabilityRatio > best.stabilityRatio ? m : best), null);
-
         return {
           yr,
           totalLogged,
           entryMap,
-          pureExistingDays,
-          anyExistingDays,
-          stabilityPct,
-          mostStableMonth,
+          stableDays,
           episodes,
           avgEpisodeDays,
           longestEpisode,
           familyCounts,
-          overallSleep,
-          sleepByState,
-          moodCounts,
+          veryHighMoodDays,
           psychTotalDays: psychEntries.length,
           psychBreakdown,
           months
@@ -1509,19 +1498,6 @@
           ? `${stats.longestEpisode.dayCount}d (${formatBritishShort(stats.longestEpisode.start)}–${formatBritishShort(stats.longestEpisode.lastDate)})`
           : '—';
 
-        const sleepRowsHtml = stats.sleepByState.length === 0
-          ? `<div class="text-[11px]" style="color: var(--text-muted);">No sleep data yet</div>`
-          : stats.sleepByState.slice(0, 5).map(s => `
-              <div class="flex items-center justify-between text-[11px] tabular">
-                <span class="inline-flex items-center gap-1.5 truncate">
-                  <i class="w-2 h-2 rounded-full shrink-0" style="background-color: ${cssVar(s.colorVar)};"></i>
-                  <span class="truncate">${s.id}</span>
-                </span>
-                <span class="font-semibold shrink-0">${s.avg}h</span>
-              </div>
-            `).join('');
-
-        const moodDistText = stats.moodCounts.map(m => `${m.glyph} ${m.days}d`).join(' · ');
         const psychDistText = stats.psychTotalDays === 0
           ? '0 days'
           : `${stats.psychTotalDays}d (${Object.entries(stats.psychBreakdown).map(([k, v]) => `${k}: ${v}`).join(', ')})`;
@@ -1529,12 +1505,9 @@
         const statCardsHtml = `
           <div class="grid grid-cols-2 gap-2">
             <div class="p-3 rounded-2xl hairline space-y-1.5" style="background-color: var(--bg-subtle);">
-              <div class="text-[10px] font-semibold uppercase tracking-wider" style="color: var(--text-muted);">Baseline Stability</div>
-              <div class="text-[18px] font-semibold tabular leading-tight">${stats.stabilityPct}%</div>
-              <div class="text-[11px] leading-snug tabular" style="color: var(--text-secondary);">
-                ${stats.pureExistingDays}d pure baseline (${stats.anyExistingDays}d incl. paired)<br/>
-                Most stable: <strong>${stats.mostStableMonth ? stats.mostStableMonth.shortName : '—'}</strong>
-              </div>
+              <div class="text-[10px] font-semibold uppercase tracking-wider" style="color: var(--text-muted);">Stable</div>
+              <div class="text-[18px] font-semibold tabular leading-tight">${stats.stableDays}d</div>
+              <div class="text-[11px] leading-snug" style="color: var(--text-secondary);">marked 'existing'</div>
             </div>
 
             <div class="p-3 rounded-2xl hairline space-y-1.5" style="background-color: var(--bg-subtle);">
@@ -1546,20 +1519,13 @@
               </div>
             </div>
 
-            <div class="p-3 rounded-2xl hairline space-y-1.5" style="background-color: var(--bg-subtle);">
-              <div class="text-[10px] font-semibold uppercase tracking-wider" style="color: var(--text-muted);">Sleep by State (${stats.overallSleep}h avg)</div>
-              <div class="space-y-0.5 pt-0.5">
-                ${sleepRowsHtml}
+            <div class="col-span-2 p-3 rounded-2xl hairline space-y-1.5" style="background-color: var(--bg-subtle);">
+              <div class="text-[10px] font-semibold uppercase tracking-wider" style="color: var(--text-muted);">Psychotic Symptoms</div>
+              <div class="text-[12px] font-semibold tabular" style="color: ${stats.psychTotalDays > 0 ? 'var(--psychotic-crimson)' : 'var(--text-primary)'};">
+                ${psychDistText}
               </div>
-            </div>
-
-            <div class="p-3 rounded-2xl hairline space-y-1.5" style="background-color: var(--bg-subtle);">
-              <div class="text-[10px] font-semibold uppercase tracking-wider" style="color: var(--text-muted);">Mood &amp; Psychosis</div>
-              <div class="text-[11px] leading-snug tabular" style="color: var(--text-primary);">
-                ${moodDistText}
-              </div>
-              <div class="pt-1 hairline-t text-[11px] tabular" style="color: ${stats.psychTotalDays > 0 ? 'var(--psychotic-crimson)' : 'var(--text-secondary)'};">
-                <strong>Psychotic:</strong> ${psychDistText}
+              <div class="pt-1 hairline-t text-[11px] tabular" style="color: var(--text-secondary);">
+                <strong>Mood ++:</strong> ${stats.veryHighMoodDays}d
               </div>
             </div>
           </div>
@@ -1582,8 +1548,7 @@
                 ${barSegments}
               </div>
               <div class="flex items-center gap-1.5 shrink-0 text-[11px]">
-                <span style="color: var(--text-secondary);">${m.avgSleep === '—' ? '—' : `${m.avgSleep}h`}</span>
-                ${m.episodeCount > 0 ? `<span class="px-1.5 py-0.5 rounded-md text-[10px] font-semibold" style="background-color: var(--bg-card); border: 1px solid var(--border-hairline);">${m.episodeCount} ep</span>` : ''}
+                ${m.episodeCount > 0 ? `<span class="px-1.5 py-0.5 rounded-md text-[10px] font-semibold" style="background-color: var(--bg-card); border: 1px solid var(--border-hairline);">${m.episodeCount} ep</span>` : `<span class="text-[10px]" style="color: var(--text-muted);">—</span>`}
               </div>
             </button>
           `;
@@ -1758,11 +1723,12 @@
 
         let y = drawPrintHeader(pdf, `Psych Log · ${monthTitle}`, `${monthEntries.length}/${totalDays} Logged (${pct}%)`, margin, contentW);
 
-        /* 1. CLINICAL BRIEF (2-Column Compact Box) */
-        const colGap = 4, leftBriefW = 86, rightBriefW = contentW - leftBriefW - colGap;
+        /* 1. CLINICAL BRIEF (2-Column Box with exact jsPDF bounding height so text never overflows) */
+        const colGap = 4, leftBriefW = 76, rightBriefW = contentW - leftBriefW - colGap;
         pdf.setFont('helvetica', 'normal');
         pdf.setFontSize(9.5);
         const stateTextLines = pdf.splitTextToSize(pdfSafeText(brief.stateSummaryText), leftBriefW - 6);
+        const stateBlockH = stateTextLines.length > 0 ? pdf.getTextDimensions(stateTextLines, { fontSize: 9.5 }).h : 4;
 
         const epLinesList = brief.arcs.length === 0
           ? ['No episodes (>= 4 consecutive days or marked) in this period.']
@@ -1772,14 +1738,17 @@
             });
         const wrappedEpLines = [];
         epLinesList.forEach(line => wrappedEpLines.push(...pdf.splitTextToSize(pdfSafeText(line), rightBriefW - 6)));
+        const epBlockH = wrappedEpLines.length > 0 ? pdf.getTextDimensions(wrappedEpLines, { fontSize: 9.5 }).h : 4;
 
         const psychLineStr = brief.psychoticList.length > 0
           ? 'Psychotic: ' + brief.psychoticList.map(p => `${p.symptom} (${p.datesText})`).join(' · ')
           : '';
         const wrappedPsychLines = psychLineStr ? pdf.splitTextToSize(pdfSafeText(psychLineStr), rightBriefW - 6) : [];
+        const psychBlockH = wrappedPsychLines.length > 0 ? pdf.getTextDimensions(wrappedPsychLines, { fontSize: 9.5 }).h : 0;
 
-        const lineH95 = ptToMm(9.5) * 1.35;
-        const briefBoxH = Math.max(11 + stateTextLines.length * lineH95 + 3, 8 + wrappedEpLines.length * lineH95 + (wrappedPsychLines.length > 0 ? 3 + wrappedPsychLines.length * lineH95 : 0) + 3, 24);
+        const leftTotalH = 13 + stateBlockH + 4;
+        const rightTotalH = 9 + epBlockH + (psychBlockH > 0 ? 2.5 + psychBlockH : 0) + 4.5;
+        const briefBoxH = Math.max(leftTotalH, rightTotalH, 25);
 
         pdf.setDrawColor(212, 212, 216);
         pdf.setLineWidth(0.25);
@@ -1818,14 +1787,12 @@
         pdf.setFont('helvetica', 'normal');
         pdf.setFontSize(9.5);
         pdf.setTextColor(24, 24, 27);
-        let rTextY = y + 9;
-        pdf.text(wrappedEpLines, rightBriefX + 3, rTextY);
-        rTextY += wrappedEpLines.length * lineH95;
+        pdf.text(wrappedEpLines, rightBriefX + 3, y + 9);
         if (wrappedPsychLines.length > 0) {
-          rTextY += 1.5;
+          const psychY = y + 9 + epBlockH + 2.5;
           pdf.setFont('helvetica', 'bold');
           pdf.setTextColor(185, 28, 28);
-          pdf.text(wrappedPsychLines, rightBriefX + 3, rTextY);
+          pdf.text(wrappedPsychLines, rightBriefX + 3, psychY);
         }
 
         y += briefBoxH + 4;
@@ -1845,10 +1812,10 @@
           cursorMon = addDays(cursorMon, 7);
         }
 
-        const calPad = 3, cellGap = 1.2, cellW = (calBoxW - calPad * 2 - cellGap * 6) / 7, cellH = 11.2;
+        const calPad = 3, cellGap = 1.2, cellW = (calBoxW - calPad * 2 - cellGap * 6) / 7, cellH = 10.8;
         const calInnerTop = y + 9.5;
         const calGridH = weeksList.length * (cellH + cellGap) - cellGap;
-        const calBoxH = 9.5 + calGridH + 9.5;
+        const calBoxH = 9.5 + calGridH + 12.5;
 
         pdf.setDrawColor(212, 212, 216);
         pdf.setLineWidth(0.25);
@@ -1874,14 +1841,14 @@
             const dayNum = String(parseInt(iso.slice(8, 10), 10));
 
             if (!entry) {
-              pdf.setDrawColor(isOutside ? 238 : 220, isOutside ? 238 : 220, isOutside ? 240 : 224);
+              pdf.setDrawColor(isOutside ? 238 : 224, isOutside ? 238 : 226, isOutside ? 240 : 230);
               pdf.setLineWidth(0.2);
               pdf.roundedRect(cx, cy, cellW, cellH, 1.2, 1.2, 'S');
               pdf.setFont('helvetica', 'normal');
               pdf.setFontSize(6.5);
-              pdf.setTextColor(isOutside ? 190 : 145, isOutside ? 190 : 145, isOutside ? 195 : 150);
+              pdf.setTextColor(isOutside ? 190 : 156, isOutside ? 190 : 163, isOutside ? 195 : 175);
               pdf.text(dayNum, cx + 1.2, cy + 2.7);
-              if (!isOutside) pdf.text('-', cx + cellW / 2, cy + 7.2, { align: 'center' });
+              if (!isOutside) pdf.text('-', cx + cellW / 2, cy + 7.0, { align: 'center' });
             } else {
               const { primaryState, line1, line2, hasPsych } = getDayCardTokens(entry);
               const pal = PRINT_STATE_PALETTE[primaryState] || PRINT_STATE_PALETTE['existing'];
@@ -1898,41 +1865,52 @@
               pdf.setFont('helvetica', 'bold');
               pdf.setFontSize(7.5);
               pdf.setTextColor(20, 20, 19);
-              pdf.text(pdfSafeText(line1), cx + cellW / 2, cy + 6.4, { align: 'center' });
+              pdf.text(pdfSafeText(line1), cx + cellW / 2, cy + 6.2, { align: 'center' });
 
               if (line2) {
                 pdf.setFont('helvetica', 'bold');
                 pdf.setFontSize(6);
                 if (hasPsych) pdf.setTextColor(185, 28, 28);
                 else pdf.setTextColor(pal.accent[0], pal.accent[1], pal.accent[2]);
-                pdf.text(pdfSafeText(line2), cx + cellW / 2, cy + 9.6, { align: 'center' });
+                pdf.text(pdfSafeText(line2), cx + cellW / 2, cy + 9.3, { align: 'center' });
               }
             }
           });
         });
 
-        const legendY = y + calBoxH - 3.2;
-        let legX = margin + calPad;
+        /* 2-row 8-item state legend inside Monthly Calendar card */
+        const legendRows = [
+          [
+            { label: 'Existing (ex)', id: 'existing' },
+            { label: 'Depressed', id: 'depressed' },
+            { label: 'Very Depr.', id: 'very depressed' },
+            { label: 'Mixed (d)', id: 'mixed (d)' }
+          ],
+          [
+            { label: 'Mixed (h)', id: 'mixed (h)' },
+            { label: 'Mixed (m)', id: 'mixed (m)' },
+            { label: 'Hypomania', id: 'hypomania' },
+            { label: 'Mania', id: 'mania' }
+          ]
+        ];
         pdf.setFont('helvetica', 'normal');
-        pdf.setFontSize(6.5);
-        [
-          { label: 'Existing', id: 'existing' },
-          { label: 'Depr.', id: 'depressed' },
-          { label: 'Very Depr.', id: 'very depressed' },
-          { label: 'Mixed', id: 'mixed (d)' },
-          { label: 'Hypo', id: 'hypomania' },
-          { label: 'Mania', id: 'mania' }
-        ].forEach(item => {
-          const rgb = PRINT_STATE_PALETTE[item.id].accent;
-          pdf.setFillColor(rgb[0], rgb[1], rgb[2]);
-          pdf.rect(legX, legendY - 2, 2.2, 2.2, 'F');
-          pdf.setTextColor(82, 82, 91);
-          pdf.text(item.label, legX + 3, legendY);
-          legX += 3 + pdf.getTextWidth(item.label) + 2.8;
+        pdf.setFontSize(6.2);
+        legendRows.forEach((rowItems, rIdx) => {
+          let legX = margin + calPad;
+          const rowY = y + calBoxH - 7.0 + rIdx * 4.2;
+          rowItems.forEach(item => {
+            const rgb = PRINT_STATE_PALETTE[item.id].accent;
+            pdf.setFillColor(rgb[0], rgb[1], rgb[2]);
+            pdf.rect(legX, rowY - 1.9, 2.1, 2.1, 'F');
+            pdf.setTextColor(82, 82, 91);
+            pdf.text(item.label, legX + 2.9, rowY);
+            legX += 2.9 + pdf.getTextWidth(item.label) + 3.2;
+          });
         });
 
         const sideX = margin + calBoxW + colGap;
-        const freqBoxH = calBoxH - 27;
+        const keyH = 26;
+        const freqBoxH = calBoxH - keyH - 2.5;
         pdf.setDrawColor(212, 212, 216);
         pdf.setLineWidth(0.25);
         pdf.roundedRect(sideX, y, sideBoxW, freqBoxH, 2, 2, 'S');
@@ -1981,27 +1959,28 @@
           freqY += rowStep;
         });
 
-        const keyY = y + freqBoxH + 2.5, keyH = calBoxH - freqBoxH - 2.5;
+        const keyY = y + freqBoxH + 2.5;
         pdf.setDrawColor(212, 212, 216);
         pdf.roundedRect(sideX, keyY, sideBoxW, keyH, 2, 2, 'S');
         pdf.setFont('helvetica', 'bold');
         pdf.setFontSize(8);
         pdf.setTextColor(20, 20, 19);
-        pdf.text('Shorthand Key', sideX + 3, keyY + 4.3);
+        pdf.text('Shorthand Key', sideX + 3, keyY + 4.2);
         pdf.setFont('helvetica', 'normal');
-        pdf.setFontSize(7.2);
+        pdf.setFontSize(6.8);
         pdf.setTextColor(63, 63, 70);
-        pdf.text('7.5 = hrs slept  |  -- / - / = / + / ++ mood', sideX + 3, keyY + 8.3);
-        pdf.text('md/mh/mm mixed  |  hypo  |  ex existing', sideX + 3, keyY + 12.1);
-        pdf.text('S Start | P Peak | E End | * Note below', sideX + 3, keyY + 15.9);
+        pdf.text('7.5 = hrs slept  |  -- / - / = / + / ++ mood', sideX + 3, keyY + 8.0);
+        pdf.text('md mixed (d) | mh mixed (h) | mm mixed (m)', sideX + 3, keyY + 11.7);
+        pdf.text('hypo hypomania  |  ex existing', sideX + 3, keyY + 15.4);
+        pdf.text('S Start | P Peak | E End | * Note below', sideX + 3, keyY + 19.1);
         pdf.setTextColor(185, 28, 28);
-        pdf.text('/D Delusions | /DP Depers. | /H Halluc. | /DS Dissoc.', sideX + 3, keyY + 19.7);
+        pdf.text('/D Delusions | /DP Depers. | /H Halluc. | /DS Dissoc.', sideX + 3, keyY + 22.8);
 
         y += calBoxH + 5;
 
         /* 3. CHRONOLOGICAL NOTES TABLE */
         const notesEntries = [...monthEntries].reverse().filter(isFlaggedEntry);
-        const colDateW = 24, colStateW = 36, colSleepW = 24, colNoteW = contentW - colDateW - colStateW - colSleepW;
+        const colDateW = 28, colStateW = 36, colSleepW = 23, colNoteW = contentW - colDateW - colStateW - colSleepW;
 
         function drawNotesSectionHeader(currentY, isContinuation) {
           pdf.setFont('helvetica', 'bold');
@@ -2108,13 +2087,14 @@
 
         let y = drawPrintHeader(pdf, `Psych Log · ${targetYr} Annual Clinical Report`, `${stats.totalLogged}/${totalYearDays} Logged (${pct}%)`, margin, contentW);
 
-        const kpiGap = 3, kpiW = (contentW - kpiGap * 3) / 4, kpiH = 21;
+        /* 3 KPI cards across top: Stable, Episodes & Length, Psychotic Symptoms */
+        const kpiGap = 3.5, kpiW = (contentW - kpiGap * 2) / 3, kpiH = 21;
         [
           {
-            title: 'BASELINE STABILITY',
-            big: `${stats.stabilityPct}%`,
-            sub1: `${stats.pureExistingDays}d pure (${stats.anyExistingDays}d paired)`,
-            sub2: `Best: ${stats.mostStableMonth ? stats.mostStableMonth.shortName : '-'}`
+            title: 'STABLE',
+            big: `${stats.stableDays}d`,
+            sub1: "marked 'existing'",
+            sub2: ''
           },
           {
             title: 'EPISODES & LENGTH',
@@ -2123,16 +2103,10 @@
             sub2: stats.longestEpisode ? `Max: ${stats.longestEpisode.dayCount}d (${formatBritishShort(stats.longestEpisode.start)})` : 'Max: -'
           },
           {
-            title: 'SLEEP AVERAGE',
-            big: stats.overallSleep === '-' || stats.overallSleep === '—' ? '-' : `${stats.overallSleep}h / night`,
-            sub1: stats.sleepByState[0] ? `${stats.sleepByState[0].id}: ${stats.sleepByState[0].avg}h` : 'No sleep data',
-            sub2: stats.sleepByState[1] ? `${stats.sleepByState[1].id}: ${stats.sleepByState[1].avg}h` : ''
-          },
-          {
             title: 'PSYCHOTIC SYMPTOMS',
             big: `${stats.psychTotalDays} days`,
             sub1: stats.psychTotalDays === 0 ? 'None logged' : Object.entries(stats.psychBreakdown).map(([k, v]) => `${k}: ${v}d`).join(' | '),
-            sub2: `Mood ++/+: ${stats.moodCounts[0].days + stats.moodCounts[1].days}d`
+            sub2: `Mood ++: ${stats.veryHighMoodDays}d`
           }
         ].forEach((k, idx) => {
           const kx = margin + idx * (kpiW + kpiGap);
@@ -2140,17 +2114,17 @@
           pdf.setLineWidth(0.25);
           pdf.roundedRect(kx, y, kpiW, kpiH, 2, 2, 'S');
           pdf.setFont('helvetica', 'bold');
-          pdf.setFontSize(6.8);
+          pdf.setFontSize(7);
           pdf.setTextColor(113, 113, 122);
-          pdf.text(k.title, kx + 2.5, y + 4.2);
-          pdf.setFontSize(11);
+          pdf.text(k.title, kx + 3, y + 4.4);
+          pdf.setFontSize(11.5);
           pdf.setTextColor(20, 20, 19);
-          pdf.text(pdfSafeText(k.big), kx + 2.5, y + 9.5);
+          pdf.text(pdfSafeText(k.big), kx + 3, y + 9.8);
           pdf.setFont('helvetica', 'normal');
-          pdf.setFontSize(7.5);
+          pdf.setFontSize(7.8);
           pdf.setTextColor(82, 82, 91);
-          pdf.text(pdfSafeText(k.sub1), kx + 2.5, y + 14.2);
-          if (k.sub2) pdf.text(pdfSafeText(k.sub2), kx + 2.5, y + 18.2);
+          pdf.text(pdfSafeText(k.sub1), kx + 3, y + 14.5);
+          if (k.sub2) pdf.text(pdfSafeText(k.sub2), kx + 3, y + 18.5);
         });
 
         y += kpiH + 4;
@@ -2191,21 +2165,23 @@
         let legX = margin + 3;
         const legY = y + hmH - 2.6;
         pdf.setFont('helvetica', 'normal');
-        pdf.setFontSize(6.8);
+        pdf.setFontSize(6.4);
         [
           { label: 'Existing', id: 'existing' },
           { label: 'Depressed', id: 'depressed' },
-          { label: 'Very Depressed', id: 'very depressed' },
-          { label: 'Mixed', id: 'mixed (d)' },
-          { label: 'Hypomania', id: 'hypomania' },
+          { label: 'Very Depr.', id: 'very depressed' },
+          { label: 'Mixed (d)', id: 'mixed (d)' },
+          { label: 'Mixed (h)', id: 'mixed (h)' },
+          { label: 'Mixed (m)', id: 'mixed (m)' },
+          { label: 'Hypo', id: 'hypomania' },
           { label: 'Mania', id: 'mania' }
         ].forEach(item => {
           const rgb = PRINT_STATE_PALETTE[item.id].accent;
           pdf.setFillColor(rgb[0], rgb[1], rgb[2]);
-          pdf.rect(legX, legY - 2, 2.3, 2.3, 'F');
+          pdf.rect(legX, legY - 2, 2.1, 2.1, 'F');
           pdf.setTextColor(82, 82, 91);
-          pdf.text(item.label, legX + 3.2, legY);
-          legX += 3.2 + pdf.getTextWidth(item.label) + 4;
+          pdf.text(item.label, legX + 2.9, legY);
+          legX += 2.9 + pdf.getTextWidth(item.label) + 2.5;
         });
 
         y += hmH + 4;
@@ -2222,10 +2198,9 @@
         pdf.setFontSize(7.8);
         pdf.setTextColor(82, 82, 91);
         pdf.text('MONTH', margin + 2.5, y + 4.1);
-        pdf.text('LOGGED', margin + 28, y + 4.1);
-        pdf.text('STATE DISTRIBUTION', margin + 52, y + 4.1);
-        pdf.text('AVG SLEEP', margin + 144, y + 4.1);
-        pdf.text('EPISODES', margin + 168, y + 4.1);
+        pdf.text('LOGGED', margin + 30, y + 4.1);
+        pdf.text('STATE DISTRIBUTION', margin + 56, y + 4.1);
+        pdf.text('EPISODES', margin + 166, y + 4.1);
         y += 6;
 
         stats.months.forEach(m => {
@@ -2239,9 +2214,9 @@
           pdf.text(m.fullName, margin + 2.5, y + 4.3);
           pdf.setFont('helvetica', 'normal');
           pdf.setTextColor(82, 82, 91);
-          pdf.text(`${m.loggedCount}/${m.totalDaysInMonth}d`, margin + 28, y + 4.3);
+          pdf.text(`${m.loggedCount}/${m.totalDaysInMonth}d`, margin + 30, y + 4.3);
 
-          const bX = margin + 52, bY = y + 2, bW = 86, bH = 2.3;
+          const bX = margin + 56, bY = y + 2, bW = 104, bH = 2.3;
           pdf.setFillColor(244, 244, 245);
           pdf.rect(bX, bY, bW, bH, 'F');
           if (m.totalOcc > 0) {
@@ -2254,8 +2229,7 @@
               cx += sw;
             });
           }
-          pdf.text(m.avgSleep === '—' ? '-' : `${m.avgSleep}h`, margin + 144, y + 4.3);
-          pdf.text(m.episodeCount > 0 ? `${m.episodeCount}` : '-', margin + 168, y + 4.3);
+          pdf.text(m.episodeCount > 0 ? `${m.episodeCount}` : '-', margin + 166, y + 4.3);
           y += rH;
         });
 
@@ -2277,7 +2251,7 @@
             const peakStr = formatPeakDatesList(ep.peaks);
             const line = `Episode ${idx + 1}: Start ${formatBritishFull(ep.start)}${peakStr ? ' -> Peak ' + peakStr : ''}${ep.end ? ' -> End ' + formatBritishFull(ep.end) : ' -> Ongoing'}  |  ${ep.states.join(' / ')} (${ep.dayCount}d)`;
             const wrapped = pdf.splitTextToSize(pdfSafeText(line), contentW - 6);
-            const rowH = wrapped.length * ptToMm(9.5) * 1.35 + 4;
+            const rowH = pdf.getTextDimensions(wrapped, { fontSize: 9.5 }).h + 5;
             if (y + rowH > pageH - margin) {
               pdf.addPage();
               y = drawPrintHeader(pdf, `Psych Log · ${targetYr} Annual Episodes (Continued)`, '', margin, contentW);
@@ -2389,8 +2363,9 @@
 
         document.querySelectorAll('.sleep-preset-btn').forEach(btn => {
           const active = Math.abs(Number(btn.getAttribute('data-sleep-preset')) - sheetDraft.sleep) < 0.05;
-          btn.style.backgroundColor = active ? 'var(--text-primary)' : 'var(--bg-subtle)';
-          btn.style.color = active ? 'var(--bg-canvas)' : 'var(--text-primary)';
+          btn.style.backgroundColor = active ? 'var(--bg-well)' : 'var(--bg-subtle)';
+          btn.style.borderColor = active ? 'var(--border-strong)' : 'var(--border-hairline)';
+          btn.style.color = 'var(--text-primary)';
         });
 
         document.querySelectorAll('.mood-opt-btn').forEach(btn => {
@@ -2416,9 +2391,10 @@
           const id = btn.getAttribute('data-psychotic');
           const active = id === sheetDraft.psychotic;
           const isAlert = active && id !== 'none';
-          btn.style.backgroundColor = isAlert ? 'var(--psychotic-crimson-tint)' : active ? 'var(--text-primary)' : 'var(--bg-subtle)';
-          btn.style.borderColor = isAlert ? 'var(--psychotic-crimson)' : 'var(--border-hairline)';
-          btn.style.color = isAlert ? 'var(--psychotic-crimson)' : active ? 'var(--bg-canvas)' : 'var(--text-primary)';
+          btn.style.backgroundColor = isAlert ? 'var(--psychotic-crimson-tint)' : active ? 'var(--bg-well)' : 'var(--bg-subtle)';
+          btn.style.borderColor = isAlert ? 'var(--psychotic-crimson)' : active ? 'var(--border-strong)' : 'var(--border-hairline)';
+          btn.style.color = isAlert ? 'var(--psychotic-crimson)' : 'var(--text-primary)';
+          btn.style.fontWeight = active ? '600' : '500';
         });
 
         document.querySelectorAll('.phase-opt-btn').forEach(btn => {
